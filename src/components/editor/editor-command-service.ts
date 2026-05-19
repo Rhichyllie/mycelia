@@ -1,0 +1,239 @@
+import { z } from "zod";
+import {
+  materializeGraphSnapshot,
+  type GraphSnapshot,
+  type GraphSnapshotDocument,
+  type ViewportState,
+} from "@/src/domain";
+import {
+  applyEditorCommandToSnapshot,
+  applyEditorCommandsToSnapshot,
+  EditorCommandSchema,
+  type EditorCommand,
+} from "@/src/modules/editor/application";
+import { getEditorBaseMessage } from "./editor-i18n";
+
+export type EditorSemanticMode = "operational" | "technical";
+
+export type EditorRemoteCommandOptions = {
+  expectedRevision?: number;
+  semanticMode?: EditorSemanticMode;
+  allowSemanticOverride?: boolean;
+  overrideReason?: string;
+};
+
+export type EditorApiErrorPayload = {
+  error?: string;
+  code?: string;
+  message?: string;
+  details?: string;
+  allowedEdgeKinds?: string[];
+  recommendedEdgeKind?: string;
+  violations?: unknown[];
+  repairPlan?: unknown;
+  currentRevision?: number;
+  expectedRevision?: number;
+  overrideAllowed?: boolean;
+  requireOverrideReason?: boolean;
+};
+
+export class EditorRemoteError extends Error {
+  readonly status: number;
+  readonly code: string;
+  readonly payload: EditorApiErrorPayload | null;
+
+  constructor(
+    message: string,
+    input: {
+      status: number;
+      code: string;
+      payload: EditorApiErrorPayload | null;
+    },
+  ) {
+    super(message);
+    this.name = "EditorRemoteError";
+    this.status = input.status;
+    this.code = input.code;
+    this.payload = input.payload;
+  }
+}
+
+export type EditorRemoteCommandResult = {
+  snapshot: GraphSnapshot;
+  newRevision: number;
+};
+
+type EditorRemoteWorkingSnapshotWire = {
+  document: GraphSnapshotDocument;
+  viewport: ViewportState;
+  revision?: number;
+};
+
+function readApiErrorMessage(
+  payload: EditorApiErrorPayload | null | undefined,
+  fallback: string,
+) {
+  return payload?.message ?? fallback;
+}
+
+function buildRequestBody(input: {
+  command?: EditorCommand;
+  commands?: EditorCommand[];
+  options?: EditorRemoteCommandOptions;
+}) {
+  return {
+    ...(input.command ? { command: EditorCommandSchema.parse(input.command) } : {}),
+    ...(input.commands
+      ? { commands: z.array(EditorCommandSchema).parse(input.commands) }
+      : {}),
+    ...(input.options?.expectedRevision !== undefined
+      ? { expectedRevision: input.options.expectedRevision }
+      : {}),
+    ...(input.options?.semanticMode
+      ? { semanticMode: input.options.semanticMode }
+      : {}),
+    ...(input.options?.allowSemanticOverride !== undefined
+      ? { allowSemanticOverride: input.options.allowSemanticOverride }
+      : {}),
+    ...(input.options?.overrideReason
+      ? { overrideReason: input.options.overrideReason }
+      : {}),
+  };
+}
+
+function buildRemoteError(input: {
+  response: Response;
+  payload: EditorApiErrorPayload | null;
+  fallbackMessage: string;
+}) {
+  const code =
+    input.payload?.code ??
+    input.payload?.error ??
+    `HTTP_${input.response.status}`;
+
+  return new EditorRemoteError(
+    readApiErrorMessage(input.payload, input.fallbackMessage),
+    {
+      status: input.response.status,
+      code,
+      payload: input.payload,
+    },
+  );
+}
+
+function resolveRemoteWorkingSnapshot(
+  payload: EditorRemoteWorkingSnapshotWire | null | undefined,
+) {
+  if (!payload) {
+    return null;
+  }
+
+  if (payload.document && payload.viewport) {
+    return materializeGraphSnapshot({
+      document: payload.document,
+      viewport: payload.viewport,
+    });
+  }
+
+  return null;
+}
+
+export function applyEditorCommandLocally(
+  snapshot: GraphSnapshot,
+  projectId: string,
+  command: EditorCommand,
+): GraphSnapshot {
+  const parsedCommand = EditorCommandSchema.parse(command);
+  return applyEditorCommandToSnapshot(snapshot, projectId, parsedCommand);
+}
+
+export function applyEditorCommandsLocally(
+  snapshot: GraphSnapshot,
+  projectId: string,
+  commands: EditorCommand[],
+): GraphSnapshot {
+  const parsedCommands = z.array(EditorCommandSchema).parse(commands);
+  return applyEditorCommandsToSnapshot(snapshot, projectId, parsedCommands);
+}
+
+export async function applyEditorCommandRemotely(
+  projectId: string,
+  command: EditorCommand,
+  options?: EditorRemoteCommandOptions,
+): Promise<EditorRemoteCommandResult> {
+  const response = await fetch(`/api/projects/${projectId}/editor-commands`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(
+      buildRequestBody({
+        command,
+        options,
+      }),
+    ),
+  });
+
+  const payload = (await response.json()) as {
+    data?: {
+      workingSnapshot?: EditorRemoteWorkingSnapshotWire;
+      newRevision?: number;
+    };
+  } & EditorApiErrorPayload;
+
+  const snapshot = resolveRemoteWorkingSnapshot(payload.data?.workingSnapshot);
+  const newRevision =
+    payload.data?.newRevision ?? payload.data?.workingSnapshot?.revision;
+
+  if (!response.ok || !snapshot || typeof newRevision !== "number") {
+    throw buildRemoteError({
+      response,
+      payload,
+      fallbackMessage: getEditorBaseMessage("shell.errors.applyCommand"),
+    });
+  }
+
+  return {
+    snapshot,
+    newRevision,
+  };
+}
+
+export async function applyEditorCommandsRemotely(
+  projectId: string,
+  commands: EditorCommand[],
+  options?: EditorRemoteCommandOptions,
+): Promise<EditorRemoteCommandResult> {
+  const response = await fetch(`/api/projects/${projectId}/editor-commands`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(
+      buildRequestBody({
+        commands,
+        options,
+      }),
+    ),
+  });
+
+  const payload = (await response.json()) as {
+    data?: {
+      workingSnapshot?: EditorRemoteWorkingSnapshotWire;
+      newRevision?: number;
+    };
+  } & EditorApiErrorPayload;
+
+  const snapshot = resolveRemoteWorkingSnapshot(payload.data?.workingSnapshot);
+  const newRevision =
+    payload.data?.newRevision ?? payload.data?.workingSnapshot?.revision;
+
+  if (!response.ok || !snapshot || typeof newRevision !== "number") {
+    throw buildRemoteError({
+      response,
+      payload,
+      fallbackMessage: getEditorBaseMessage("shell.errors.applyCommands"),
+    });
+  }
+
+  return {
+    snapshot,
+    newRevision,
+  };
+}
