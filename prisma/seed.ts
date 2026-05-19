@@ -1,17 +1,10 @@
 import { randomUUID } from "crypto";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { GraphSnapshotSchema } from "../src/domain";
-import { assertAuthStorageReady } from "../src/server/auth/auth-storage-readiness";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  await assertAuthStorageReady({
-    rawQueryDelegate: prisma,
-    databaseUrl: process.env.DATABASE_URL,
-    useCache: false,
-  });
-
   const [seedUser] = await prisma.$queryRaw<
     Array<{
       id: string;
@@ -30,9 +23,9 @@ async function main() {
       )
       VALUES (
         ${randomUUID()}::uuid,
-        'admin@mapia.local',
-        'admin@mapia.local',
-        'MapIA Development Admin',
+        'admin@mycelia.local',
+        'admin@mycelia.local',
+        'Mycelia Development Admin',
         true,
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP
@@ -48,14 +41,14 @@ async function main() {
   );
 
   const workspace = await prisma.workspace.upsert({
-    where: { slug: "mapia-demo" },
+    where: { slug: "mycelia-demo" },
     update: {
-      name: "MapIA Demo Workspace",
+      name: "Mycelia Demo Workspace",
     },
     create: {
-      slug: "mapia-demo",
-      name: "MapIA Demo Workspace",
-      ownerIdentity: "admin@mapia.local",
+      slug: "mycelia-demo",
+      name: "Mycelia Demo Workspace",
+      ownerIdentity: "admin@mycelia.local",
     },
   });
 
@@ -102,8 +95,8 @@ async function main() {
         ${seedUser.id}::uuid,
         'development_credentials'::"AuthProviderType",
         'credentials',
-        'admin@mapia.local',
-        'admin@mapia.local',
+        'admin@mycelia.local',
+        'admin@mycelia.local',
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP
@@ -127,14 +120,14 @@ async function main() {
     update: {
       name: "Onboarding Flow",
       template: "flowchart",
-      description: "Projeto seeded para bootstrap local do MapIA.",
+      description: "Projeto seeded para bootstrap local do Mycelia.",
     },
     create: {
       workspaceId: workspace.id,
       slug: "onboarding-flow",
       name: "Onboarding Flow",
       template: "flowchart",
-      description: "Projeto seeded para bootstrap local do MapIA.",
+      description: "Projeto seeded para bootstrap local do Mycelia.",
     },
   });
 

@@ -217,3 +217,115 @@ export type ViewportState = z.infer<typeof ViewportStateSchema>;
 export type Viewport = ViewportState;
 export type GraphSnapshotDocument = z.infer<typeof GraphSnapshotDocumentSchema>;
 export type GraphSnapshot = z.infer<typeof GraphSnapshotSchema>;
+
+export const ImmutableSnapshotStateSchema = z
+  .object({
+    document: GraphSnapshotDocumentSchema,
+    capturedViewport: ViewportStateSchema,
+  })
+  .strict();
+
+export const StoredWorkingSnapshotStateSchema = z
+  .object({
+    snapshot: z.unknown(),
+    viewport: z.unknown().optional(),
+  })
+  .strict()
+  .transform((value) => {
+    const rawSnapshot =
+      value.snapshot && typeof value.snapshot === "object"
+        ? (value.snapshot as Record<string, unknown>)
+        : {};
+    const document = GraphSnapshotDocumentSchema.parse(rawSnapshot);
+    const viewport = ViewportStateSchema.parse(
+      value.viewport ?? rawSnapshot.viewport ?? { x: 0, y: 0, zoom: 1 },
+    );
+
+    return {
+      document,
+      viewport,
+      snapshot: materializeGraphSnapshot({ document, viewport }),
+    };
+  });
+
+export const StoredImmutableSnapshotStateSchema = z
+  .unknown()
+  .transform((value) => {
+    const raw =
+      value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+
+    if ("document" in raw || "capturedViewport" in raw) {
+      return ImmutableSnapshotStateSchema.parse({
+        document: raw.document,
+        capturedViewport: raw.capturedViewport ?? raw.viewport,
+      });
+    }
+
+    return ImmutableSnapshotStateSchema.parse({
+      document: raw,
+      capturedViewport: raw.viewport ?? { x: 0, y: 0, zoom: 1 },
+    });
+  });
+
+export function materializeGraphSnapshot(input: {
+  document: GraphSnapshotDocument;
+  viewport: ViewportState;
+}): GraphSnapshot {
+  return GraphSnapshotSchema.parse({
+    ...input.document,
+    viewport: input.viewport,
+  });
+}
+
+export function splitGraphSnapshot(snapshot: GraphSnapshot): {
+  document: GraphSnapshotDocument;
+  viewport: ViewportState;
+} {
+  const parsed = GraphSnapshotSchema.parse(snapshot);
+  const {
+    viewport,
+    nodes,
+    edges,
+    diagramType,
+    diagramView,
+    layoutOptions,
+    rootNodeName,
+    allowReapplyLayout,
+  } = parsed;
+
+  return {
+    document: GraphSnapshotDocumentSchema.parse({
+      nodes,
+      edges,
+      ...(diagramType ? { diagramType } : {}),
+      ...(diagramView ? { diagramView } : {}),
+      ...(layoutOptions ? { layoutOptions } : {}),
+      ...(rootNodeName ? { rootNodeName } : {}),
+      ...(allowReapplyLayout !== undefined ? { allowReapplyLayout } : {}),
+    }),
+    viewport,
+  };
+}
+
+export function parseStoredWorkingSnapshotState(input: {
+  snapshot: unknown;
+  viewport?: unknown;
+}): z.infer<typeof StoredWorkingSnapshotStateSchema> {
+  return StoredWorkingSnapshotStateSchema.parse(input);
+}
+
+export function parseStoredImmutableSnapshotState(
+  input: unknown,
+): z.infer<typeof StoredImmutableSnapshotStateSchema> {
+  return StoredImmutableSnapshotStateSchema.parse(input);
+}
+
+export type ImmutableSnapshotState = z.infer<
+  typeof ImmutableSnapshotStateSchema
+>;
+export type StoredWorkingSnapshotState = z.infer<
+  typeof StoredWorkingSnapshotStateSchema
+>;
+export type StoredImmutableSnapshotState = z.infer<
+  typeof StoredImmutableSnapshotStateSchema
+>;

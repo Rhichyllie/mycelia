@@ -1,14 +1,21 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { AppError, isAppError } from "@/src/lib/app-error";
-import {
-  getRedactedValueMask,
-  redactSensitiveStrings,
-} from "@/src/modules/creation-assistant/domain";
 
 const sensitiveKeyPattern =
   /password|token|secret|connectionstring|apikey|api_key|bearer|authorization/i;
-const redactedValue = getRedactedValueMask();
+const redactedValue = "[REDACTED]";
+
+function redactSensitiveStrings(value: unknown): unknown {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  return value.replace(
+    /(password|token|secret|apikey|api_key|authorization)=([^&\s]+)/gi,
+    "$1=[REDACTED]",
+  );
+}
 
 function redactErrorDetails(value: unknown): unknown {
   if (Array.isArray(value)) {

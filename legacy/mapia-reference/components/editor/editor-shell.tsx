@@ -1,5 +1,4 @@
 "use client";
-import { useLocale } from "next-intl";
 import {
   useCallback,
   useEffect,
@@ -523,7 +522,7 @@ export function EditorShell({
   initialSnapshot,
   initialRevision,
 }: EditorShellProps) {
-  const locale = useLocale();
+  const locale = "pt-BR";
   const editorT = useEditorTranslations();
   const initialFlowState = useMemo(
     () => fromCanonicalSnapshotToFlowState(initialSnapshot),
