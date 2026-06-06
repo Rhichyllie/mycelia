@@ -6,9 +6,10 @@ Active MYCELIA source begins here.
 
 - `src/mycelia/shared-kernel/`: Phase 1A shared TypeScript primitives for opaque IDs, classifications, Result helpers, safe errors, and `OrganizationalRuntimeContext`.
 - `src/mycelia/tenancy-boundaries/`: Phase 1B pure TypeScript tenant, workspace, and project boundary scope/check primitives.
+- `src/mycelia/runtime-identity/`: Phase 1C pure TypeScript runtime identity, request origin, request envelope, and identity denial primitives.
 
 ## Not implemented yet
 
-No runtime lifecycle, `EventEnvelope` implementation, persistence, Prisma schema, API routes, workflow execution, authorization middleware, RLS, or UI exists yet.
+No runtime lifecycle, `GovernedRun`, `RuntimeEnvelope` execution, `EventEnvelope` implementation, persistence, Prisma schema, API routes, workflow execution, authentication system, authorization middleware, RLS, or UI exists yet.
 
 Legacy MapIA code must remain under `legacy/` and must not be copied back without architecture review.

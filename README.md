@@ -15,6 +15,7 @@ Implemented TypeScript foundations currently live under:
 
 - `src/mycelia/shared-kernel/`
 - `src/mycelia/tenancy-boundaries/`
+- `src/mycelia/runtime-identity/`
 
 ## Safe Phase 0 Command
 
@@ -24,7 +25,8 @@ pnpm validate:phase0
 
 This runs the current lint, typecheck, no-active-tests Vitest baseline, and
 documentation/registry presence check. Phase 1 tests now cover the shared
-kernel and tenant boundary skeleton.
+kernel, tenant boundary skeleton, and runtime identity/request envelope
+skeleton.
 
 ## Guarded Commands
 
