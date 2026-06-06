@@ -25,14 +25,14 @@ documentation/registry presence check.
 `pnpm dev`, `pnpm build`, and `pnpm start` are intentionally guarded for now.
 They do not start Next.js because the active app shell has not been rebuilt.
 
+## CI Baseline
+
+Phase 0 CI runs `pnpm validate:phase0`.
+
+Runtime and product build CI will be added later, after implementation begins.
+The CI intentionally does not run `pnpm dev`, `pnpm build`, `pnpm start`, Prisma
+commands, migrations, or deployment steps.
+
 Future implementation work must follow
 `docs/mycelia/19-codex-operational-alignment-and-engineering-constitution.md`.
 Do not revive MapIA as the active MYCELIA foundation.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

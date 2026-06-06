@@ -1,0 +1,51 @@
+name: MYCELIA Phase 0 CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+      - codex/bootstrap-architecture
+
+jobs:
+  phase0-baseline:
+    name: Phase 0 baseline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Phase 0 only: runtime, UI, API, Prisma, and product build checks are
+      # intentionally not validated until implementation begins.
+      - name: Lint baseline
+        run: pnpm lint
+
+      - name: TypeScript baseline
+        run: pnpm typecheck
+
+      - name: Phase 0 test guard
+        run: pnpm test
+
+      - name: Documentation and registry check
+        run: pnpm docs:check
+
+      # Current Phase 0 source of truth for repository validation.
+      # Future CI phases may add build, runtime, schema, and deployment checks.
+      - name: Complete Phase 0 validation
+        run: pnpm validate:phase0
