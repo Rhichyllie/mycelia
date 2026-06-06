@@ -1,31 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MYCELIA
 
-## Getting Started
+MYCELIA is in Phase 0 bootstrap. The active runtime, API, database schema, and
+product UI have not started.
 
-First, run the development server:
+The former active MapIA-derived implementation was quarantined under
+`legacy/mapia-active-snapshot/` and is reference-only. It must not be used as the
+MYCELIA runtime foundation without explicit architecture review.
+
+Canonical architecture lives in `docs/mycelia/`. Implementation alignment
+scaffolding lives in `docs/architecture/`. Contract registry placeholders live
+in `contracts/`.
+
+## Safe Phase 0 Command
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm validate:phase0
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This runs the current lint, typecheck, no-active-tests Vitest baseline, and
+documentation/registry presence check.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Guarded Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`pnpm dev`, `pnpm build`, and `pnpm start` are intentionally guarded for now.
+They do not start Next.js because the active app shell has not been rebuilt.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Future implementation work must follow
+`docs/mycelia/19-codex-operational-alignment-and-engineering-constitution.md`.
+Do not revive MapIA as the active MYCELIA foundation.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
