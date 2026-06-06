@@ -8,7 +8,7 @@
     "start": "node scripts/phase0-guard.mjs start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/phase0-guard.mjs test",
+    "test": "vitest run",
     "docs:check": "node scripts/phase0-docs-check.mjs",
     "validate:phase0": "pnpm lint && pnpm typecheck && pnpm test && pnpm docs:check",
     "validate": "pnpm validate:phase0"

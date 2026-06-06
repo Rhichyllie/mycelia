@@ -1,16 +1,13 @@
-# Active Source Placeholder
+# MYCELIA Source
 
-This active directory is intentionally empty after Phase 0B quarantine.
+Active MYCELIA source begins here.
 
-MYCELIA implementation will be created in future phases. Do not copy MapIA
-legacy code back into this directory without architecture review.
+## Implemented
 
-No runtime behavior exists here yet.
+- `src/mycelia/shared-kernel/`: Phase 1A shared TypeScript primitives for opaque IDs, classifications, Result helpers, safe errors, and `OrganizationalRuntimeContext`.
 
-Before adding source files, consult:
+## Not implemented yet
 
-- `docs/architecture/registry.md`
-- `docs/architecture/module-map.md`
-- `contracts/README.md`
+No runtime lifecycle, `EventEnvelope` implementation, persistence, Prisma schema, API routes, workflow execution, or UI exists yet.
 
-Phase 0C adds documentation and registry scaffolding only.
+Legacy MapIA code must remain under `legacy/` and must not be copied back without architecture review.
