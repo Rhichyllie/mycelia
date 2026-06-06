@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node scripts/phase0-guard.mjs dev",
+    "build": "node scripts/phase0-guard.mjs build",
+    "start": "node scripts/phase0-guard.mjs start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "validate": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "docs:check": "node scripts/phase0-docs-check.mjs",
+    "validate:phase0": "pnpm lint && pnpm typecheck && pnpm test && pnpm docs:check",
+    "validate": "pnpm validate:phase0"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
