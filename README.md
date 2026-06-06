@@ -1,6 +1,6 @@
 # MYCELIA
 
-MYCELIA is in Phase 0 bootstrap. The active runtime, API, database schema, and
+MYCELIA is in early bootstrap. The active runtime, API, database schema, and
 product UI have not started.
 
 The former active MapIA-derived implementation was quarantined under
@@ -11,6 +11,11 @@ Canonical architecture lives in `docs/mycelia/`. Implementation alignment
 scaffolding lives in `docs/architecture/`. Contract registry placeholders live
 in `contracts/`.
 
+Implemented TypeScript foundations currently live under:
+
+- `src/mycelia/shared-kernel/`
+- `src/mycelia/tenancy-boundaries/`
+
 ## Safe Phase 0 Command
 
 ```bash
@@ -18,7 +23,8 @@ pnpm validate:phase0
 ```
 
 This runs the current lint, typecheck, no-active-tests Vitest baseline, and
-documentation/registry presence check.
+documentation/registry presence check. Phase 1 tests now cover the shared
+kernel and tenant boundary skeleton.
 
 ## Guarded Commands
 
