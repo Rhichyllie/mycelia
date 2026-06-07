@@ -19,6 +19,7 @@ Implemented TypeScript foundations currently live under:
 - `src/mycelia/event-envelope/`
 - `src/mycelia/policy-decision-gateway/`
 - `src/mycelia/runtime-envelope/`
+- `src/mycelia/runtime-admission-gateway/`
 
 ## Safe Phase 0 Command
 
@@ -30,7 +31,7 @@ This runs the current lint, typecheck, no-active-tests Vitest baseline, and
 documentation/registry presence check. Phase 1 tests now cover the shared
 kernel, tenant boundary skeleton, runtime identity/request envelope skeleton,
 EventEnvelope type skeleton, PolicyDecisionGateway type skeleton, and
-RuntimeEnvelope type skeleton.
+RuntimeEnvelope type skeleton, and RuntimeAdmissionGateway type skeleton.
 
 ## Guarded Commands
 
