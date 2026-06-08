@@ -14,9 +14,10 @@ Active MYCELIA source begins here.
 - `src/mycelia/governed-run/`: Phase 1H pure TypeScript governed run shell status, origin, metadata, validation, and fail-closed check primitives.
 - `src/mycelia/runtime-state/`: Phase 1I pure TypeScript runtime state kind, state descriptor, snapshot descriptor, validation, and fail-closed check primitives.
 - `src/mycelia/state-transition/`: Phase 1J pure TypeScript state transition intent, rule, descriptor, result, validation, and fail-closed check contracts.
+- `src/mycelia/state-transition-coordinator/`: Phase 1K pure TypeScript state transition coordination request, result, validation, and fail-closed readiness skeleton.
 
 ## Not implemented yet
 
-No runtime lifecycle, `GovernedRun` execution, `RuntimeEnvelope` execution, real policy engine, approval workflow, obligation execution, runtime admission side effects, state transition coordinator, state machine, state mutation, checkpoint creation, event broker, event publishing, event persistence, canonical event catalog, persistence, Prisma schema, API routes, workflow execution, authentication system, authorization middleware, RLS, or UI exists yet.
+No runtime lifecycle, `GovernedRun` execution, `RuntimeEnvelope` execution, real policy engine, approval workflow, obligation execution, runtime admission side effects, real state transition coordinator, state machine, state mutation, next-state creation, checkpoint creation, event broker, event publishing, event persistence, canonical event catalog, persistence, Prisma schema, API routes, workflow execution, authentication system, authorization middleware, RLS, or UI exists yet.
 
 Legacy MapIA code must remain under `legacy/` and must not be copied back without architecture review.
