@@ -22,6 +22,7 @@ Implemented TypeScript foundations currently live under:
 - `src/mycelia/runtime-admission-gateway/`
 - `src/mycelia/governed-run/`
 - `src/mycelia/runtime-state/`
+- `src/mycelia/state-transition/`
 
 ## Safe Phase 0 Command
 
@@ -34,7 +35,8 @@ documentation/registry presence check. Phase 1 tests now cover the shared
 kernel, tenant boundary skeleton, runtime identity/request envelope skeleton,
 EventEnvelope type skeleton, PolicyDecisionGateway type skeleton, and
 RuntimeEnvelope type skeleton, RuntimeAdmissionGateway type skeleton, and
-GovernedRun type skeleton, and RuntimeState type skeleton.
+GovernedRun type skeleton, RuntimeState type skeleton, and StateTransition
+contract skeleton.
 
 ## Guarded Commands
 
