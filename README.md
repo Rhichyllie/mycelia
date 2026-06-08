@@ -23,6 +23,7 @@ Implemented TypeScript foundations currently live under:
 - `src/mycelia/governed-run/`
 - `src/mycelia/runtime-state/`
 - `src/mycelia/state-transition/`
+- `src/mycelia/state-transition-coordinator/`
 
 ## Safe Phase 0 Command
 
@@ -36,7 +37,7 @@ kernel, tenant boundary skeleton, runtime identity/request envelope skeleton,
 EventEnvelope type skeleton, PolicyDecisionGateway type skeleton, and
 RuntimeEnvelope type skeleton, RuntimeAdmissionGateway type skeleton, and
 GovernedRun type skeleton, RuntimeState type skeleton, and StateTransition
-contract skeleton.
+contract skeleton, and StateTransitionCoordinator skeleton.
 
 ## Guarded Commands
 
