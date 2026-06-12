@@ -17,9 +17,10 @@ Active MYCELIA source begins here.
 - `src/mycelia/state-transition-coordinator/`: Phase 1K pure TypeScript state transition coordination request, result, validation, and fail-closed readiness skeleton.
 - `src/mycelia/audit-record/`: Phase 1L pure TypeScript audit actor, subject, evidence reference, audit record, validation, and fail-closed descriptor contracts.
 - `src/mycelia/audit-recorder/`: Phase 1M pure TypeScript audit recording request, result, recorder, validation, and fail-closed descriptor construction skeleton.
+- `src/mycelia/audit-emission/`: Phase 1N pure TypeScript audit emission intent, target, result, validation, and fail-closed readiness descriptor contracts.
 
 ## Not implemented yet
 
-No runtime lifecycle, `GovernedRun` execution, `RuntimeEnvelope` execution, real policy engine, approval workflow, obligation execution, runtime admission side effects, real state transition coordinator, state machine, state mutation, next-state creation, checkpoint creation, audit storage, audit append log, evidence store, record sealing, signing, hash chaining, compliance export, observability pipeline, event broker, event publishing, event persistence, canonical event catalog, persistence, Prisma schema, API routes, workflow execution, authentication system, authorization middleware, RLS, or UI exists yet.
+No runtime lifecycle, `GovernedRun` execution, `RuntimeEnvelope` execution, real policy engine, approval workflow, obligation execution, runtime admission side effects, real state transition coordinator, state machine, state mutation, next-state creation, checkpoint creation, audit storage, audit append log, audit emission infrastructure, evidence store, record sealing, signing, hash chaining, compliance export, observability pipeline, event broker, event publishing, event persistence, queues, streams, webhooks, files, canonical event catalog, persistence, Prisma schema, API routes, workflow execution, authentication system, authorization middleware, RLS, or UI exists yet.
 
 Legacy MapIA code must remain under `legacy/` and must not be copied back without architecture review.

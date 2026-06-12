@@ -26,6 +26,7 @@ Implemented TypeScript foundations currently live under:
 - `src/mycelia/state-transition-coordinator/`
 - `src/mycelia/audit-record/`
 - `src/mycelia/audit-recorder/`
+- `src/mycelia/audit-emission/`
 
 ## Safe Phase 0 Command
 
@@ -40,7 +41,7 @@ EventEnvelope type skeleton, PolicyDecisionGateway type skeleton, and
 RuntimeEnvelope type skeleton, RuntimeAdmissionGateway type skeleton, and
 GovernedRun type skeleton, RuntimeState type skeleton, and StateTransition
 contract skeleton, StateTransitionCoordinator skeleton, and AuditRecord
-contract skeleton, and AuditRecorder skeleton.
+contract skeleton, AuditRecorder skeleton, and AuditEmission contract skeleton.
 
 ## Guarded Commands
 
