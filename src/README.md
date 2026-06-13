@@ -25,6 +25,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/demo-scenario-fixture/`: Phase 1T pure TypeScript demo scenario fixture, fixture manifest, validation, and fail-closed descriptor contracts.
 - `src/mycelia/demo-readiness-report/`: Phase 1U pure TypeScript demo readiness report status, finding, report, validation, and fail-closed descriptor contracts.
 - `src/mycelia/static-demo-artifact/`: Phase 1V pure TypeScript static demo artifact kind, exposure, section, artifact, validation, and fail-closed descriptor contracts.
+- `src/mycelia/first-static-demo/`: Phase 1X first tracked static, non-executing MYCELIA demo descriptor set.
 
 ## Not implemented yet
 
