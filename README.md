@@ -31,6 +31,7 @@ Implemented TypeScript foundations currently live under:
 - `src/mycelia/investigation-bundle/`
 - `src/mycelia/replay-plan/`
 - `src/mycelia/demo-scenario/`
+- `src/mycelia/demo-scenario-fixture/`
 
 ## Safe Phase 0 Command
 
@@ -47,7 +48,8 @@ GovernedRun type skeleton, RuntimeState type skeleton, and StateTransition
 contract skeleton, StateTransitionCoordinator skeleton, and AuditRecord
 contract skeleton, AuditRecorder skeleton, AuditEmission contract skeleton,
 AuditTimeline contract skeleton, InvestigationBundle contract skeleton,
-ReplayPlan contract skeleton, and DemoScenario contract skeleton.
+ReplayPlan contract skeleton, DemoScenario contract skeleton, and
+DemoScenarioFixture contract skeleton.
 
 ## Guarded Commands
 
