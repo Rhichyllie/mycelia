@@ -29,6 +29,7 @@ Implemented TypeScript foundations currently live under:
 - `src/mycelia/audit-emission/`
 - `src/mycelia/audit-timeline/`
 - `src/mycelia/investigation-bundle/`
+- `src/mycelia/replay-plan/`
 
 ## Safe Phase 0 Command
 
@@ -44,7 +45,8 @@ RuntimeEnvelope type skeleton, RuntimeAdmissionGateway type skeleton, and
 GovernedRun type skeleton, RuntimeState type skeleton, and StateTransition
 contract skeleton, StateTransitionCoordinator skeleton, and AuditRecord
 contract skeleton, AuditRecorder skeleton, AuditEmission contract skeleton,
-AuditTimeline contract skeleton, and InvestigationBundle contract skeleton.
+AuditTimeline contract skeleton, InvestigationBundle contract skeleton, and
+ReplayPlan contract skeleton.
 
 ## Guarded Commands
 
