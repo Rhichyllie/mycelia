@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { ProductSurfaceShell } from "@/mycelia/product-surface-shell";
+
 export const metadata: Metadata = {
   title: "MYCELIA",
   description:
@@ -14,7 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ProductSurfaceShell>{children}</ProductSurfaceShell>
+      </body>
     </html>
   );
 }
