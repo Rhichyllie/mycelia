@@ -88,14 +88,25 @@ describe("read-only static demo page", () => {
     expect(model.product_framing).toContain(
       "Governed operational intelligence",
     );
+    expect(model.product_framing).toContain("governed agentic runtime");
   });
 
   it("includes descriptor-level preview warning badges", () => {
     const model = getReadOnlyStaticDemoPageModel();
 
+    expect(model.preview_warning).toBe("Descriptor-level preview only");
     for (const badge of READ_ONLY_STATIC_DEMO_BADGES) {
       expect(model.badges).toContain(badge);
     }
+  });
+
+  it("includes static route and product status", () => {
+    const model = getReadOnlyStaticDemoPageModel();
+
+    expect(model.route_status).toBe("Static, read-only, non-executing");
+    expect(model.badges).toContain("Static route");
+    expect(model.badges).toContain("Read-only");
+    expect(model.badges).toContain("Non-executing");
   });
 
   it("includes no-runtime, no-persistence and no-external-service limitations", () => {
@@ -106,8 +117,10 @@ describe("read-only static demo page", () => {
     expect(model.limitations).toContain("no external services");
     expect(model.badges).toContain("No runtime execution");
     expect(model.badges).toContain("No persistence");
-    expect(model.badges).toContain("No external service calls");
+    expect(model.badges).toContain("No API calls");
+    expect(model.badges).toContain("No external services");
     expect(model.badges).toContain("No export");
+    expect(model.badges).toContain("No replay simulation");
   });
 
   it("includes preview title and summary", () => {
