@@ -17,6 +17,10 @@ const roadmapRoutePath = new URL(
   "../../../app/mycelia/roadmap/page.tsx",
   import.meta.url,
 );
+const walkthroughRoutePath = new URL(
+  "../../../app/mycelia/walkthrough/page.tsx",
+  import.meta.url,
+);
 const shellPath = new URL("./product-surface-shell.tsx", import.meta.url);
 
 const FORBIDDEN_SHELL_PATTERNS = [
@@ -96,6 +100,14 @@ describe("product surface shell route safety", () => {
     }
   });
 
+  it("keeps the walkthrough route safe", () => {
+    const routeSource = source(walkthroughRoutePath).toLowerCase();
+
+    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
+      expect(routeSource).not.toContain(pattern.toLowerCase());
+    }
+  });
+
   it("keeps the shell source safe", () => {
     const shellSource = source(shellPath).toLowerCase();
 
@@ -111,6 +123,7 @@ describe("product surface shell route safety", () => {
     expect(shellSource).toContain('href: "/mycelia"');
     expect(shellSource).toContain('href: "/mycelia/static-demo"');
     expect(shellSource).toContain('href: "/mycelia/roadmap"');
+    expect(shellSource).toContain('href: "/mycelia/walkthrough"');
     expect(shellSource).toContain("href={item.href}");
     expect(shellSource).not.toContain("target=");
     expect(shellSource).not.toContain("rel=");
@@ -123,6 +136,7 @@ describe("product surface shell route safety", () => {
       source(productHubRoutePath),
       source(staticDemoRoutePath),
       source(roadmapRoutePath),
+      source(walkthroughRoutePath),
       source(shellPath),
     ].join("\n");
 

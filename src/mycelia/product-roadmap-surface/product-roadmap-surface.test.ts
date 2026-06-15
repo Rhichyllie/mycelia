@@ -18,6 +18,7 @@ const ALLOWED_INTERNAL_ROUTES = new Set<string>([
   "/mycelia",
   "/mycelia/static-demo",
   "/mycelia/roadmap",
+  "/mycelia/walkthrough",
 ]);
 const UNSAFE_ROADMAP_STRING_PATTERN =
   /(@|https?:\/\/|www\.|[A-Za-z]:\\|\\\\|;|&&|\|\||`|\$\(|authorization|api[_-]?key|bearer|connection[_-]?string|credential|password|private[_-]?key|select\s|insert\s|update\s|delete\s|drop\s|sql|token)/i;
@@ -61,12 +62,13 @@ describe("product roadmap surface", () => {
     expect(getProductRoadmapSurfaceModel().title).toBe("MYCELIA");
   });
 
-  it("includes all four product routes", () => {
+  it("includes all five product routes", () => {
     expect(getProductRoadmapSurfaceModel().routes).toEqual([
       "/",
       "/mycelia",
       "/mycelia/static-demo",
       "/mycelia/roadmap",
+      "/mycelia/walkthrough",
     ]);
   });
 
