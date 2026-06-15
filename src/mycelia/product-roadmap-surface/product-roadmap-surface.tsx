@@ -6,6 +6,7 @@ export const PRODUCT_ROADMAP_ROUTES = [
   "/mycelia/static-demo",
   "/mycelia/roadmap",
   "/mycelia/walkthrough",
+  "/mycelia/executive",
 ] as const;
 
 export const PRODUCT_ROADMAP_AVAILABLE_NOW = [
@@ -13,6 +14,7 @@ export const PRODUCT_ROADMAP_AVAILABLE_NOW = [
   "Product hub /mycelia",
   "Static demo route /mycelia/static-demo",
   "Walkthrough route /mycelia/walkthrough",
+  "Executive narrative route /mycelia/executive",
   "Product shell navigation",
   "Static descriptor chain",
   "Human-readable preview",
@@ -80,7 +82,8 @@ export type ProductRoadmapSurfaceModel = {
     readonly href:
       | "/mycelia"
       | "/mycelia/static-demo"
-      | "/mycelia/walkthrough";
+      | "/mycelia/walkthrough"
+      | "/mycelia/executive";
     readonly body: string;
   }[];
 };
@@ -149,6 +152,12 @@ export function getProductRoadmapSurfaceModel():
         href: "/mycelia/walkthrough",
         body:
           "Use the walkthrough for a guided step-by-step explanation of the static demo story.",
+      },
+      {
+        label: "Read the executive narrative",
+        href: "/mycelia/executive",
+        body:
+          "Use the executive narrative for a plain-language product case.",
       },
     ],
   };

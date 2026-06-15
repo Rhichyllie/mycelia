@@ -97,6 +97,7 @@ describe("static demo walkthrough App Router surface safety", () => {
     expect(surfaceSource).toContain('href: "/mycelia"');
     expect(surfaceSource).toContain('href: "/mycelia/static-demo"');
     expect(surfaceSource).toContain('href: "/mycelia/roadmap"');
+    expect(surfaceSource).toContain('href: "/mycelia/executive"');
     expect(surfaceSource).toContain("href={callout.href}");
   });
 

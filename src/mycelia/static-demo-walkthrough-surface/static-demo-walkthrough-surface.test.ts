@@ -18,6 +18,7 @@ const ALLOWED_INTERNAL_ROUTES = new Set<string>([
   "/mycelia/static-demo",
   "/mycelia/roadmap",
   "/mycelia/walkthrough",
+  "/mycelia/executive",
 ]);
 const UNSAFE_WALKTHROUGH_STRING_PATTERN =
   /(@|https?:\/\/|www\.|[A-Za-z]:\\|\\\\|;|&&|\|\||`|\$\(|authorization|api[_-]?key|bearer|connection[_-]?string|credential|password|private[_-]?key|select\s|insert\s|update\s|delete\s|drop\s|sql|token)/i;
@@ -53,13 +54,14 @@ describe("static demo walkthrough surface", () => {
     expect(getStaticDemoWalkthroughSurfaceModel().title).toBe("MYCELIA");
   });
 
-  it("includes all five product routes", () => {
+  it("includes all six product routes", () => {
     expect(getStaticDemoWalkthroughSurfaceModel().routes).toEqual([
       "/",
       "/mycelia",
       "/mycelia/static-demo",
       "/mycelia/roadmap",
       "/mycelia/walkthrough",
+      "/mycelia/executive",
     ]);
   });
 
@@ -98,6 +100,15 @@ describe("static demo walkthrough surface", () => {
     expect(model.proof_section.title).toBe("What the walkthrough proves");
     expect(model.not_active_section.title).toBe("Not active yet");
     expect(model.safety_section.title).toBe("Safety boundary");
+  });
+
+  it("mentions the Executive surface", () => {
+    const model = getStaticDemoWalkthroughSurfaceModel();
+
+    expect(model.routes).toContain("/mycelia/executive");
+    expect(model.navigation_callouts.map((callout) => callout.href)).toContain(
+      "/mycelia/executive",
+    );
   });
 
   it("includes required not-active-yet items", () => {

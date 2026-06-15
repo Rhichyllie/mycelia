@@ -4,12 +4,15 @@ import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const routePath = new URL(
-  "../../../app/mycelia/roadmap/page.tsx",
+  "../../../app/mycelia/executive/page.tsx",
   import.meta.url,
 );
-const surfacePath = new URL("./product-roadmap-surface.tsx", import.meta.url);
+const surfacePath = new URL(
+  "./executive-narrative-surface.tsx",
+  import.meta.url,
+);
 
-const FORBIDDEN_ROADMAP_ROUTE_PATTERNS = [
+const FORBIDDEN_EXECUTIVE_ROUTE_PATTERNS = [
   "dangerouslySetInnerHTML",
   "fetch(",
   "axios",
@@ -44,22 +47,22 @@ function source(fileUrl: URL): string {
   return readFileSync(fileUrl, "utf8");
 }
 
-describe("product roadmap App Router surface safety", () => {
-  it("creates the /mycelia/roadmap App Router file", () => {
+describe("executive narrative App Router surface safety", () => {
+  it("creates the /mycelia/executive App Router file", () => {
     expect(existsSync(routePath)).toBe(true);
   });
 
-  it("routes to the ProductRoadmapSurface view", () => {
+  it("routes to the ExecutiveNarrativeSurface view", () => {
     const routeSource = source(routePath);
 
-    expect(routeSource).toContain("ProductRoadmapSurface");
-    expect(routeSource).toContain("@/mycelia/product-roadmap-surface");
+    expect(routeSource).toContain("ExecutiveNarrativeSurface");
+    expect(routeSource).toContain("@/mycelia/executive-narrative-surface");
   });
 
-  it("keeps the roadmap route free of unsafe runtime behavior", () => {
+  it("keeps the executive route free of unsafe runtime behavior", () => {
     const routeSource = source(routePath).toLowerCase();
 
-    for (const pattern of FORBIDDEN_ROADMAP_ROUTE_PATTERNS) {
+    for (const pattern of FORBIDDEN_EXECUTIVE_ROUTE_PATTERNS) {
       expect(routeSource).not.toContain(pattern.toLowerCase());
     }
 
@@ -67,10 +70,10 @@ describe("product roadmap App Router surface safety", () => {
     expect(routeSource).not.toContain("pdf");
   });
 
-  it("keeps the roadmap surface free of runtime behavior primitives", () => {
+  it("keeps the executive surface free of runtime behavior primitives", () => {
     const surfaceSource = source(surfacePath).toLowerCase();
 
-    for (const pattern of FORBIDDEN_ROADMAP_ROUTE_PATTERNS) {
+    for (const pattern of FORBIDDEN_EXECUTIVE_ROUTE_PATTERNS) {
       expect(surfaceSource).not.toContain(pattern.toLowerCase());
     }
 
@@ -88,13 +91,13 @@ describe("product roadmap App Router surface safety", () => {
     expect(combinedSource).not.toContain("https://");
   });
 
-  it("keeps roadmap navigation links internal", () => {
+  it("keeps executive navigation links internal", () => {
     const surfaceSource = source(surfacePath);
 
     expect(surfaceSource).toContain('href: "/mycelia"');
     expect(surfaceSource).toContain('href: "/mycelia/static-demo"');
     expect(surfaceSource).toContain('href: "/mycelia/walkthrough"');
-    expect(surfaceSource).toContain('href: "/mycelia/executive"');
+    expect(surfaceSource).toContain('href: "/mycelia/roadmap"');
     expect(surfaceSource).toContain("href={callout.href}");
   });
 

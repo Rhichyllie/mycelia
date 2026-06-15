@@ -6,6 +6,7 @@ export const STATIC_DEMO_WALKTHROUGH_ROUTES = [
   "/mycelia/static-demo",
   "/mycelia/roadmap",
   "/mycelia/walkthrough",
+  "/mycelia/executive",
 ] as const;
 
 export const STATIC_DEMO_WALKTHROUGH_STEP_TITLES = [
@@ -89,7 +90,8 @@ export type StaticDemoWalkthroughSurfaceModel = {
     readonly href:
       | "/mycelia"
       | "/mycelia/static-demo"
-      | "/mycelia/roadmap";
+      | "/mycelia/roadmap"
+      | "/mycelia/executive";
     readonly body: string;
   }[];
 };
@@ -235,6 +237,11 @@ export function getStaticDemoWalkthroughSurfaceModel():
         label: "Roadmap",
         href: "/mycelia/roadmap",
         body: "Review planned surfaces and inactive capabilities.",
+      },
+      {
+        label: "Executive narrative",
+        href: "/mycelia/executive",
+        body: "Read the plain-language product narrative for stakeholders.",
       },
     ],
   };

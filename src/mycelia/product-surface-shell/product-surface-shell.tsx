@@ -14,12 +14,16 @@ export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
     href: "/mycelia/static-demo",
   },
   {
+    label: "Walkthrough",
+    href: "/mycelia/walkthrough",
+  },
+  {
     label: "Roadmap",
     href: "/mycelia/roadmap",
   },
   {
-    label: "Walkthrough",
-    href: "/mycelia/walkthrough",
+    label: "Executive",
+    href: "/mycelia/executive",
   },
 ] as const;
 
@@ -40,7 +44,8 @@ export type ProductSurfaceShellNavItem = {
     | "/mycelia"
     | "/mycelia/static-demo"
     | "/mycelia/roadmap"
-    | "/mycelia/walkthrough";
+    | "/mycelia/walkthrough"
+    | "/mycelia/executive";
 };
 
 export type ProductSurfaceShellModel = {
