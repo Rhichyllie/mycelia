@@ -67,10 +67,10 @@ describe("product roadmap surface", () => {
     expect(getProductRoadmapSurfaceModel().routes).toEqual([
       "/",
       "/mycelia",
-      "/mycelia/static-demo",
-      "/mycelia/roadmap",
-      "/mycelia/walkthrough",
       "/mycelia/executive",
+      "/mycelia/static-demo",
+      "/mycelia/walkthrough",
+      "/mycelia/roadmap",
     ]);
   });
 

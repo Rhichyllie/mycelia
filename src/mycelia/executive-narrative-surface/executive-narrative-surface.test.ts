@@ -66,10 +66,10 @@ describe("executive narrative surface", () => {
     expect(getExecutiveNarrativeSurfaceModel().routes).toEqual([
       "/",
       "/mycelia",
+      "/mycelia/executive",
       "/mycelia/static-demo",
       "/mycelia/walkthrough",
       "/mycelia/roadmap",
-      "/mycelia/executive",
     ]);
   });
 

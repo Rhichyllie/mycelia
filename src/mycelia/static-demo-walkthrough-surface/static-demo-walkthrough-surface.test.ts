@@ -58,10 +58,10 @@ describe("static demo walkthrough surface", () => {
     expect(getStaticDemoWalkthroughSurfaceModel().routes).toEqual([
       "/",
       "/mycelia",
-      "/mycelia/static-demo",
-      "/mycelia/roadmap",
-      "/mycelia/walkthrough",
       "/mycelia/executive",
+      "/mycelia/static-demo",
+      "/mycelia/walkthrough",
+      "/mycelia/roadmap",
     ]);
   });
 

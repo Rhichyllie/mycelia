@@ -1,13 +1,8 @@
 import type { CSSProperties, ReactElement } from "react";
 
-export const PRODUCT_ROADMAP_ROUTES = [
-  "/",
-  "/mycelia",
-  "/mycelia/static-demo",
-  "/mycelia/roadmap",
-  "/mycelia/walkthrough",
-  "/mycelia/executive",
-] as const;
+import { PRODUCT_SURFACE_INDEX_ROUTES } from "../product-surface-index";
+
+export const PRODUCT_ROADMAP_ROUTES = PRODUCT_SURFACE_INDEX_ROUTES;
 
 export const PRODUCT_ROADMAP_AVAILABLE_NOW = [
   "Home route /",
