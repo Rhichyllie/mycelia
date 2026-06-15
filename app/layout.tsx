@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "MYCELIA Static Demo",
-  description: "Read-only descriptor-level MYCELIA static demo.",
+  title: "MYCELIA",
+  description:
+    "Governed operational intelligence and read-only descriptor-level demo surfaces.",
 };
 
 export default function RootLayout({
