@@ -50,11 +50,12 @@ describe("product surface shell", () => {
     expect(model.positioning).toContain("governed agentic runtime");
   });
 
-  it("includes Home and Static Demo nav items", () => {
+  it("includes Home, MYCELIA and Static Demo nav items", () => {
     const model = getProductSurfaceShellModel();
 
     expect(model.nav_items.map((item) => item.label)).toEqual([
       "Home",
+      "MYCELIA",
       "Static Demo",
     ]);
   });
@@ -64,6 +65,7 @@ describe("product surface shell", () => {
 
     expect(model.nav_items.map((item) => item.href)).toEqual([
       "/",
+      "/mycelia",
       "/mycelia/static-demo",
     ]);
   });

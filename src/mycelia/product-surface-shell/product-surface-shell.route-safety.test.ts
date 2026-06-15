@@ -5,6 +5,10 @@ import { describe, expect, it } from "vitest";
 
 const layoutPath = new URL("../../../app/layout.tsx", import.meta.url);
 const homeRoutePath = new URL("../../../app/page.tsx", import.meta.url);
+const productHubRoutePath = new URL(
+  "../../../app/mycelia/page.tsx",
+  import.meta.url,
+);
 const staticDemoRoutePath = new URL(
   "../../../app/mycelia/static-demo/page.tsx",
   import.meta.url,
@@ -72,6 +76,14 @@ describe("product surface shell route safety", () => {
     }
   });
 
+  it("keeps the product information route safe", () => {
+    const routeSource = source(productHubRoutePath).toLowerCase();
+
+    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
+      expect(routeSource).not.toContain(pattern.toLowerCase());
+    }
+  });
+
   it("keeps the shell source safe", () => {
     const shellSource = source(shellPath).toLowerCase();
 
@@ -84,6 +96,7 @@ describe("product surface shell route safety", () => {
     const shellSource = source(shellPath);
 
     expect(shellSource).toContain('href: "/"');
+    expect(shellSource).toContain('href: "/mycelia"');
     expect(shellSource).toContain('href: "/mycelia/static-demo"');
     expect(shellSource).toContain("href={item.href}");
     expect(shellSource).not.toContain("target=");
@@ -94,6 +107,7 @@ describe("product surface shell route safety", () => {
     const combinedSource = [
       source(layoutPath),
       source(homeRoutePath),
+      source(productHubRoutePath),
       source(staticDemoRoutePath),
       source(shellPath),
     ].join("\n");

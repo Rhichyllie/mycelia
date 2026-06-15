@@ -6,6 +6,10 @@ export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
     href: "/",
   },
   {
+    label: "MYCELIA",
+    href: "/mycelia",
+  },
+  {
     label: "Static Demo",
     href: "/mycelia/static-demo",
   },
@@ -23,7 +27,7 @@ export const PRODUCT_SURFACE_SHELL_SAFETY_BADGES = [
 
 export type ProductSurfaceShellNavItem = {
   readonly label: string;
-  readonly href: "/" | "/mycelia/static-demo";
+  readonly href: "/" | "/mycelia" | "/mycelia/static-demo";
 };
 
 export type ProductSurfaceShellModel = {
