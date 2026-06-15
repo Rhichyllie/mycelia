@@ -17,6 +17,10 @@ export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
     label: "Roadmap",
     href: "/mycelia/roadmap",
   },
+  {
+    label: "Walkthrough",
+    href: "/mycelia/walkthrough",
+  },
 ] as const;
 
 export const PRODUCT_SURFACE_SHELL_SAFETY_BADGES = [
@@ -35,7 +39,8 @@ export type ProductSurfaceShellNavItem = {
     | "/"
     | "/mycelia"
     | "/mycelia/static-demo"
-    | "/mycelia/roadmap";
+    | "/mycelia/roadmap"
+    | "/mycelia/walkthrough";
 };
 
 export type ProductSurfaceShellModel = {

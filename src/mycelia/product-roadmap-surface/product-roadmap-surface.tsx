@@ -5,12 +5,14 @@ export const PRODUCT_ROADMAP_ROUTES = [
   "/mycelia",
   "/mycelia/static-demo",
   "/mycelia/roadmap",
+  "/mycelia/walkthrough",
 ] as const;
 
 export const PRODUCT_ROADMAP_AVAILABLE_NOW = [
   "Home route /",
   "Product hub /mycelia",
   "Static demo route /mycelia/static-demo",
+  "Walkthrough route /mycelia/walkthrough",
   "Product shell navigation",
   "Static descriptor chain",
   "Human-readable preview",
@@ -75,7 +77,10 @@ export type ProductRoadmapSurfaceModel = {
   readonly sections: readonly ProductRoadmapSection[];
   readonly navigation_callouts: readonly {
     readonly label: string;
-    readonly href: "/mycelia" | "/mycelia/static-demo";
+    readonly href:
+      | "/mycelia"
+      | "/mycelia/static-demo"
+      | "/mycelia/walkthrough";
     readonly body: string;
   }[];
 };
@@ -138,6 +143,12 @@ export function getProductRoadmapSurfaceModel():
         href: "/mycelia/static-demo",
         body:
           "Use the static demo for the read-only walkthrough of the descriptor chain.",
+      },
+      {
+        label: "Follow the walkthrough",
+        href: "/mycelia/walkthrough",
+        body:
+          "Use the walkthrough for a guided step-by-step explanation of the static demo story.",
       },
     ],
   };
