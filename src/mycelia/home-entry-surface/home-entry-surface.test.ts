@@ -10,6 +10,7 @@ import {
   HomeEntrySurface,
   getHomeEntrySurfaceModel,
 } from ".";
+import { PRODUCT_SURFACE_INDEX_ITEMS } from "../product-surface-index";
 
 const UNSAFE_HOME_STRING_PATTERN =
   /(@|https?:\/\/|www\.|[A-Za-z]:\\|\\\\|;|&&|\|\||`|\$\(|authorization|api[_-]?key|bearer|connection[_-]?string|credential|password|private[_-]?key|select\s|insert\s|update\s|delete\s|drop\s|sql|token)/i;
@@ -77,7 +78,16 @@ describe("home entry surface", () => {
     const model = getHomeEntrySurfaceModel();
 
     expect(model.current_surface.title).toBe("Current surface");
-    expect(model.current_surface.body).toContain("first MYCELIA product surface");
+    expect(model.current_surface.body).toContain("connected set");
+  });
+
+  it("uses the product surface index", () => {
+    const model = getHomeEntrySurfaceModel();
+
+    expect(model.product_surfaces).toEqual(PRODUCT_SURFACE_INDEX_ITEMS);
+    expect(model.product_surfaces.map((item) => item.route)).toContain(
+      "/mycelia/executive",
+    );
   });
 
   it("includes not-yet-implemented section", () => {

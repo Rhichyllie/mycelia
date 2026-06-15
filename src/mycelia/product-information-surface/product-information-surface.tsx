@@ -1,10 +1,20 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import {
+  ProductSurfaceIndex,
+  getProductSurfaceIndexModel,
+  type ProductSurfaceIndexItem,
+  type ProductSurfaceIndexRoute,
+} from "../product-surface-index";
+
 export const PRODUCT_INFORMATION_ROUTES = [
   "/",
   "/mycelia",
+  "/mycelia/executive",
   "/mycelia/static-demo",
-] as const;
+  "/mycelia/walkthrough",
+  "/mycelia/roadmap",
+] as const satisfies readonly ProductSurfaceIndexRoute[];
 
 export const PRODUCT_INFORMATION_STATIC_DEMO_PROOFS = [
   "request framing",
@@ -25,7 +35,7 @@ export const PRODUCT_INFORMATION_NOT_IMPLEMENTED = [
   "API routes",
   "external integrations",
   "real replay simulation",
-  "file export, PDF generation and downloads",
+  "file export and generated artifacts",
 ] as const;
 
 export type ProductInformationSection = {
@@ -39,6 +49,7 @@ export type ProductInformationSurfaceModel = {
   readonly positioning: readonly string[];
   readonly routes: readonly (typeof PRODUCT_INFORMATION_ROUTES)[number][];
   readonly sections: readonly ProductInformationSection[];
+  readonly product_surfaces: readonly ProductSurfaceIndexItem[];
   readonly static_demo_route: "/mycelia/static-demo";
   readonly static_demo_label: string;
   readonly safety_badges: readonly string[];
@@ -46,6 +57,8 @@ export type ProductInformationSurfaceModel = {
 
 export function getProductInformationSurfaceModel():
   ProductInformationSurfaceModel {
+  const productSurfaceIndex = getProductSurfaceIndexModel();
+
   return {
     title: "MYCELIA",
     positioning: [
@@ -54,6 +67,7 @@ export function getProductInformationSurfaceModel():
       "descriptor-level execution governance",
     ],
     routes: PRODUCT_INFORMATION_ROUTES,
+    product_surfaces: productSurfaceIndex.items,
     static_demo_route: "/mycelia/static-demo",
     static_demo_label: "Open the static demo",
     safety_badges: [
@@ -84,7 +98,10 @@ export function getProductInformationSurfaceModel():
         items: [
           "Home surface at /",
           "Product hub at /mycelia",
+          "Executive narrative at /mycelia/executive",
           "Static demo at /mycelia/static-demo",
+          "Walkthrough at /mycelia/walkthrough",
+          "Roadmap at /mycelia/roadmap",
           "Shared product shell",
           "Descriptor-level static demo preview",
         ],
@@ -300,8 +317,9 @@ export function ProductInformationSurface(): ReactElement {
               <h1 style={styles.title}>{model.title}</h1>
               <p style={styles.lead}>
                 MYCELIA is a governed operational intelligence and governed
-                agentic runtime platform, currently shown through static
-                descriptor-level execution governance surfaces.
+                agentic runtime platform. The current product hub organizes
+                static descriptor-level surfaces for understanding governance
+                before execution exists.
               </p>
               <div aria-label="Product hub safety badges" style={styles.badgeRow}>
                 {renderBadges(model.safety_badges)}
@@ -321,6 +339,8 @@ export function ProductInformationSurface(): ReactElement {
             </aside>
           </div>
         </section>
+
+        <ProductSurfaceIndex />
 
         <section style={styles.grid}>
           {model.sections.map((section, index) =>

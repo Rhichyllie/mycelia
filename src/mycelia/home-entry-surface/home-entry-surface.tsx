@@ -1,5 +1,11 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import {
+  ProductSurfaceIndex,
+  getProductSurfaceIndexModel,
+  type ProductSurfaceIndexItem,
+} from "../product-surface-index";
+
 export const HOME_ENTRY_SURFACE_ROUTE = "/mycelia/static-demo";
 
 export const HOME_ENTRY_SURFACE_SAFETY_BADGES = [
@@ -33,23 +39,27 @@ export type HomeEntrySurfaceModel = {
     readonly title: string;
     readonly body: string;
   };
+  readonly product_surfaces: readonly ProductSurfaceIndexItem[];
   readonly not_yet_implemented: readonly string[];
 };
 
 export function getHomeEntrySurfaceModel(): HomeEntrySurfaceModel {
+  const productSurfaceIndex = getProductSurfaceIndexModel();
+
   return {
     product_name: "MYCELIA",
     headline:
-      "Governed operational intelligence for accountable agentic operations.",
+      "Governed operational intelligence for accountable operational work before execution.",
     positioning: [
       "governed operational intelligence",
       "governed agentic runtime",
+      "descriptor-level execution governance",
       "static descriptor-level demo currently available",
     ],
     proof_points: [
       "Requests can be governed before execution.",
       "Policy, admission, state, audit and replay descriptors can be represented safely.",
-      "The current demo is static, read-only and descriptor-level only.",
+      "The current surfaces are static, read-only and descriptor-level.",
     ],
     static_demo_route: HOME_ENTRY_SURFACE_ROUTE,
     static_demo_label: "Open the static demo preview",
@@ -57,8 +67,9 @@ export function getHomeEntrySurfaceModel(): HomeEntrySurfaceModel {
     current_surface: {
       title: "Current surface",
       body:
-        "/mycelia/static-demo is the first MYCELIA product surface. It presents a validated static descriptor chain without runtime execution.",
+        "The current MYCELIA product surface is a connected set of static routes, including /mycelia/static-demo, that explain the governed execution story without runtime execution.",
     },
+    product_surfaces: productSurfaceIndex.items,
     not_yet_implemented: HOME_ENTRY_SURFACE_NOT_YET_IMPLEMENTED,
   };
 }
@@ -263,6 +274,8 @@ export function HomeEntrySurface(): ReactElement {
             </aside>
           </div>
         </section>
+
+        <ProductSurfaceIndex />
 
         <section style={styles.grid}>
           <div style={styles.panel}>
