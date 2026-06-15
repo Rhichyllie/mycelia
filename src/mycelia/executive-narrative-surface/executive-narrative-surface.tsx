@@ -1,13 +1,8 @@
 import type { CSSProperties, ReactElement } from "react";
 
-export const EXECUTIVE_NARRATIVE_ROUTES = [
-  "/",
-  "/mycelia",
-  "/mycelia/static-demo",
-  "/mycelia/walkthrough",
-  "/mycelia/roadmap",
-  "/mycelia/executive",
-] as const;
+import { PRODUCT_SURFACE_INDEX_ROUTES } from "../product-surface-index";
+
+export const EXECUTIVE_NARRATIVE_ROUTES = PRODUCT_SURFACE_INDEX_ROUTES;
 
 export const EXECUTIVE_NARRATIVE_WHY_IT_MATTERS = [
   "operational control",

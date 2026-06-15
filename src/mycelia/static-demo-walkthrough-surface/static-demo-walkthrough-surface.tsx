@@ -1,13 +1,8 @@
 import type { CSSProperties, ReactElement } from "react";
 
-export const STATIC_DEMO_WALKTHROUGH_ROUTES = [
-  "/",
-  "/mycelia",
-  "/mycelia/static-demo",
-  "/mycelia/roadmap",
-  "/mycelia/walkthrough",
-  "/mycelia/executive",
-] as const;
+import { PRODUCT_SURFACE_INDEX_ROUTES } from "../product-surface-index";
+
+export const STATIC_DEMO_WALKTHROUGH_ROUTES = PRODUCT_SURFACE_INDEX_ROUTES;
 
 export const STATIC_DEMO_WALKTHROUGH_STEP_TITLES = [
   "Request intake",
