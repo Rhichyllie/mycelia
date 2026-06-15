@@ -1,29 +1,31 @@
 import type { CSSProperties, ReactElement, ReactNode } from "react";
 
+import { PRODUCT_SURFACE_INDEX_ITEMS } from "../product-surface-index";
+
 export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
   {
     label: "Home",
-    href: "/",
+    href: PRODUCT_SURFACE_INDEX_ITEMS[0].route,
   },
   {
     label: "MYCELIA",
-    href: "/mycelia",
-  },
-  {
-    label: "Static Demo",
-    href: "/mycelia/static-demo",
-  },
-  {
-    label: "Walkthrough",
-    href: "/mycelia/walkthrough",
-  },
-  {
-    label: "Roadmap",
-    href: "/mycelia/roadmap",
+    href: PRODUCT_SURFACE_INDEX_ITEMS[1].route,
   },
   {
     label: "Executive",
-    href: "/mycelia/executive",
+    href: PRODUCT_SURFACE_INDEX_ITEMS[2].route,
+  },
+  {
+    label: "Static Demo",
+    href: PRODUCT_SURFACE_INDEX_ITEMS[3].route,
+  },
+  {
+    label: "Walkthrough",
+    href: PRODUCT_SURFACE_INDEX_ITEMS[4].route,
+  },
+  {
+    label: "Roadmap",
+    href: PRODUCT_SURFACE_INDEX_ITEMS[5].route,
   },
 ] as const;
 

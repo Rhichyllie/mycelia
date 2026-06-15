@@ -10,11 +10,15 @@ import {
   ProductInformationSurface,
   getProductInformationSurfaceModel,
 } from ".";
+import { PRODUCT_SURFACE_INDEX_ITEMS } from "../product-surface-index";
 
 const ALLOWED_INTERNAL_ROUTES = new Set<string>([
   "/",
   "/mycelia",
+  "/mycelia/executive",
   "/mycelia/static-demo",
+  "/mycelia/walkthrough",
+  "/mycelia/roadmap",
 ]);
 const UNSAFE_PRODUCT_INFORMATION_STRING_PATTERN =
   /(@|https?:\/\/|www\.|[A-Za-z]:\\|\\\\|;|&&|\|\||`|\$\(|authorization|api[_-]?key|bearer|connection[_-]?string|credential|password|private[_-]?key|select\s|insert\s|update\s|delete\s|drop\s|sql|token)/i;
@@ -56,13 +60,16 @@ describe("product information surface", () => {
     expect(getProductInformationSurfaceModel().title).toBe("MYCELIA");
   });
 
-  it("includes all three product routes", () => {
+  it("includes all six product routes", () => {
     const model = getProductInformationSurfaceModel();
 
     expect(model.routes).toEqual([
       "/",
       "/mycelia",
+      "/mycelia/executive",
       "/mycelia/static-demo",
+      "/mycelia/walkthrough",
+      "/mycelia/roadmap",
     ]);
   });
 
@@ -94,6 +101,12 @@ describe("product information surface", () => {
     for (const item of PRODUCT_INFORMATION_STATIC_DEMO_PROOFS) {
       expect(proofItems).toContain(item);
     }
+  });
+
+  it("uses the product surface index", () => {
+    const model = getProductInformationSurfaceModel();
+
+    expect(model.product_surfaces).toEqual(PRODUCT_SURFACE_INDEX_ITEMS);
   });
 
   it("creates a React element without mounting", () => {

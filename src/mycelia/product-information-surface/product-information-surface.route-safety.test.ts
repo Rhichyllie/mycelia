@@ -96,6 +96,7 @@ describe("product information App Router surface safety", () => {
   it("keeps the callout link internal", () => {
     const surfaceSource = source(surfacePath);
 
+    expect(surfaceSource).toContain("ProductSurfaceIndex");
     expect(surfaceSource).toContain('"/mycelia/static-demo"');
     expect(surfaceSource).toContain("href={model.static_demo_route}");
   });

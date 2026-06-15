@@ -9,6 +9,7 @@ import {
   ProductSurfaceShell,
   getProductSurfaceShellModel,
 } from ".";
+import { PRODUCT_SURFACE_INDEX_ITEMS } from "../product-surface-index";
 
 const UNSAFE_SHELL_STRING_PATTERN =
   /(@|https?:\/\/|www\.|[A-Za-z]:\\|\\\\|;|&&|\|\||`|\$\(|authorization|api[_-]?key|bearer|connection[_-]?string|credential|password|private[_-]?key|select\s|insert\s|update\s|delete\s|drop\s|sql|token)/i;
@@ -50,16 +51,16 @@ describe("product surface shell", () => {
     expect(model.positioning).toContain("governed agentic runtime");
   });
 
-  it("includes Home, MYCELIA, Static Demo, Walkthrough, Roadmap and Executive nav items", () => {
+  it("includes Home, MYCELIA, Executive, Static Demo, Walkthrough and Roadmap nav items", () => {
     const model = getProductSurfaceShellModel();
 
     expect(model.nav_items.map((item) => item.label)).toEqual([
       "Home",
       "MYCELIA",
+      "Executive",
       "Static Demo",
       "Walkthrough",
       "Roadmap",
-      "Executive",
     ]);
   });
 
@@ -69,11 +70,19 @@ describe("product surface shell", () => {
     expect(model.nav_items.map((item) => item.href)).toEqual([
       "/",
       "/mycelia",
+      "/mycelia/executive",
       "/mycelia/static-demo",
       "/mycelia/walkthrough",
       "/mycelia/roadmap",
-      "/mycelia/executive",
     ]);
+  });
+
+  it("keeps navigation coherent with the product surface index", () => {
+    const model = getProductSurfaceShellModel();
+
+    expect(model.nav_items.map((item) => item.href)).toEqual(
+      PRODUCT_SURFACE_INDEX_ITEMS.map((item) => item.route),
+    );
   });
 
   it("includes all safety badges", () => {

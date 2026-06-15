@@ -88,9 +88,10 @@ describe("home entry App Router surface safety", () => {
     expect(combinedSource).not.toContain("https://");
   });
 
-  it("keeps the only route link internal", () => {
+  it("uses the shared product surface index and keeps the static demo link internal", () => {
     const componentSource = source(homeSurfacePath);
 
+    expect(componentSource).toContain("ProductSurfaceIndex");
     expect(componentSource).toContain('"/mycelia/static-demo"');
     expect(componentSource).toContain("href={model.static_demo_route}");
   });

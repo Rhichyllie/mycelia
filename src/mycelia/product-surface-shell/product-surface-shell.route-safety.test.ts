@@ -131,12 +131,7 @@ describe("product surface shell route safety", () => {
   it("uses only internal shell links", () => {
     const shellSource = source(shellPath);
 
-    expect(shellSource).toContain('href: "/"');
-    expect(shellSource).toContain('href: "/mycelia"');
-    expect(shellSource).toContain('href: "/mycelia/static-demo"');
-    expect(shellSource).toContain('href: "/mycelia/roadmap"');
-    expect(shellSource).toContain('href: "/mycelia/walkthrough"');
-    expect(shellSource).toContain('href: "/mycelia/executive"');
+    expect(shellSource).toContain("PRODUCT_SURFACE_INDEX_ITEMS");
     expect(shellSource).toContain("href={item.href}");
     expect(shellSource).not.toContain("target=");
     expect(shellSource).not.toContain("rel=");
