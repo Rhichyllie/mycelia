@@ -46,11 +46,13 @@ Active MYCELIA source begins here.
 - `src/mycelia/approval-gate-v1/`: pure Phase 2V deterministic approval gate decision logic.
 - `src/mycelia/investigation-view-model-v1/`: pure Phase 2W deterministic investigation view model assembly.
 - `src/mycelia/replay-dry-run-descriptor-v1/`: pure Phase 2X deterministic replay dry-run descriptor assembly.
+- `src/mycelia/internal-runtime-orchestrator-v1/`: pure Phase 2Y deterministic in-memory orchestration descriptor composition.
 
 ## Not Implemented Yet
 
 No `GovernedRun` execution, `RuntimeEnvelope` execution, real
-policy engine beyond deterministic policy/admission v1, approval queue, approval UI, approval storage,
+policy engine beyond deterministic policy/admission v1, internal runtime service,
+approval queue, approval UI, approval storage,
 obligation execution, runtime admission side effects, real state transition
 coordinator, state machine mutation,
 next-state creation, checkpoint creation, audit storage, audit append log, audit

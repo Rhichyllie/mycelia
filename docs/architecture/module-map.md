@@ -50,6 +50,7 @@ SaaS readiness.
 | `src/mycelia/approval-gate-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2V deterministic approval gate decision logic. | No approval queue, approval UI, persistence, event emission or audit writing. |
 | `src/mycelia/investigation-view-model-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2W deterministic investigation view model assembly. | No UI, DB reads, persistence, event emission or audit writing. |
 | `src/mycelia/replay-dry-run-descriptor-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2X deterministic replay dry-run descriptor assembly. | No replay execution, tools, external calls, DB reads, persistence, event emission or audit writing. |
+| `src/mycelia/internal-runtime-orchestrator-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2Y deterministic in-memory composition of the pure runtime-slice descriptor layers. | No runtime execution, replay execution, persistence, DB reads, API, event emission or audit writing. |
 
 ## Implemented App Router Surfaces
 
@@ -66,7 +67,7 @@ SaaS readiness.
 
 | Future Module | Status | Notes |
 |---|---|---|
-| `core-runtime` | NOT_IMPLEMENTED | No runtime kernel exists yet. |
+| `core-runtime` | PURE_ORCHESTRATOR_ONLY | Internal runtime orchestrator v1 exists as descriptor composition only; no runtime kernel exists yet. |
 | `workflow-orchestration` | NOT_IMPLEMENTED | No workflow engine exists yet. |
 | `state-persistence` | SCAFFOLD_ONLY | Runtime persistence model scaffold exists; no database-backed state exists yet. |
 | `governance-policy-runtime` | PURE_V1_ONLY | Deterministic policy/admission v1 and approval gate v1 exist in memory only; no real policy engine, approval queue or approval UI exists yet. |

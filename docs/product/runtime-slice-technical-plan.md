@@ -13,6 +13,7 @@ Related audit boundary: [Audit Commit Boundary](audit-commit-boundary.md).
 Related approval layer: [Approval Gate v1](approval-gate-v1.md).
 Related investigation read model: [Investigation View Model v1](investigation-view-model-v1.md).
 Related replay dry-run descriptor: [Replay Dry-Run Descriptor v1](replay-dry-run-descriptor-v1.md).
+Related in-memory orchestrator: [Internal Runtime Orchestrator v1](internal-runtime-orchestrator-v1.md).
 
 ## Runtime Slice Goal
 
@@ -37,7 +38,7 @@ The slice must support future assessment and pilot delivery by proving the minim
 
 ## Future Persistent Entity Plan
 
-This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic. Phase 2U adds pure in-memory audit requirement classification. Phase 2V adds pure in-memory approval gate decision logic. Phase 2W adds pure in-memory investigation view model assembly from provided descriptors. Phase 2X adds pure in-memory replay dry-run descriptor assembly.
+This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic. Phase 2U adds pure in-memory audit requirement classification. Phase 2V adds pure in-memory approval gate decision logic. Phase 2W adds pure in-memory investigation view model assembly from provided descriptors. Phase 2X adds pure in-memory replay dry-run descriptor assembly. Phase 2Y composes those pure layers into one in-memory orchestration descriptor.
 
 First persistence slice:
 
@@ -157,6 +158,12 @@ Phase 2X implements this as a pure TypeScript replay dry-run descriptor in `src/
 
 This does not execute replay, execute runtime, read databases, mutate state, call tools, call external services, emit events or write audit records.
 
+## Internal Runtime Orchestrator v1
+
+Phase 2Y implements a pure TypeScript in-memory orchestrator in `src/mycelia/internal-runtime-orchestrator-v1/`. It composes lifecycle, policy/admission, approval, audit boundary, investigation and replay dry-run descriptor layers into one deterministic descriptor flow.
+
+This does not execute runtime, execute replay, persist data, query databases, create APIs, emit events, write audit records, call tools or call external services.
+
 ## Implementation Sequence
 
 Recommended next phases:
@@ -168,7 +175,7 @@ Recommended next phases:
 5. 2V Approval Gate v1
 6. 2W Investigation View v1
 7. 2X Replay Dry-Run Descriptor v1
-8. 2Y Internal Runtime Service Boundary
+8. 2Y Internal Runtime Orchestrator, in-memory
 9. 2Z Runtime Slice Consistency Audit
 
 ## Out of Scope
@@ -190,4 +197,4 @@ Recommended next phases:
 
 ## Safety Boundary
 
-This plan now has six pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic, Phase 2U audit commit boundary classification, Phase 2V approval gate decision logic, Phase 2W investigation view model assembly and Phase 2X replay dry-run descriptor assembly. Runtime execution, replay execution, active persistence, API routes, external services, auth, database schema, approval queue, approval UI, database-backed investigation views, audit writing and Prisma migrations remain not implemented.
+This plan now has seven pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic, Phase 2U audit commit boundary classification, Phase 2V approval gate decision logic, Phase 2W investigation view model assembly, Phase 2X replay dry-run descriptor assembly and Phase 2Y in-memory orchestration composition. Runtime execution, replay execution, active persistence, API routes, external services, auth, database schema, approval queue, approval UI, database-backed investigation views, audit writing and Prisma migrations remain not implemented.

@@ -140,7 +140,7 @@ sensitive metadata, database reads or record writes.
 
 The next runtime-slice phase is:
 
-- 2Y Internal Runtime Service Boundary
+- 2Z Runtime Slice Consistency Audit
 
 Future phases can use this view model as the safe investigation read-model
 contract before activating any database-backed investigation view or UI.
@@ -148,3 +148,7 @@ contract before activating any database-backed investigation view or UI.
 Phase 2X consumes the investigation view model as a source descriptor for replay
 dry-run planning. It does not execute replay, query databases or infer missing
 events.
+
+Phase 2Y consumes investigation view model decisions inside the in-memory
+orchestrator after terminal descriptor outcomes. Waiting approval descriptors do
+not claim a completed investigation view.

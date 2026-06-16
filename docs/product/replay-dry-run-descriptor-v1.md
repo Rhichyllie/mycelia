@@ -156,7 +156,11 @@ sensitive metadata, database reads or replay execution claims.
 
 The next runtime-slice phase is:
 
-- 2Y Internal Runtime Service Boundary
+- 2Z Runtime Slice Consistency Audit
 
 Future phases can use this descriptor as the safe replay dry-run planning
 contract before activating replay UI, runtime service behavior or persistence.
+
+Phase 2Y consumes replay dry-run descriptor decisions inside the in-memory
+orchestrator after a terminal investigation view exists. Waiting approval
+descriptors do not claim replay dry-run assembly.

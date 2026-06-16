@@ -143,6 +143,11 @@ Phase 2X replay dry-run descriptor consumes the same safe persistence
 references as descriptor inputs only. It does not read databases, hydrate
 records, mutate state or create replay storage.
 
+Phase 2Y internal runtime orchestrator consumes the same safe persistence
+references as conceptual mapping inputs while composing the pure runtime-slice
+descriptor flow. It does not persist records, query databases or create a
+repository layer.
+
 ## Mapping to Existing Modules
 
 - GovernedRun maps to `src/mycelia/governed-run/`.
@@ -153,6 +158,7 @@ records, mutate state or create replay storage.
 - AuditRecord maps to `src/mycelia/audit-record/` and `src/mycelia/audit-recorder/`.
 - Investigation view references map to `src/mycelia/investigation-view-model-v1/` for descriptor assembly only.
 - Replay dry-run references map to `src/mycelia/replay-dry-run-descriptor-v1/` for descriptor assembly only.
+- Internal orchestration references map to `src/mycelia/internal-runtime-orchestrator-v1/` for in-memory descriptor composition only.
 
 ## Out of Scope
 
@@ -173,6 +179,5 @@ records, mutate state or create replay storage.
 
 ## Next Implementation Phases
 
-- 2W Investigation View Model v1
-- 2X Replay Dry-Run Descriptor v1
-- 2Y Internal Runtime Service Boundary
+- 2Y Internal Runtime Orchestrator, in-memory
+- 2Z Runtime Slice Consistency Audit

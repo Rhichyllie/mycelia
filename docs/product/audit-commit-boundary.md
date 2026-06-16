@@ -121,6 +121,11 @@ Phase 2X replay dry-run descriptor also requires provided audit boundary
 coverage for `POLICY_EVALUATED` and `ADMISSION_DECIDED` before assembling a
 dry-run descriptor. It does not write audit records or append logs.
 
+Phase 2Y uses audit commit boundary decisions inside the in-memory orchestrator
+to make request, policy, admission, approval and terminal moments
+audit-addressable as descriptors only. It does not write audit records, append
+logs or emit events.
+
 ## Emission Mapping
 
 All decisions say `not emitted in this phase`.
@@ -168,7 +173,7 @@ approval internals, runtime internals or database state.
 
 The next runtime-slice phase is:
 
-- 2Y Internal Runtime Service Boundary
+- 2Z Runtime Slice Consistency Audit
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
 API, auth, persistence or external-integration expansion until the minimal

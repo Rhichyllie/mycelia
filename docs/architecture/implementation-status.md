@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 2X.
+This status page captures repository truth after Phase 2Y.
 
 ## Implemented Now
 
@@ -25,6 +25,7 @@ This status page captures repository truth after Phase 2X.
 - Approval gate v1 as pure deterministic in-memory approval decision logic.
 - Investigation view model v1 as pure deterministic in-memory read-model assembly.
 - Replay dry-run descriptor v1 as pure deterministic in-memory descriptor assembly.
+- Internal runtime orchestrator v1 as pure deterministic in-memory descriptor composition.
 
 ## Static/Demo-Only Now
 
@@ -63,6 +64,7 @@ commitments.
 - Real investigation UI and database-backed investigation view.
 - Real replay execution.
 - Real replay UI and replay runtime.
+- Real internal runtime service boundary.
 - API routes.
 - Auth.
 - External integrations.
@@ -73,10 +75,10 @@ commitments.
 ## Next Planning Direction
 
 The minimal governed run lifecycle, policy/admission v1, audit commit boundary,
-approval gate v1, investigation view model v1 and replay dry-run descriptor v1
-now provide pure in-memory decision, requirement, read-model and replay planning
-logic for the frozen governed compliance/document review flow. The next
-implementation phase should remain conservative: define an internal runtime
-service boundary before any API routes, auth, broad policy engine, replay
-execution, audit storage, approval storage, database-backed investigation view
-or active persistence is activated.
+approval gate v1, investigation view model v1, replay dry-run descriptor v1 and
+internal runtime orchestrator v1 now provide pure in-memory decision,
+requirement, read-model, replay planning and composition logic for the frozen
+governed compliance/document review flow. The next implementation phase should
+remain conservative: audit consistency before any API routes, auth, broad
+policy engine, replay execution, audit storage, approval storage,
+database-backed investigation view or active persistence is activated.

@@ -128,6 +128,10 @@ is `REQUIRE_APPROVAL` and does not infer missing policy basis.
 Phase 2X consumes policy/admission descriptors when classifying replayability.
 Denied policy outcomes are safe to describe but are not treated as replayable.
 
+Phase 2Y consumes policy/admission decisions in the in-memory orchestrator and
+maps their lifecycle intent hints into descriptor-only lifecycle transitions. It
+does not execute runtime, persist decisions or create API behavior.
+
 ## Fail-Closed Behavior
 
 Invalid, missing, malformed, ambiguous or unsafe inputs return safe denials.
@@ -160,7 +164,7 @@ state.
 
 The next runtime-slice phase is:
 
-- 2Y Internal Runtime Service Boundary
+- 2Z Runtime Slice Consistency Audit
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
 API, auth, persistence or external-integration expansion until the minimal
