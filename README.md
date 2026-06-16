@@ -1,75 +1,115 @@
 # MYCELIA
 
-MYCELIA is in early bootstrap. The active runtime, API, database schema, and
-product UI have not started.
+MYCELIA is a governed operational intelligence and governed agentic runtime
+platform in staged development.
 
-The former active MapIA-derived implementation was quarantined under
-`legacy/mapia-active-snapshot/` and is reference-only. It must not be used as the
-MYCELIA runtime foundation without explicit architecture review.
+The current repository is honest about its state:
 
-Canonical architecture lives in `docs/mycelia/`. Implementation alignment
-scaffolding lives in `docs/architecture/`. Contract registry placeholders live
-in `contracts/`.
+- contract and descriptor primitives exist;
+- static product surfaces exist under the Next App Router;
+- the first buyer-oriented use case is frozen;
+- the first assessment and pilot offer package exists;
+- runtime execution, persistence, API routes, auth, database-backed runs and
+  external integrations are not implemented yet.
 
-Implemented TypeScript foundations currently live under:
+## Current Product Direction
 
-- `src/mycelia/shared-kernel/`
-- `src/mycelia/tenancy-boundaries/`
-- `src/mycelia/runtime-identity/`
-- `src/mycelia/event-envelope/`
-- `src/mycelia/policy-decision-gateway/`
-- `src/mycelia/runtime-envelope/`
-- `src/mycelia/runtime-admission-gateway/`
-- `src/mycelia/governed-run/`
-- `src/mycelia/runtime-state/`
-- `src/mycelia/state-transition/`
-- `src/mycelia/state-transition-coordinator/`
-- `src/mycelia/audit-record/`
-- `src/mycelia/audit-recorder/`
-- `src/mycelia/audit-emission/`
-- `src/mycelia/audit-timeline/`
-- `src/mycelia/investigation-bundle/`
-- `src/mycelia/replay-plan/`
-- `src/mycelia/demo-scenario/`
-- `src/mycelia/demo-scenario-fixture/`
-- `src/mycelia/demo-readiness-report/`
-- `src/mycelia/static-demo-artifact/`
-- `src/mycelia/first-static-demo/`
-- `src/mycelia/static-demo-text-renderer/`
+The frozen first commercial wedge is:
 
-## Safe Phase 0 Command
+`Governed compliance/document review flow`
+
+Plain-language version: a sensitive operational request enters the system.
+MYCELIA frames the request, resolves identity and context, applies policy and
+admission, requires human approval when risk requires it, records an audit trail,
+enables investigation and prepares a replay dry-run without unsafe side effects.
+
+The current internal commercial planning package defines:
+
+- `Governed Operations Assessment`
+- `Governed Compliance Flow Pilot`
+
+These are planning artifacts, not guaranteed pricing, not SaaS readiness and not
+production delivery claims.
+
+## Implemented Today
+
+Implemented TypeScript foundations currently live under `src/mycelia/`:
+
+- shared kernel primitives;
+- tenancy, runtime identity and request envelope contracts;
+- event envelope, policy decision, runtime envelope and admission contracts;
+- governed run, runtime state and state transition descriptors;
+- audit record, recorder, emission, timeline, investigation and replay plan
+  descriptor contracts;
+- demo scenario, fixture, readiness and static artifact descriptor contracts;
+- first static demo descriptor chain;
+- in-memory static demo text renderer;
+- human-readable static demo preview;
+- static product surface view modules;
+- product surface shell and product surface index;
+- initial use case freeze;
+- pilot offer package.
+
+Static App Router product surfaces currently exist at:
+
+- `/`
+- `/mycelia`
+- `/mycelia/executive`
+- `/mycelia/static-demo`
+- `/mycelia/walkthrough`
+- `/mycelia/roadmap`
+
+These surfaces are static, read-only and descriptor-level.
+
+## Not Implemented Yet
+
+The repository does not yet implement:
+
+- runtime execution;
+- workflow execution;
+- persistence;
+- database-backed governed runs;
+- real policy engine;
+- real approval queue;
+- real audit commit boundary;
+- real investigation view;
+- real replay execution;
+- API routes;
+- auth;
+- external integrations;
+- production deployment;
+- SaaS billing;
+- public SDK.
+
+## Product Decision Artifacts
+
+Product decision artifacts live under `docs/product/`:
+
+- `initial-use-case-freeze.md`
+- `pilot-offer-package.md`
+
+Architecture alignment scaffolding lives under `docs/architecture/`.
+Canonical architecture lives under `docs/mycelia/`.
+
+## Safe Validation Command
 
 ```bash
 pnpm validate:phase0
 ```
 
-This runs the current lint, typecheck, no-active-tests Vitest baseline, and
-documentation/registry presence check. Phase 1 tests now cover the shared
-kernel, tenant boundary skeleton, runtime identity/request envelope skeleton,
-EventEnvelope type skeleton, PolicyDecisionGateway type skeleton, and
-RuntimeEnvelope type skeleton, RuntimeAdmissionGateway type skeleton, and
-GovernedRun type skeleton, RuntimeState type skeleton, and StateTransition
-contract skeleton, StateTransitionCoordinator skeleton, and AuditRecord
-contract skeleton, AuditRecorder skeleton, AuditEmission contract skeleton,
-AuditTimeline contract skeleton, InvestigationBundle contract skeleton,
-ReplayPlan contract skeleton, DemoScenario contract skeleton,
-DemoScenarioFixture contract skeleton, DemoReadinessReport contract skeleton,
-StaticDemoArtifact contract skeleton, and FirstStaticDemo descriptor set.
-Phase 1Y adds the StaticDemoTextRenderer plain-text contract.
+This runs lint, typecheck, Vitest and the Phase 0 documentation check.
 
-## Guarded Commands
+## Guarded Product Commands
 
-`pnpm dev`, `pnpm build`, and `pnpm start` are intentionally guarded for now.
-They do not start Next.js because the active app shell has not been rebuilt.
+`pnpm dev`, `pnpm build`, and `pnpm start` remain guarded by the Phase 0 guard.
+They should not be treated as activated product commands until a future phase
+explicitly changes that boundary.
 
-## CI Baseline
+## Legacy Boundary
 
-Phase 0 CI runs `pnpm validate:phase0`.
-
-Runtime and product build CI will be added later, after implementation begins.
-The CI intentionally does not run `pnpm dev`, `pnpm build`, `pnpm start`, Prisma
-commands, migrations, or deployment steps.
+The former active MapIA-derived implementation was quarantined under
+`legacy/mapia-active-snapshot/` and is reference-only. It must not be used as the
+MYCELIA runtime foundation without explicit architecture review.
 
 Future implementation work must follow
 `docs/mycelia/19-codex-operational-alignment-and-engineering-constitution.md`.
-Do not revive MapIA as the active MYCELIA foundation.
