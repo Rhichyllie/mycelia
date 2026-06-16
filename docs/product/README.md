@@ -13,6 +13,7 @@ Current product decision artifacts:
 - [Runtime Slice Technical Plan](runtime-slice-technical-plan.md): defines the smallest planned runtime slice for the frozen use case without implementing runtime or persistence.
 - [Minimal Persistent Model Scaffold](minimal-persistent-model-scaffold.md): defines the first six persistence record shapes without database access, migrations or active persistence.
 - [Minimal Governed Run Lifecycle](minimal-governed-run-lifecycle.md): defines pure in-memory lifecycle transition logic without runtime execution, persistence, events or audit writing.
+- [Policy/Admission v1](policy-admission-v1.md): defines deterministic in-memory policy/admission decisions without runtime execution, persistence, approval queues or audit writing.
 
 Current truth:
 
@@ -23,4 +24,5 @@ Current truth:
 - the minimal runtime slice technical plan exists;
 - the minimal persistent model scaffold exists;
 - the minimal governed run lifecycle exists as pure TypeScript in-memory transition logic;
+- policy/admission v1 exists as pure TypeScript deterministic decision logic;
 - runtime execution, active persistence, API routes, auth and external integrations are not implemented yet.

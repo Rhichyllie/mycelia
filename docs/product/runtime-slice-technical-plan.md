@@ -7,6 +7,8 @@ Linked offer: Governed Compliance Flow Pilot.
 This is a technical plan only. It does not execute runtime, persist data, call APIs, call tools, call external services, create auth, create database schema, create Prisma migrations, export files, generate PDFs or create downloadable artifacts.
 
 Related scaffold: [Minimal Persistent Model Scaffold](minimal-persistent-model-scaffold.md).
+Related lifecycle layer: [Minimal Governed Run Lifecycle](minimal-governed-run-lifecycle.md).
+Related decision layer: [Policy/Admission v1](policy-admission-v1.md).
 
 ## Runtime Slice Goal
 
@@ -31,7 +33,7 @@ The slice must support future assessment and pilot delivery by proving the minim
 
 ## Future Persistent Entity Plan
 
-This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence.
+This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic.
 
 First persistence slice:
 
@@ -65,7 +67,7 @@ The narrow lifecycle for the first runtime slice is:
 - CANCELLED
 - FAILED
 
-This is a plan only. It does not implement state machine behavior.
+Phase 2S implements this lifecycle as pure in-memory transition logic only. It does not create state snapshots, persist state or execute runtime.
 
 ## Policy/Admission v1
 
@@ -80,7 +82,7 @@ Deterministic v1 behavior:
 
 The rule is fail-closed. Missing, malformed, ambiguous or unsafe inputs must deny or require approval without inferring tenant, workspace, project or risk context.
 
-This relates to `src/mycelia/policy-decision-gateway/` and `src/mycelia/runtime-admission-gateway/`, but does not implement a policy engine.
+Phase 2T implements this as deterministic pure TypeScript decision logic in `src/mycelia/policy-admission-v1/`. It relates to `src/mycelia/policy-decision-gateway/` and `src/mycelia/runtime-admission-gateway/`, but does not implement a real policy engine, approval queue, persistence or runtime execution.
 
 ## Approval Gate v1
 
@@ -174,4 +176,4 @@ Recommended next phases:
 
 ## Safety Boundary
 
-This phase does not execute runtime, persist data, call APIs, call external services, create auth, create database schema or create Prisma migrations. It only defines the technical plan.
+This plan now has two pure implementation layers: Phase 2S lifecycle transition logic and Phase 2T policy/admission decision logic. Runtime execution, active persistence, API routes, external services, auth, database schema and Prisma migrations remain not implemented.
