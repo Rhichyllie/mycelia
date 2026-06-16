@@ -131,6 +131,10 @@ Phase 2T adds pure in-memory policy/admission decision logic that produces
 lifecycle intent hints: `GRANT_ADMISSION`, `REQUIRE_APPROVAL` or `REJECT`.
 Those hints do not transition a run by themselves.
 
+Phase 2U adds a pure audit commit boundary that marks lifecycle transitions and
+terminal run moments as audit-addressable requirements. It does not write audit
+records or emit events.
+
 ## Out of Scope
 
 - runtime execution;
@@ -154,7 +158,6 @@ Those hints do not transition a run by themselves.
 
 The next runtime-slice phases remain:
 
-- 2U Audit Commit Boundary
 - 2V Approval Gate v1
 - 2W Investigation View v1
 

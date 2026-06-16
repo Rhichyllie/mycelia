@@ -14,6 +14,7 @@ Current product decision artifacts:
 - [Minimal Persistent Model Scaffold](minimal-persistent-model-scaffold.md): defines the first six persistence record shapes without database access, migrations or active persistence.
 - [Minimal Governed Run Lifecycle](minimal-governed-run-lifecycle.md): defines pure in-memory lifecycle transition logic without runtime execution, persistence, events or audit writing.
 - [Policy/Admission v1](policy-admission-v1.md): defines deterministic in-memory policy/admission decisions without runtime execution, persistence, approval queues or audit writing.
+- [Audit Commit Boundary](audit-commit-boundary.md): defines in-memory audit requirement classification without audit writing, event emission, persistence or export.
 
 Current truth:
 
@@ -25,4 +26,5 @@ Current truth:
 - the minimal persistent model scaffold exists;
 - the minimal governed run lifecycle exists as pure TypeScript in-memory transition logic;
 - policy/admission v1 exists as pure TypeScript deterministic decision logic;
+- the audit commit boundary exists as pure TypeScript audit requirement classification;
 - runtime execution, active persistence, API routes, auth and external integrations are not implemented yet.

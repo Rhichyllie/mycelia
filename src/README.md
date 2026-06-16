@@ -42,6 +42,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/runtime-persistence-model/`: static Phase 2R minimal persistent model scaffold.
 - `src/mycelia/governed-run-lifecycle/`: pure Phase 2S in-memory governed run lifecycle transition logic.
 - `src/mycelia/policy-admission-v1/`: pure Phase 2T deterministic policy/admission decision logic.
+- `src/mycelia/audit-commit-boundary/`: pure Phase 2U audit commit requirement classification logic.
 
 ## Not Implemented Yet
 
@@ -50,7 +51,7 @@ policy engine beyond deterministic policy/admission v1, approval queue,
 obligation execution, runtime admission side effects, real state transition
 coordinator, state machine mutation,
 next-state creation, checkpoint creation, audit storage, audit append log, audit
-emission infrastructure, audit timeline storage, real investigation view,
+emission infrastructure, audit timeline storage, audit writing, real investigation view,
 investigation storage queries, case management, downloadable artifacts, static
 artifact file generation, markdown file generation, PDF generation, JSON
 fixture generation, demo export, demo execution, executable fixtures, demo seed

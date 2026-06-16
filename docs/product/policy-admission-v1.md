@@ -116,6 +116,10 @@ audit commit boundary phase. Phase 2T does not write audit records, append audit
 logs, emit events, sign records, seal records, hash-chain records or export
 evidence.
 
+Phase 2U defines that audit commit boundary as pure in-memory requirement
+classification. It marks policy/admission decisions as audit-addressable but
+still does not write audit records, append logs or emit events.
+
 ## Fail-Closed Behavior
 
 Invalid, missing, malformed, ambiguous or unsafe inputs return safe denials.
@@ -148,7 +152,6 @@ state.
 
 The next runtime-slice phases remain:
 
-- 2U Audit Commit Boundary
 - 2V Approval Gate v1
 - 2W Investigation View v1
 
