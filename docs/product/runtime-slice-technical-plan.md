@@ -9,6 +9,7 @@ This is a technical plan only. It does not execute runtime, persist data, call A
 Related scaffold: [Minimal Persistent Model Scaffold](minimal-persistent-model-scaffold.md).
 Related lifecycle layer: [Minimal Governed Run Lifecycle](minimal-governed-run-lifecycle.md).
 Related decision layer: [Policy/Admission v1](policy-admission-v1.md).
+Related audit boundary: [Audit Commit Boundary](audit-commit-boundary.md).
 
 ## Runtime Slice Goal
 
@@ -33,7 +34,7 @@ The slice must support future assessment and pilot delivery by proving the minim
 
 ## Future Persistent Entity Plan
 
-This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic.
+This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic. Phase 2U adds pure in-memory audit requirement classification.
 
 First persistence slice:
 
@@ -119,6 +120,8 @@ Audit evidence references should include request, context, policy, admission, ap
 
 Hash-chain, signing, sealing, compliance export and audit storage are not implemented in this phase.
 
+Phase 2U implements this as a pure audit commit boundary in `src/mycelia/audit-commit-boundary/`. It classifies audit-addressable moments and requirement levels, but does not write audit records, append logs, emit events or create audit storage.
+
 ## Investigation View v1
 
 A future investigation view should read the governed run, state snapshots, policy decision, admission decision, approval request, audit records and replay dry-run plan when available.
@@ -176,4 +179,4 @@ Recommended next phases:
 
 ## Safety Boundary
 
-This plan now has two pure implementation layers: Phase 2S lifecycle transition logic and Phase 2T policy/admission decision logic. Runtime execution, active persistence, API routes, external services, auth, database schema and Prisma migrations remain not implemented.
+This plan now has three pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic and Phase 2U audit commit boundary classification. Runtime execution, active persistence, API routes, external services, auth, database schema, audit writing and Prisma migrations remain not implemented.

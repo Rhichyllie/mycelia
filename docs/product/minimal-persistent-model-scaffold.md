@@ -125,6 +125,10 @@ Phase 2T policy/admission v1 maps its deterministic decisions conceptually to
 `PolicyDecisionRecord`, `AdmissionDecisionRecord`, optional `ApprovalRequest`
 and future `AuditRecord` moments. It does not write those records.
 
+Phase 2U audit commit boundary maps governed runtime moments conceptually to
+future `AuditRecord` plus related first-slice records. It does not create audit
+storage, append logs or persist records.
+
 ## Mapping to Existing Modules
 
 - GovernedRun maps to `src/mycelia/governed-run/`.
@@ -153,6 +157,5 @@ and future `AuditRecord` moments. It does not write those records.
 
 ## Next Implementation Phases
 
-- 2U Audit Commit Boundary
 - 2V Approval Gate v1
 - 2W Investigation View v1
