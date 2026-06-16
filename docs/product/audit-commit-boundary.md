@@ -113,6 +113,10 @@ Phase 2V approval gate decisions include conceptual audit boundary moments
 `APPROVAL_REQUESTED` and `APPROVAL_DECIDED`. That mapping is descriptor-only and
 does not write audit records, append logs or emit events.
 
+Phase 2W investigation view model requires provided audit boundary coverage for
+`POLICY_EVALUATED` and `ADMISSION_DECIDED` before assembling a view. Missing
+core audit coverage fails closed instead of being inferred.
+
 ## Emission Mapping
 
 All decisions say `not emitted in this phase`.
@@ -158,9 +162,9 @@ approval internals, runtime internals or database state.
 
 ## Next Phases
 
-The next runtime-slice phase remains:
+The next runtime-slice phase is:
 
-- 2W Investigation View v1
+- 2X Replay Dry-Run Descriptor v1
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
 API, auth, persistence or external-integration expansion until the minimal

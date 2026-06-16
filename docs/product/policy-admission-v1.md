@@ -121,6 +121,10 @@ Phase 2U defines that audit commit boundary as pure in-memory requirement
 classification. It marks policy/admission decisions as audit-addressable but
 still does not write audit records, append logs or emit events.
 
+Phase 2W consumes policy/admission decisions as provided investigation
+descriptors. It requires approval descriptors when the policy/admission outcome
+is `REQUIRE_APPROVAL` and does not infer missing policy basis.
+
 ## Fail-Closed Behavior
 
 Invalid, missing, malformed, ambiguous or unsafe inputs return safe denials.
@@ -151,9 +155,9 @@ state.
 
 ## Next Phases
 
-The next runtime-slice phase remains:
+The next runtime-slice phase is:
 
-- 2W Investigation View v1
+- 2X Replay Dry-Run Descriptor v1
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
 API, auth, persistence or external-integration expansion until the minimal

@@ -44,6 +44,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/policy-admission-v1/`: pure Phase 2T deterministic policy/admission decision logic.
 - `src/mycelia/audit-commit-boundary/`: pure Phase 2U audit commit requirement classification logic.
 - `src/mycelia/approval-gate-v1/`: pure Phase 2V deterministic approval gate decision logic.
+- `src/mycelia/investigation-view-model-v1/`: pure Phase 2W deterministic investigation view model assembly.
 
 ## Not Implemented Yet
 
@@ -52,7 +53,7 @@ policy engine beyond deterministic policy/admission v1, approval queue, approval
 obligation execution, runtime admission side effects, real state transition
 coordinator, state machine mutation,
 next-state creation, checkpoint creation, audit storage, audit append log, audit
-emission infrastructure, audit timeline storage, audit writing, real investigation view,
+emission infrastructure, audit timeline storage, audit writing, real investigation UI,
 investigation storage queries, case management, downloadable artifacts, static
 artifact file generation, markdown file generation, PDF generation, JSON
 fixture generation, demo export, demo execution, executable fixtures, demo seed

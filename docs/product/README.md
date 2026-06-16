@@ -16,6 +16,7 @@ Current product decision artifacts:
 - [Policy/Admission v1](policy-admission-v1.md): defines deterministic in-memory policy/admission decisions without runtime execution, persistence, approval queues or audit writing.
 - [Audit Commit Boundary](audit-commit-boundary.md): defines in-memory audit requirement classification without audit writing, event emission, persistence or export.
 - [Approval Gate v1](approval-gate-v1.md): defines deterministic in-memory approval decision handling without approval UI, persistence, audit writing or event emission.
+- [Investigation View Model v1](investigation-view-model-v1.md): defines deterministic in-memory investigation view assembly without UI, database reads, persistence, audit writing or event emission.
 
 Current truth:
 
@@ -29,4 +30,5 @@ Current truth:
 - policy/admission v1 exists as pure TypeScript deterministic decision logic;
 - the audit commit boundary exists as pure TypeScript audit requirement classification;
 - approval gate v1 exists as pure TypeScript deterministic decision logic;
+- investigation view model v1 exists as pure TypeScript deterministic read-model assembly;
 - runtime execution, active persistence, API routes, auth and external integrations are not implemented yet.
