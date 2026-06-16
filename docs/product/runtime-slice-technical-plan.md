@@ -10,6 +10,7 @@ Related scaffold: [Minimal Persistent Model Scaffold](minimal-persistent-model-s
 Related lifecycle layer: [Minimal Governed Run Lifecycle](minimal-governed-run-lifecycle.md).
 Related decision layer: [Policy/Admission v1](policy-admission-v1.md).
 Related audit boundary: [Audit Commit Boundary](audit-commit-boundary.md).
+Related approval layer: [Approval Gate v1](approval-gate-v1.md).
 
 ## Runtime Slice Goal
 
@@ -34,7 +35,7 @@ The slice must support future assessment and pilot delivery by proving the minim
 
 ## Future Persistent Entity Plan
 
-This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic. Phase 2U adds pure in-memory audit requirement classification.
+This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic. Phase 2U adds pure in-memory audit requirement classification. Phase 2V adds pure in-memory approval gate decision logic.
 
 First persistence slice:
 
@@ -98,7 +99,9 @@ Allowed outcomes:
 - TIMEOUT
 - CANCEL
 
-This does not implement an approval queue or UI.
+Phase 2V implements this as deterministic pure TypeScript decision logic in `src/mycelia/approval-gate-v1/`. It resolves approval-required decisions in memory, maps outcomes to lifecycle intent hints, maps approval moments to the audit commit boundary and maps decisions conceptually to persistence records.
+
+This does not implement an approval queue, approval UI, approval storage, notification workflow, approver identity resolver, audit writing, event emission or runtime execution.
 
 ## Audit Commit Boundary
 
@@ -179,4 +182,4 @@ Recommended next phases:
 
 ## Safety Boundary
 
-This plan now has three pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic and Phase 2U audit commit boundary classification. Runtime execution, active persistence, API routes, external services, auth, database schema, audit writing and Prisma migrations remain not implemented.
+This plan now has four pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic, Phase 2U audit commit boundary classification and Phase 2V approval gate decision logic. Runtime execution, active persistence, API routes, external services, auth, database schema, approval queue, approval UI, audit writing and Prisma migrations remain not implemented.

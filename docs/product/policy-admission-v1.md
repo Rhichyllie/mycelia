@@ -105,9 +105,10 @@ This mapping does not write records and does not create active persistence.
 
 ## Approval Implications
 
-`REQUIRE_APPROVAL` means a future approval gate should be created before the
-run continues. Phase 2T does not create an approval queue, approval UI,
-approval storage, notification workflow or approver identity resolver.
+`REQUIRE_APPROVAL` means the approval gate must resolve the decision before the
+run continues. Phase 2V adds that gate as pure in-memory descriptor logic. It
+does not create an approval queue, approval UI, approval storage, notification
+workflow or approver identity resolver.
 
 ## Audit Implications
 
@@ -150,9 +151,8 @@ state.
 
 ## Next Phases
 
-The next runtime-slice phases remain:
+The next runtime-slice phase remains:
 
-- 2V Approval Gate v1
 - 2W Investigation View v1
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,

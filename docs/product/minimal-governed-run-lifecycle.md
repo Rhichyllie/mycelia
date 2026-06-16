@@ -135,6 +135,11 @@ Phase 2U adds a pure audit commit boundary that marks lifecycle transitions and
 terminal run moments as audit-addressable requirements. It does not write audit
 records or emit events.
 
+Phase 2V adds a pure approval gate that maps approved decisions to `APPROVE`,
+rejected decisions to `REJECT`, timed-out approvals to `FAIL_RUN` and cancelled
+approvals to `CANCEL_RUN`. These are lifecycle intent hints only and do not
+transition, persist, audit or execute a governed run by themselves.
+
 ## Out of Scope
 
 - runtime execution;
@@ -156,9 +161,8 @@ records or emit events.
 
 ## Next Implementation Phases
 
-The next runtime-slice phases remain:
+The next runtime-slice phase remains:
 
-- 2V Approval Gate v1
 - 2W Investigation View v1
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,

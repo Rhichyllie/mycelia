@@ -43,11 +43,12 @@ Active MYCELIA source begins here.
 - `src/mycelia/governed-run-lifecycle/`: pure Phase 2S in-memory governed run lifecycle transition logic.
 - `src/mycelia/policy-admission-v1/`: pure Phase 2T deterministic policy/admission decision logic.
 - `src/mycelia/audit-commit-boundary/`: pure Phase 2U audit commit requirement classification logic.
+- `src/mycelia/approval-gate-v1/`: pure Phase 2V deterministic approval gate decision logic.
 
 ## Not Implemented Yet
 
 No `GovernedRun` execution, `RuntimeEnvelope` execution, real
-policy engine beyond deterministic policy/admission v1, approval queue,
+policy engine beyond deterministic policy/admission v1, approval queue, approval UI, approval storage,
 obligation execution, runtime admission side effects, real state transition
 coordinator, state machine mutation,
 next-state creation, checkpoint creation, audit storage, audit append log, audit

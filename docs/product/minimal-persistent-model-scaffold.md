@@ -129,13 +129,18 @@ Phase 2U audit commit boundary maps governed runtime moments conceptually to
 future `AuditRecord` plus related first-slice records. It does not create audit
 storage, append logs or persist records.
 
+Phase 2V approval gate maps approval outcomes conceptually to `ApprovalRequest`,
+`AdmissionDecisionRecord`, `GovernedRun`, `RuntimeStateSnapshot` and future
+`AuditRecord` moments. It does not persist records, create approval storage or
+write audit records.
+
 ## Mapping to Existing Modules
 
 - GovernedRun maps to `src/mycelia/governed-run/`.
 - RuntimeStateSnapshot maps to `src/mycelia/runtime-state/` and `src/mycelia/state-transition/`.
 - PolicyDecisionRecord maps to `src/mycelia/policy-decision-gateway/`.
 - AdmissionDecisionRecord maps to `src/mycelia/runtime-admission-gateway/`.
-- ApprovalRequest maps to a future approval gate plus policy/admission records.
+- ApprovalRequest maps to `src/mycelia/approval-gate-v1/` plus policy/admission records.
 - AuditRecord maps to `src/mycelia/audit-record/` and `src/mycelia/audit-recorder/`.
 
 ## Out of Scope
@@ -157,5 +162,4 @@ storage, append logs or persist records.
 
 ## Next Implementation Phases
 
-- 2V Approval Gate v1
 - 2W Investigation View v1
