@@ -139,6 +139,10 @@ Phase 2W investigation view model consumes safe persistence references for
 descriptors only. It does not query databases, hydrate records or create an
 investigation storage layer.
 
+Phase 2X replay dry-run descriptor consumes the same safe persistence
+references as descriptor inputs only. It does not read databases, hydrate
+records, mutate state or create replay storage.
+
 ## Mapping to Existing Modules
 
 - GovernedRun maps to `src/mycelia/governed-run/`.
@@ -148,6 +152,7 @@ investigation storage layer.
 - ApprovalRequest maps to `src/mycelia/approval-gate-v1/` plus policy/admission records.
 - AuditRecord maps to `src/mycelia/audit-record/` and `src/mycelia/audit-recorder/`.
 - Investigation view references map to `src/mycelia/investigation-view-model-v1/` for descriptor assembly only.
+- Replay dry-run references map to `src/mycelia/replay-dry-run-descriptor-v1/` for descriptor assembly only.
 
 ## Out of Scope
 
@@ -170,3 +175,4 @@ investigation storage layer.
 
 - 2W Investigation View Model v1
 - 2X Replay Dry-Run Descriptor v1
+- 2Y Internal Runtime Service Boundary

@@ -140,7 +140,11 @@ sensitive metadata, database reads or record writes.
 
 The next runtime-slice phase is:
 
-- 2X Replay Dry-Run Descriptor v1
+- 2Y Internal Runtime Service Boundary
 
 Future phases can use this view model as the safe investigation read-model
 contract before activating any database-backed investigation view or UI.
+
+Phase 2X consumes the investigation view model as a source descriptor for replay
+dry-run planning. It does not execute replay, query databases or infer missing
+events.
