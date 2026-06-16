@@ -40,12 +40,15 @@ Active MYCELIA source begins here.
 - `src/mycelia/pilot-offer-package/`: static Phase 2O assessment and pilot offer planning package.
 - `src/mycelia/runtime-slice-technical-plan/`: static Phase 2Q minimal runtime slice technical plan.
 - `src/mycelia/runtime-persistence-model/`: static Phase 2R minimal persistent model scaffold.
+- `src/mycelia/governed-run-lifecycle/`: pure Phase 2S in-memory governed run lifecycle transition logic.
+- `src/mycelia/policy-admission-v1/`: pure Phase 2T deterministic policy/admission decision logic.
 
 ## Not Implemented Yet
 
-No runtime lifecycle, `GovernedRun` execution, `RuntimeEnvelope` execution, real
-policy engine, approval queue, obligation execution, runtime admission side
-effects, real state transition coordinator, state machine, state mutation,
+No `GovernedRun` execution, `RuntimeEnvelope` execution, real
+policy engine beyond deterministic policy/admission v1, approval queue,
+obligation execution, runtime admission side effects, real state transition
+coordinator, state machine mutation,
 next-state creation, checkpoint creation, audit storage, audit append log, audit
 emission infrastructure, audit timeline storage, real investigation view,
 investigation storage queries, case management, downloadable artifacts, static

@@ -121,6 +121,10 @@ Future Prisma modeling should derive from `src/mycelia/runtime-persistence-model
 
 The descriptors and schemas are in-memory only. They do not read, write, connect, migrate or execute runtime.
 
+Phase 2T policy/admission v1 maps its deterministic decisions conceptually to
+`PolicyDecisionRecord`, `AdmissionDecisionRecord`, optional `ApprovalRequest`
+and future `AuditRecord` moments. It does not write those records.
+
 ## Mapping to Existing Modules
 
 - GovernedRun maps to `src/mycelia/governed-run/`.
@@ -149,8 +153,6 @@ The descriptors and schemas are in-memory only. They do not read, write, connect
 
 ## Next Implementation Phases
 
-- 2S Minimal Governed Run Lifecycle
-- 2T Policy/Admission v1
 - 2U Audit Commit Boundary
 - 2V Approval Gate v1
 - 2W Investigation View v1

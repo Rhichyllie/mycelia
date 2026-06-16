@@ -44,6 +44,8 @@ SaaS readiness.
 | `src/mycelia/pilot-offer-package/` | IMPLEMENTED_STATIC_PLANNING | Phase 2O assessment and pilot offer package. | No sales automation or runtime. |
 | `src/mycelia/runtime-slice-technical-plan/` | IMPLEMENTED_STATIC_PLANNING | Phase 2Q minimal runtime slice technical plan. | No runtime execution, DB schema or persistence implementation. |
 | `src/mycelia/runtime-persistence-model/` | IMPLEMENTED_STATIC_SCAFFOLD | Phase 2R minimal persistent model scaffold. | No DB access, migration, Prisma generate or repository layer. |
+| `src/mycelia/governed-run-lifecycle/` | IMPLEMENTED_PURE_FUNCTION | Phase 2S minimal governed run lifecycle transition logic. | No persistence, event emission, audit writing or runtime service. |
+| `src/mycelia/policy-admission-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2T deterministic policy/admission v1 decision logic. | No real policy engine, approval queue, persistence, event emission or audit writing. |
 
 ## Implemented App Router Surfaces
 
@@ -63,7 +65,7 @@ SaaS readiness.
 | `core-runtime` | NOT_IMPLEMENTED | No runtime kernel exists yet. |
 | `workflow-orchestration` | NOT_IMPLEMENTED | No workflow engine exists yet. |
 | `state-persistence` | SCAFFOLD_ONLY | Runtime persistence model scaffold exists; no database-backed state exists yet. |
-| `governance-policy-runtime` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no real policy engine or approval queue exists yet. |
+| `governance-policy-runtime` | PURE_V1_ONLY | Deterministic policy/admission v1 exists in memory only; no real policy engine or approval queue exists yet. |
 | `audit-commit-boundary` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no durable audit commit path exists yet. |
 | `investigation-view` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no real investigation view exists yet. |
 | `replay-runtime` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no replay execution or simulation exists yet. |

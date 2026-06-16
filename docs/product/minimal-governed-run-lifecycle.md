@@ -117,6 +117,7 @@ The lifecycle layer aligns with:
 
 - `src/mycelia/runtime-slice-technical-plan/`
 - `src/mycelia/runtime-persistence-model/`
+- `src/mycelia/policy-admission-v1/`
 - `src/mycelia/state-transition/`
 - `src/mycelia/state-transition-coordinator/`
 - `src/mycelia/governed-run/`
@@ -125,6 +126,10 @@ The lifecycle layer aligns with:
 It does not replace the earlier state transition contracts. Those contracts
 remain the older descriptor-level transition surface; Phase 2S adds the minimal
 runtime-slice lifecycle layer planned in Phase 2Q.
+
+Phase 2T adds pure in-memory policy/admission decision logic that produces
+lifecycle intent hints: `GRANT_ADMISSION`, `REQUIRE_APPROVAL` or `REJECT`.
+Those hints do not transition a run by themselves.
 
 ## Out of Scope
 
@@ -149,7 +154,6 @@ runtime-slice lifecycle layer planned in Phase 2Q.
 
 The next runtime-slice phases remain:
 
-- 2T Policy/Admission v1
 - 2U Audit Commit Boundary
 - 2V Approval Gate v1
 - 2W Investigation View v1
