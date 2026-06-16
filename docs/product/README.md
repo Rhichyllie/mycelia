@@ -18,6 +18,7 @@ Current product decision artifacts:
 - [Approval Gate v1](approval-gate-v1.md): defines deterministic in-memory approval decision handling without approval UI, persistence, audit writing or event emission.
 - [Investigation View Model v1](investigation-view-model-v1.md): defines deterministic in-memory investigation view assembly without UI, database reads, persistence, audit writing or event emission.
 - [Replay Dry-Run Descriptor v1](replay-dry-run-descriptor-v1.md): defines deterministic in-memory replay dry-run descriptors without replay execution, tools, external calls, persistence or event emission.
+- [Internal Runtime Orchestrator v1](internal-runtime-orchestrator-v1.md): composes the pure runtime-slice layers into one deterministic in-memory descriptor flow without runtime execution, persistence, APIs or external calls.
 
 Current truth:
 
@@ -33,4 +34,5 @@ Current truth:
 - approval gate v1 exists as pure TypeScript deterministic decision logic;
 - investigation view model v1 exists as pure TypeScript deterministic read-model assembly;
 - replay dry-run descriptor v1 exists as pure TypeScript deterministic descriptor assembly;
+- internal runtime orchestrator v1 exists as pure TypeScript deterministic in-memory descriptor composition;
 - runtime execution, active persistence, API routes, auth and external integrations are not implemented yet.

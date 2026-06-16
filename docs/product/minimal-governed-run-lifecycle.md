@@ -148,6 +148,10 @@ Phase 2X consumes lifecycle timeline descriptors when assembling replay dry-run
 steps. It does not execute transitions or reconstruct state beyond supplied
 descriptors.
 
+Phase 2Y consumes lifecycle transition decisions inside the in-memory internal
+orchestrator. It composes descriptor flow only and does not persist state,
+execute runtime or write audit records.
+
 ## Out of Scope
 
 - runtime execution;
@@ -171,7 +175,7 @@ descriptors.
 
 The next runtime-slice phase is:
 
-- 2Y Internal Runtime Service Boundary
+- 2Z Runtime Slice Consistency Audit
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
 API, auth, persistence or external-integration expansion until the minimal

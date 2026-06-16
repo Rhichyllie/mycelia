@@ -106,4 +106,9 @@ Phase 2X consumes approval descriptors when policy/admission requires approval
 before assembling a replay dry-run descriptor. It does not resolve approvals,
 write audit records or execute replay.
 
-The next runtime-slice phase is `2Y Internal Runtime Service Boundary`.
+Phase 2Y consumes approval gate descriptors in the in-memory orchestrator and
+maps approval outcomes into lifecycle, audit boundary, investigation and replay
+descriptors. It does not create an approval UI, persist approval records or
+execute runtime.
+
+The next runtime-slice phase is `2Z Runtime Slice Consistency Audit`.
