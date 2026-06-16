@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 2Y.
+This status page captures repository truth after Phase 2Z.
 
 ## Implemented Now
 
@@ -26,6 +26,7 @@ This status page captures repository truth after Phase 2Y.
 - Investigation view model v1 as pure deterministic in-memory read-model assembly.
 - Replay dry-run descriptor v1 as pure deterministic in-memory descriptor assembly.
 - Internal runtime orchestrator v1 as pure deterministic in-memory descriptor composition.
+- Runtime slice consistency audit for the 2R through 2Y minimal runtime slice.
 
 ## Static/Demo-Only Now
 
@@ -78,7 +79,7 @@ The minimal governed run lifecycle, policy/admission v1, audit commit boundary,
 approval gate v1, investigation view model v1, replay dry-run descriptor v1 and
 internal runtime orchestrator v1 now provide pure in-memory decision,
 requirement, read-model, replay planning and composition logic for the frozen
-governed compliance/document review flow. The next implementation phase should
-remain conservative: audit consistency before any API routes, auth, broad
-policy engine, replay execution, audit storage, approval storage,
-database-backed investigation view or active persistence is activated.
+governed compliance/document review flow. Phase 2Z audits that chain as ready
+for narrow Phase 3A Minimal Persistence Activation. Phase 3A should not add API
+routes, auth, broad policy engine, replay execution, audit storage, approval
+storage, database-backed investigation UI or runtime execution.

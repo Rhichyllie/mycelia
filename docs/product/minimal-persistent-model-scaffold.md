@@ -179,5 +179,5 @@ repository layer.
 
 ## Next Implementation Phases
 
-- 2Y Internal Runtime Orchestrator, in-memory
-- 2Z Runtime Slice Consistency Audit
+- 2Z Runtime Slice Consistency Audit confirms whether the 2R through 2Y runtime slice remains coherent before activation.
+- 3A Minimal Persistence Activation should remain limited to the six-record first slice and must not add runtime execution, APIs, auth, UI, audit writing or replay execution.

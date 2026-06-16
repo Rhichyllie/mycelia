@@ -14,6 +14,7 @@ Related approval layer: [Approval Gate v1](approval-gate-v1.md).
 Related investigation read model: [Investigation View Model v1](investigation-view-model-v1.md).
 Related replay dry-run descriptor: [Replay Dry-Run Descriptor v1](replay-dry-run-descriptor-v1.md).
 Related in-memory orchestrator: [Internal Runtime Orchestrator v1](internal-runtime-orchestrator-v1.md).
+Related consistency audit: [Runtime Slice Consistency Audit](runtime-slice-consistency-audit.md).
 
 ## Runtime Slice Goal
 
@@ -177,6 +178,7 @@ Recommended next phases:
 7. 2X Replay Dry-Run Descriptor v1
 8. 2Y Internal Runtime Orchestrator, in-memory
 9. 2Z Runtime Slice Consistency Audit
+10. 3A Minimal Persistence Activation
 
 ## Out of Scope
 
@@ -197,4 +199,4 @@ Recommended next phases:
 
 ## Safety Boundary
 
-This plan now has seven pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic, Phase 2U audit commit boundary classification, Phase 2V approval gate decision logic, Phase 2W investigation view model assembly, Phase 2X replay dry-run descriptor assembly and Phase 2Y in-memory orchestration composition. Runtime execution, replay execution, active persistence, API routes, external services, auth, database schema, approval queue, approval UI, database-backed investigation views, audit writing and Prisma migrations remain not implemented.
+This plan now has seven pure implementation layers and a Phase 2Z consistency audit. Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic, Phase 2U audit commit boundary classification, Phase 2V approval gate decision logic, Phase 2W investigation view model assembly, Phase 2X replay dry-run descriptor assembly and Phase 2Y in-memory orchestration composition remain descriptor-only. Runtime execution, replay execution, active persistence, API routes, external services, auth, database schema, approval queue, approval UI, database-backed investigation views, audit writing and Prisma migrations remain not implemented. Phase 3A is recommended only for narrow minimal persistence activation.

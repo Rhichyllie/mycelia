@@ -150,6 +150,10 @@ runtime execution or replay execution.
 
 ## Next Phases
 
-The next runtime-slice phase should be a consistency audit of the pure runtime
-slice layers before any persistence, API, auth, UI, audit storage or runtime
-service activation.
+Phase 2Z audits the pure runtime-slice layers and keeps this orchestrator as
+descriptor-only composition.
+
+The next recommended phase is Phase 3A Minimal Persistence Activation. That
+phase should remain limited to narrow persistence activation and must not add
+runtime execution, replay execution, API routes, auth, UI, audit writing or
+external integrations.

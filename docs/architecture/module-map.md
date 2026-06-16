@@ -51,6 +51,7 @@ SaaS readiness.
 | `src/mycelia/investigation-view-model-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2W deterministic investigation view model assembly. | No UI, DB reads, persistence, event emission or audit writing. |
 | `src/mycelia/replay-dry-run-descriptor-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2X deterministic replay dry-run descriptor assembly. | No replay execution, tools, external calls, DB reads, persistence, event emission or audit writing. |
 | `src/mycelia/internal-runtime-orchestrator-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2Y deterministic in-memory composition of the pure runtime-slice descriptor layers. | No runtime execution, replay execution, persistence, DB reads, API, event emission or audit writing. |
+| `src/mycelia/runtime-slice-consistency-audit/` | IMPLEMENTED_STATIC_AUDIT | Phase 2Z consistency audit for the 2R through 2Y minimal runtime slice. | No runtime execution, replay execution, persistence, DB reads, API, event emission or audit writing. |
 
 ## Implemented App Router Surfaces
 
@@ -69,7 +70,7 @@ SaaS readiness.
 |---|---|---|
 | `core-runtime` | PURE_ORCHESTRATOR_ONLY | Internal runtime orchestrator v1 exists as descriptor composition only; no runtime kernel exists yet. |
 | `workflow-orchestration` | NOT_IMPLEMENTED | No workflow engine exists yet. |
-| `state-persistence` | SCAFFOLD_ONLY | Runtime persistence model scaffold exists; no database-backed state exists yet. |
+| `state-persistence` | SCAFFOLD_READY_FOR_3A | Runtime persistence model scaffold exists and Phase 2Z audits it as ready for narrow Phase 3A activation; no database-backed state exists yet. |
 | `governance-policy-runtime` | PURE_V1_ONLY | Deterministic policy/admission v1 and approval gate v1 exist in memory only; no real policy engine, approval queue or approval UI exists yet. |
 | `audit-commit-boundary` | PURE_BOUNDARY_ONLY | Audit requirement classification exists in memory only; no durable audit writer, append log or audit storage exists yet. |
 | `investigation-view` | PURE_MODEL_ONLY | Investigation view model v1 exists in memory only; no real investigation UI, DB read layer or case management exists yet. |
