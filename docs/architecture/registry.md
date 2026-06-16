@@ -9,10 +9,10 @@ readiness.
 |---|---|---|---|---|
 | Vision/Product Scope | 00, 01 | PRODUCT_DIRECTION_FROZEN_PARTIAL | `docs/product/`, `src/mycelia/initial-use-case-freeze/`, `src/mycelia/pilot-offer-package/`, `src/mycelia/runtime-slice-technical-plan/` | First use case, pilot offer and runtime slice plan are internal planning artifacts. |
 | Core Runtime | 02 | CONTRACTS_AND_PLAN_ONLY_RUNTIME_NOT_IMPLEMENTED | `src/mycelia/runtime-envelope/`, `src/mycelia/runtime-admission-gateway/`, `src/mycelia/governed-run/`, `src/mycelia/runtime-slice-technical-plan/` | Runtime slice technical plan exists; no runtime kernel or execution pipeline exists yet. |
-| Domain Model | 03 | DESCRIPTOR_CONTRACTS_IMPLEMENTED_PARTIAL | `src/mycelia/*` descriptor modules | Current source defines typed descriptors, not persistence schemas. |
+| Domain Model | 03 | DESCRIPTOR_CONTRACTS_AND_PERSISTENCE_SCAFFOLD_IMPLEMENTED_PARTIAL | `src/mycelia/*` descriptor modules, `src/mycelia/runtime-persistence-model/` | Current source defines typed descriptors and a minimal persistence scaffold, not active persistence. |
 | Cognitive Execution | 04 | DOCUMENTED_NOT_IMPLEMENTED | future `cognitive-execution` | No model invocation runtime exists yet. |
 | Agent Runtime | 05 | DOCUMENTED_NOT_IMPLEMENTED | future `agent-runtime` | No agent coordination runtime exists yet. |
-| State/Persistence | 06 | STATE_CONTRACTS_IMPLEMENTED_PERSISTENCE_NOT_IMPLEMENTED | `src/mycelia/runtime-state/`, `src/mycelia/state-transition/`, `src/mycelia/state-transition-coordinator/` | No database-backed state or checkpoints exist yet. |
+| State/Persistence | 06 | STATE_CONTRACTS_AND_MODEL_SCAFFOLD_IMPLEMENTED_PERSISTENCE_NOT_ACTIVE | `src/mycelia/runtime-state/`, `src/mycelia/state-transition/`, `src/mycelia/state-transition-coordinator/`, `src/mycelia/runtime-persistence-model/` | Minimal persistence record scaffold exists; no database-backed state or checkpoints exist yet. |
 | Event Contracts | 07 | EVENT_ENVELOPE_CONTRACT_IMPLEMENTED_CATALOG_NOT_IMPLEMENTED | `src/mycelia/event-envelope/` | No broker, event store or canonical event catalog exists yet. |
 | Event Runtime | 08 | DOCUMENTED_NOT_IMPLEMENTED | future `event-runtime` | No broker, outbox or event publishing exists yet. |
 | Workflow Orchestration | 09 | DOCUMENTED_NOT_IMPLEMENTED | future `workflow-orchestration` | No workflow engine exists yet. |

@@ -16,3 +16,7 @@ Before adding persistence files, consult:
 
 Phase 0C adds documentation and registry scaffolding only. No Prisma schema or
 migration exists in the active implementation surface yet.
+
+Phase 2R adds a TypeScript minimal persistent model scaffold under
+`src/mycelia/runtime-persistence-model/`. The active Prisma surface still has no
+schema, no migrations, no database connection and no generated client.

@@ -39,6 +39,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/initial-use-case-freeze/`: static Phase 2N buyer-oriented use case freeze.
 - `src/mycelia/pilot-offer-package/`: static Phase 2O assessment and pilot offer planning package.
 - `src/mycelia/runtime-slice-technical-plan/`: static Phase 2Q minimal runtime slice technical plan.
+- `src/mycelia/runtime-persistence-model/`: static Phase 2R minimal persistent model scaffold.
 
 ## Not Implemented Yet
 
@@ -54,8 +55,8 @@ data, seed data, database pagination, timeline indexes, evidence store, record
 sealing, signing, hash chaining, compliance export, observability pipeline,
 event broker, event publishing, event persistence, queues, streams, webhooks,
 files, canonical event catalog, replay execution, replay simulation, state
-reconstruction, data hydration, tool calls, external service calls, persistence,
-Prisma schema, API routes, workflow execution, authentication system,
+reconstruction, data hydration, tool calls, external service calls, active
+persistence, active Prisma schema, API routes, workflow execution, authentication system,
 authorization middleware, RLS, production deployment, SaaS billing or public SDK
 exists yet.
 
