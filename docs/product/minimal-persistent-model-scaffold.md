@@ -134,6 +134,11 @@ Phase 2V approval gate maps approval outcomes conceptually to `ApprovalRequest`,
 `AuditRecord` moments. It does not persist records, create approval storage or
 write audit records.
 
+Phase 2W investigation view model consumes safe persistence references for
+`GovernedRun`, policy/admission, approval, state and audit records as
+descriptors only. It does not query databases, hydrate records or create an
+investigation storage layer.
+
 ## Mapping to Existing Modules
 
 - GovernedRun maps to `src/mycelia/governed-run/`.
@@ -142,6 +147,7 @@ write audit records.
 - AdmissionDecisionRecord maps to `src/mycelia/runtime-admission-gateway/`.
 - ApprovalRequest maps to `src/mycelia/approval-gate-v1/` plus policy/admission records.
 - AuditRecord maps to `src/mycelia/audit-record/` and `src/mycelia/audit-recorder/`.
+- Investigation view references map to `src/mycelia/investigation-view-model-v1/` for descriptor assembly only.
 
 ## Out of Scope
 
@@ -162,4 +168,5 @@ write audit records.
 
 ## Next Implementation Phases
 
-- 2W Investigation View v1
+- 2W Investigation View Model v1
+- 2X Replay Dry-Run Descriptor v1

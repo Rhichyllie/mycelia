@@ -140,6 +140,10 @@ rejected decisions to `REJECT`, timed-out approvals to `FAIL_RUN` and cancelled
 approvals to `CANCEL_RUN`. These are lifecycle intent hints only and do not
 transition, persist, audit or execute a governed run by themselves.
 
+Phase 2W consumes lifecycle decisions as provided investigation descriptors. It
+does not replay transitions, infer missing lifecycle events, persist state or
+render UI.
+
 ## Out of Scope
 
 - runtime execution;
@@ -161,9 +165,9 @@ transition, persist, audit or execute a governed run by themselves.
 
 ## Next Implementation Phases
 
-The next runtime-slice phase remains:
+The next runtime-slice phase is:
 
-- 2W Investigation View v1
+- 2X Replay Dry-Run Descriptor v1
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
 API, auth, persistence or external-integration expansion until the minimal

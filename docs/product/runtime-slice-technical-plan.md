@@ -11,6 +11,7 @@ Related lifecycle layer: [Minimal Governed Run Lifecycle](minimal-governed-run-l
 Related decision layer: [Policy/Admission v1](policy-admission-v1.md).
 Related audit boundary: [Audit Commit Boundary](audit-commit-boundary.md).
 Related approval layer: [Approval Gate v1](approval-gate-v1.md).
+Related investigation read model: [Investigation View Model v1](investigation-view-model-v1.md).
 
 ## Runtime Slice Goal
 
@@ -35,7 +36,7 @@ The slice must support future assessment and pilot delivery by proving the minim
 
 ## Future Persistent Entity Plan
 
-This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic. Phase 2U adds pure in-memory audit requirement classification. Phase 2V adds pure in-memory approval gate decision logic.
+This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic. Phase 2U adds pure in-memory audit requirement classification. Phase 2V adds pure in-memory approval gate decision logic. Phase 2W adds pure in-memory investigation view model assembly from provided descriptors.
 
 First persistence slice:
 
@@ -133,7 +134,9 @@ It must show request identity, tenant scope, policy/admission outcome, approval 
 
 It must not infer tenant, workspace, project, approver identity, policy basis or missing audit evidence.
 
-This does not implement UI.
+Phase 2W implements this as a pure TypeScript investigation view model in `src/mycelia/investigation-view-model-v1/`. It assembles a safe descriptor from provided lifecycle, policy/admission, approval, audit-boundary and persistence-reference descriptors.
+
+This does not implement UI, database reads, repository/service logic, persistence, audit writing, event emission or runtime execution.
 
 ## Replay Dry-Run v1
 
@@ -182,4 +185,4 @@ Recommended next phases:
 
 ## Safety Boundary
 
-This plan now has four pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic, Phase 2U audit commit boundary classification and Phase 2V approval gate decision logic. Runtime execution, active persistence, API routes, external services, auth, database schema, approval queue, approval UI, audit writing and Prisma migrations remain not implemented.
+This plan now has five pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic, Phase 2U audit commit boundary classification, Phase 2V approval gate decision logic and Phase 2W investigation view model assembly. Runtime execution, active persistence, API routes, external services, auth, database schema, approval queue, approval UI, database-backed investigation views, audit writing and Prisma migrations remain not implemented.

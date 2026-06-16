@@ -100,4 +100,6 @@ Invalid input, non-pending status and non-approval admission outcomes return saf
 
 ## Next Phases
 
-Approval gate v1 provides the approval decision boundary needed before investigation and replay descriptor work. Future phases can use its descriptors when planning `2W Investigation View v1` without activating persistence, runtime execution, audit storage or UI prematurely.
+Approval gate v1 provides the approval decision boundary needed before investigation and replay descriptor work. Phase 2W uses approval descriptors when policy/admission requires approval, without activating persistence, runtime execution, audit storage or UI.
+
+The next runtime-slice phase is `2X Replay Dry-Run Descriptor v1`.

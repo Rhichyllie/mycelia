@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 2V.
+This status page captures repository truth after Phase 2W.
 
 ## Implemented Now
 
@@ -23,6 +23,7 @@ This status page captures repository truth after Phase 2V.
 - Policy/admission v1 as pure deterministic in-memory decision logic.
 - Audit commit boundary as pure in-memory audit requirement classification.
 - Approval gate v1 as pure deterministic in-memory approval decision logic.
+- Investigation view model v1 as pure deterministic in-memory read-model assembly.
 
 ## Static/Demo-Only Now
 
@@ -58,7 +59,7 @@ commitments.
 - Real policy engine beyond deterministic policy/admission v1.
 - Real approval queue, approval UI and approval storage.
 - Real audit writer, audit storage and append log.
-- Real investigation view.
+- Real investigation UI and database-backed investigation view.
 - Real replay execution.
 - API routes.
 - Auth.
@@ -69,9 +70,10 @@ commitments.
 
 ## Next Planning Direction
 
-The minimal governed run lifecycle, policy/admission v1, audit commit boundary
-and approval gate v1 now provide pure in-memory decision and requirement logic
-for the frozen governed compliance/document review flow. The next implementation
-phase should remain conservative: define the investigation view before any API
-routes, auth, broad policy engine, replay execution, audit storage, approval
-storage or active persistence is activated.
+The minimal governed run lifecycle, policy/admission v1, audit commit boundary,
+approval gate v1 and investigation view model v1 now provide pure in-memory
+decision, requirement and read-model logic for the frozen governed
+compliance/document review flow. The next implementation phase should remain
+conservative: define replay dry-run descriptors before any API routes, auth,
+broad policy engine, replay execution, audit storage, approval storage,
+database-backed investigation view or active persistence is activated.
