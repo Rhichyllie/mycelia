@@ -7,8 +7,8 @@ readiness.
 
 | Domain | Owning Document | Current Status | Active Surface | Notes |
 |---|---|---|---|---|
-| Vision/Product Scope | 00, 01 | PRODUCT_DIRECTION_FROZEN_PARTIAL | `docs/product/`, `src/mycelia/initial-use-case-freeze/`, `src/mycelia/pilot-offer-package/` | First use case and pilot offer are internal planning artifacts. |
-| Core Runtime | 02 | CONTRACTS_ONLY_RUNTIME_NOT_IMPLEMENTED | `src/mycelia/runtime-envelope/`, `src/mycelia/runtime-admission-gateway/`, `src/mycelia/governed-run/` | No runtime kernel or execution pipeline exists yet. |
+| Vision/Product Scope | 00, 01 | PRODUCT_DIRECTION_FROZEN_PARTIAL | `docs/product/`, `src/mycelia/initial-use-case-freeze/`, `src/mycelia/pilot-offer-package/`, `src/mycelia/runtime-slice-technical-plan/` | First use case, pilot offer and runtime slice plan are internal planning artifacts. |
+| Core Runtime | 02 | CONTRACTS_AND_PLAN_ONLY_RUNTIME_NOT_IMPLEMENTED | `src/mycelia/runtime-envelope/`, `src/mycelia/runtime-admission-gateway/`, `src/mycelia/governed-run/`, `src/mycelia/runtime-slice-technical-plan/` | Runtime slice technical plan exists; no runtime kernel or execution pipeline exists yet. |
 | Domain Model | 03 | DESCRIPTOR_CONTRACTS_IMPLEMENTED_PARTIAL | `src/mycelia/*` descriptor modules | Current source defines typed descriptors, not persistence schemas. |
 | Cognitive Execution | 04 | DOCUMENTED_NOT_IMPLEMENTED | future `cognitive-execution` | No model invocation runtime exists yet. |
 | Agent Runtime | 05 | DOCUMENTED_NOT_IMPLEMENTED | future `agent-runtime` | No agent coordination runtime exists yet. |
@@ -28,7 +28,7 @@ readiness.
 | Codex Alignment | 19 | VALIDATION_BASELINE_IMPLEMENTED | `scripts/`, `pnpm validate:phase0` | Validation remains the safe repository gate. |
 | Static Product Surfaces | 00, 01, 19 | STATIC_READ_ONLY_IMPLEMENTED | `app/`, `src/mycelia/*-surface/`, `src/mycelia/product-surface-index/` | Routes are static, descriptor-level and non-executing. |
 | Static Demo Descriptor Chain | 00, 01, 02, 03, 19 | STATIC_DESCRIPTOR_CHAIN_IMPLEMENTED | `src/mycelia/first-static-demo/`, `src/mycelia/static-demo-text-renderer/`, `src/mycelia/human-readable-static-demo-preview/` | Demo is in-memory/static only; no export or runtime execution. |
-| Product/Commercial Planning | 00, 01, 19 | INTERNAL_PLANNING_ARTIFACTS_IMPLEMENTED | `docs/product/`, `src/mycelia/initial-use-case-freeze/`, `src/mycelia/pilot-offer-package/` | Pricing ranges are internal planning assumptions, not guarantees. |
+| Product/Commercial Planning | 00, 01, 19 | INTERNAL_PLANNING_ARTIFACTS_IMPLEMENTED | `docs/product/`, `src/mycelia/initial-use-case-freeze/`, `src/mycelia/pilot-offer-package/`, `src/mycelia/runtime-slice-technical-plan/` | Pricing ranges are internal planning assumptions, not guarantees; runtime slice plan is not implementation. |
 | Operational UX | planned | STATIC_PRODUCT_SURFACES_ONLY | `app/`, `src/mycelia/*-surface/` | Runtime UX, investigation UX and workflow builder UX are not implemented. |
 | Workflow Builder | planned | NOT_IMPLEMENTED | future `workflow-builder` | Planned future domain. |
 | Investigation/Replay UX | planned | NOT_IMPLEMENTED | future `investigation-replay-ux` | Static walkthrough exists; real investigation/replay UX does not. |

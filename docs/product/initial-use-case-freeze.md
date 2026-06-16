@@ -86,7 +86,10 @@ Pilot package:
 
 These BRL ranges are internal planning assumptions only. They are not guaranteed pricing and should not be presented as buyer-facing commitments.
 
-Related planning artifact: [Pilot Offer and Discovery Package](pilot-offer-package.md).
+Related planning artifacts:
+
+- [Pilot Offer and Discovery Package](pilot-offer-package.md)
+- [Runtime Slice Technical Plan](runtime-slice-technical-plan.md)
 
 ## Safety Boundary
 

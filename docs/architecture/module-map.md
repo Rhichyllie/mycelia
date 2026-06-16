@@ -42,6 +42,7 @@ SaaS readiness.
 | `src/mycelia/product-surface-index/` | IMPLEMENTED_STATIC_MODEL | Shared product surface catalog. | Internal route catalog only. |
 | `src/mycelia/initial-use-case-freeze/` | IMPLEMENTED_STATIC_PLANNING | Phase 2N frozen first buyer-oriented use case. | No runtime or persistence. |
 | `src/mycelia/pilot-offer-package/` | IMPLEMENTED_STATIC_PLANNING | Phase 2O assessment and pilot offer package. | No sales automation or runtime. |
+| `src/mycelia/runtime-slice-technical-plan/` | IMPLEMENTED_STATIC_PLANNING | Phase 2Q minimal runtime slice technical plan. | No runtime execution, DB schema or persistence implementation. |
 
 ## Implemented App Router Surfaces
 
@@ -60,11 +61,11 @@ SaaS readiness.
 |---|---|---|
 | `core-runtime` | NOT_IMPLEMENTED | No runtime kernel exists yet. |
 | `workflow-orchestration` | NOT_IMPLEMENTED | No workflow engine exists yet. |
-| `state-persistence` | NOT_IMPLEMENTED | No database-backed state exists yet. |
-| `governance-policy-runtime` | NOT_IMPLEMENTED | No real policy engine or approval queue exists yet. |
-| `audit-commit-boundary` | NOT_IMPLEMENTED | No durable audit commit path exists yet. |
-| `investigation-view` | NOT_IMPLEMENTED | No real investigation view exists yet. |
-| `replay-runtime` | NOT_IMPLEMENTED | No replay execution or simulation exists yet. |
+| `state-persistence` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no database-backed state exists yet. |
+| `governance-policy-runtime` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no real policy engine or approval queue exists yet. |
+| `audit-commit-boundary` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no durable audit commit path exists yet. |
+| `investigation-view` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no real investigation view exists yet. |
+| `replay-runtime` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no replay execution or simulation exists yet. |
 | `external-api` | NOT_IMPLEMENTED | No API endpoints exist yet. |
 | `auth-security-runtime` | NOT_IMPLEMENTED | No auth platform or authorization middleware exists yet. |
 | `tool-runtime` | NOT_IMPLEMENTED | No tool execution runtime exists yet. |

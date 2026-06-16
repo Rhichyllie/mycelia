@@ -38,6 +38,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/product-surface-index/`: shared static product route catalog.
 - `src/mycelia/initial-use-case-freeze/`: static Phase 2N buyer-oriented use case freeze.
 - `src/mycelia/pilot-offer-package/`: static Phase 2O assessment and pilot offer planning package.
+- `src/mycelia/runtime-slice-technical-plan/`: static Phase 2Q minimal runtime slice technical plan.
 
 ## Not Implemented Yet
 

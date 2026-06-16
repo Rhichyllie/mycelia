@@ -10,6 +10,7 @@ Current product decision artifacts:
 
 - [Initial Use Case Freeze](initial-use-case-freeze.md): freezes the first buyer-oriented wedge, `Governed compliance/document review flow`.
 - [Pilot Offer and Discovery Package](pilot-offer-package.md): defines the internal `Governed Operations Assessment` and `Governed Compliance Flow Pilot` planning package.
+- [Runtime Slice Technical Plan](runtime-slice-technical-plan.md): defines the smallest planned runtime slice for the frozen use case without implementing runtime or persistence.
 
 Current truth:
 
@@ -17,4 +18,5 @@ Current truth:
 - static product surfaces exist;
 - the first buyer-oriented use case is frozen;
 - the first assessment/pilot package exists;
+- the minimal runtime slice technical plan exists;
 - runtime execution, persistence, API routes, auth and external integrations are not implemented yet.
