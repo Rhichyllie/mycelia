@@ -47,6 +47,7 @@ SaaS readiness.
 | `src/mycelia/governed-run-lifecycle/` | IMPLEMENTED_PURE_FUNCTION | Phase 2S minimal governed run lifecycle transition logic. | No persistence, event emission, audit writing or runtime service. |
 | `src/mycelia/policy-admission-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2T deterministic policy/admission v1 decision logic. | No real policy engine, approval queue, persistence, event emission or audit writing. |
 | `src/mycelia/audit-commit-boundary/` | IMPLEMENTED_PURE_FUNCTION | Phase 2U audit-addressable moment and requirement classification. | No audit writing, append log, event emission, persistence or export. |
+| `src/mycelia/approval-gate-v1/` | IMPLEMENTED_PURE_FUNCTION | Phase 2V deterministic approval gate decision logic. | No approval queue, approval UI, persistence, event emission or audit writing. |
 
 ## Implemented App Router Surfaces
 
@@ -66,7 +67,7 @@ SaaS readiness.
 | `core-runtime` | NOT_IMPLEMENTED | No runtime kernel exists yet. |
 | `workflow-orchestration` | NOT_IMPLEMENTED | No workflow engine exists yet. |
 | `state-persistence` | SCAFFOLD_ONLY | Runtime persistence model scaffold exists; no database-backed state exists yet. |
-| `governance-policy-runtime` | PURE_V1_ONLY | Deterministic policy/admission v1 exists in memory only; no real policy engine or approval queue exists yet. |
+| `governance-policy-runtime` | PURE_V1_ONLY | Deterministic policy/admission v1 and approval gate v1 exist in memory only; no real policy engine, approval queue or approval UI exists yet. |
 | `audit-commit-boundary` | PURE_BOUNDARY_ONLY | Audit requirement classification exists in memory only; no durable audit writer, append log or audit storage exists yet. |
 | `investigation-view` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no real investigation view exists yet. |
 | `replay-runtime` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no replay execution or simulation exists yet. |

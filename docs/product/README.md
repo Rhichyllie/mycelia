@@ -15,6 +15,7 @@ Current product decision artifacts:
 - [Minimal Governed Run Lifecycle](minimal-governed-run-lifecycle.md): defines pure in-memory lifecycle transition logic without runtime execution, persistence, events or audit writing.
 - [Policy/Admission v1](policy-admission-v1.md): defines deterministic in-memory policy/admission decisions without runtime execution, persistence, approval queues or audit writing.
 - [Audit Commit Boundary](audit-commit-boundary.md): defines in-memory audit requirement classification without audit writing, event emission, persistence or export.
+- [Approval Gate v1](approval-gate-v1.md): defines deterministic in-memory approval decision handling without approval UI, persistence, audit writing or event emission.
 
 Current truth:
 
@@ -27,4 +28,5 @@ Current truth:
 - the minimal governed run lifecycle exists as pure TypeScript in-memory transition logic;
 - policy/admission v1 exists as pure TypeScript deterministic decision logic;
 - the audit commit boundary exists as pure TypeScript audit requirement classification;
+- approval gate v1 exists as pure TypeScript deterministic decision logic;
 - runtime execution, active persistence, API routes, auth and external integrations are not implemented yet.

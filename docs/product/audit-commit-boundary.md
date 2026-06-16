@@ -109,6 +109,10 @@ Relevant moments also map to first-slice records:
 
 This mapping does not create records and does not activate persistence.
 
+Phase 2V approval gate decisions include conceptual audit boundary moments
+`APPROVAL_REQUESTED` and `APPROVAL_DECIDED`. That mapping is descriptor-only and
+does not write audit records, append logs or emit events.
+
 ## Emission Mapping
 
 All decisions say `not emitted in this phase`.
@@ -154,9 +158,8 @@ approval internals, runtime internals or database state.
 
 ## Next Phases
 
-The next runtime-slice phases remain:
+The next runtime-slice phase remains:
 
-- 2V Approval Gate v1
 - 2W Investigation View v1
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
