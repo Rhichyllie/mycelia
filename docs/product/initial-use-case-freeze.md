@@ -86,6 +86,8 @@ Pilot package:
 
 These BRL ranges are internal planning assumptions only. They are not guaranteed pricing and should not be presented as buyer-facing commitments.
 
+Related planning artifact: [Pilot Offer and Discovery Package](pilot-offer-package.md).
+
 ## Safety Boundary
 
 This phase does not execute the use case, persist data, call APIs, call external services, create auth, create runtime, export files, generate PDFs or create downloadable artifacts. It only freezes the first buyer-oriented use case and runtime direction.

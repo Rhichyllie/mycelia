@@ -1,32 +1,37 @@
 # MYCELIA Architecture Registry
 
-This registry maps architecture domains to owning documents and planned
-implementation surfaces. It is an alignment scaffold only.
+This registry maps architecture domains to owning documents and current
+implementation truth. It is an alignment scaffold only. It does not grant
+permission to claim runtime, persistence, API, auth, deployment or SaaS
+readiness.
 
-| Domain | Owning Document | Implementation Status | Future Module/Package | Notes |
+| Domain | Owning Document | Current Status | Active Surface | Notes |
 |---|---|---|---|---|
-| Vision/Product Scope | 00, 01 | DOCUMENTED_NOT_IMPLEMENTED | `docs-only` | Product and doctrine authority. |
-| Core Runtime | 02 | DOCUMENTED_NOT_IMPLEMENTED | `core-runtime` | No runtime kernel exists yet. |
-| Domain Model | 03 | DOCUMENTED_NOT_IMPLEMENTED | `domain-model` | Future schemas must derive from Document 03. |
-| Cognitive Execution | 04 | DOCUMENTED_NOT_IMPLEMENTED | `cognitive-execution` | No model invocation runtime exists yet. |
-| Agent Runtime | 05 | DOCUMENTED_NOT_IMPLEMENTED | `agent-runtime` | No agent coordination runtime exists yet. |
-| State/Persistence | 06 | DOCUMENTED_NOT_IMPLEMENTED | `state-persistence` | No Prisma schema or migrations exist in active surface. |
-| Event Contracts | 07 | DOCUMENTED_NOT_IMPLEMENTED | `event-contracts` | Contract registry placeholders only. |
-| Event Runtime | 08 | DOCUMENTED_NOT_IMPLEMENTED | `event-runtime` | No broker/outbox implementation exists yet. |
-| Workflow Orchestration | 09 | DOCUMENTED_NOT_IMPLEMENTED | `workflow-orchestration` | No workflow engine exists yet. |
-| Memory/Context | 10 | DOCUMENTED_NOT_IMPLEMENTED | `memory-context` | No memory store or context assembly exists yet. |
-| Governance/Policy/Approval | 11 | DOCUMENTED_NOT_IMPLEMENTED | `governance-policy` | No policy gateway or approval engine exists yet. |
-| Observability/Telemetry | 12 | DOCUMENTED_NOT_IMPLEMENTED | `observability-telemetry` | No active semantic convention registry exists yet. |
-| Security/Trust | 13 | DOCUMENTED_NOT_IMPLEMENTED | `security-trust` | No active trust fabric exists yet. |
-| Tenancy/Boundaries | 14 | DOCUMENTED_NOT_IMPLEMENTED | `tenancy-boundaries` | No active tenant resolver/RLS implementation exists yet. |
-| SDK/Tool Runtime | 15 | DOCUMENTED_NOT_IMPLEMENTED | `tool-runtime` | No tool manifests or execution contracts exist yet. |
-| Infrastructure/Deployment | 16 | DOCUMENTED_NOT_IMPLEMENTED | `infrastructure` | No IaC or deployment implementation exists yet. |
-| SRE/Recovery | 17 | DOCUMENTED_NOT_IMPLEMENTED | `sre-runbooks` | No active runbooks exist yet. |
-| External APIs/Integrations | 18 | DOCUMENTED_NOT_IMPLEMENTED | `external-api` | No API endpoints or integration contracts exist yet. |
-| Codex Alignment | 19 | DOCUMENTED_NOT_IMPLEMENTED | `test-harness`, `contract-tests` | Governs Codex execution and evidence. |
-| Operational UX | 20 if present, otherwise planned | DOCUMENTED_NOT_IMPLEMENTED | `operational-ux` | UX architecture only; no UI implementation exists yet. |
-| Workflow Builder | Document 21 planned | DOCUMENTED_NOT_IMPLEMENTED | `workflow-builder` | Planned future domain. |
-| Investigation/Replay UX | Document 22 planned | DOCUMENTED_NOT_IMPLEMENTED | `investigation-replay-ux` | Planned future domain. |
-| Evaluation/Benchmark | Document 23 planned | DOCUMENTED_NOT_IMPLEMENTED | `evaluation-benchmark` | Planned future domain. |
-| Enterprise Scaling | Document 24 planned | DOCUMENTED_NOT_IMPLEMENTED | `enterprise-scaling` | Planned future domain. |
-| ADR Index | Document 25 planned | DOCUMENTED_NOT_IMPLEMENTED | `docs/adrs` | ADR files live under `docs/adrs/` until Document 25 exists. |
+| Vision/Product Scope | 00, 01 | PRODUCT_DIRECTION_FROZEN_PARTIAL | `docs/product/`, `src/mycelia/initial-use-case-freeze/`, `src/mycelia/pilot-offer-package/` | First use case and pilot offer are internal planning artifacts. |
+| Core Runtime | 02 | CONTRACTS_ONLY_RUNTIME_NOT_IMPLEMENTED | `src/mycelia/runtime-envelope/`, `src/mycelia/runtime-admission-gateway/`, `src/mycelia/governed-run/` | No runtime kernel or execution pipeline exists yet. |
+| Domain Model | 03 | DESCRIPTOR_CONTRACTS_IMPLEMENTED_PARTIAL | `src/mycelia/*` descriptor modules | Current source defines typed descriptors, not persistence schemas. |
+| Cognitive Execution | 04 | DOCUMENTED_NOT_IMPLEMENTED | future `cognitive-execution` | No model invocation runtime exists yet. |
+| Agent Runtime | 05 | DOCUMENTED_NOT_IMPLEMENTED | future `agent-runtime` | No agent coordination runtime exists yet. |
+| State/Persistence | 06 | STATE_CONTRACTS_IMPLEMENTED_PERSISTENCE_NOT_IMPLEMENTED | `src/mycelia/runtime-state/`, `src/mycelia/state-transition/`, `src/mycelia/state-transition-coordinator/` | No database-backed state or checkpoints exist yet. |
+| Event Contracts | 07 | EVENT_ENVELOPE_CONTRACT_IMPLEMENTED_CATALOG_NOT_IMPLEMENTED | `src/mycelia/event-envelope/` | No broker, event store or canonical event catalog exists yet. |
+| Event Runtime | 08 | DOCUMENTED_NOT_IMPLEMENTED | future `event-runtime` | No broker, outbox or event publishing exists yet. |
+| Workflow Orchestration | 09 | DOCUMENTED_NOT_IMPLEMENTED | future `workflow-orchestration` | No workflow engine exists yet. |
+| Memory/Context | 10 | DOCUMENTED_NOT_IMPLEMENTED | future `memory-context` | No memory store or context assembly runtime exists yet. |
+| Governance/Policy/Approval | 11 | POLICY_ADMISSION_CONTRACTS_IMPLEMENTED_APPROVAL_ENGINE_NOT_IMPLEMENTED | `src/mycelia/policy-decision-gateway/`, `src/mycelia/runtime-admission-gateway/` | No real policy engine or approval queue exists yet. |
+| Observability/Telemetry | 12 | AUDIT_DESCRIPTOR_CONTRACTS_IMPLEMENTED_TELEMETRY_NOT_IMPLEMENTED | `src/mycelia/audit-record/`, `src/mycelia/audit-recorder/`, `src/mycelia/audit-emission/`, `src/mycelia/audit-timeline/` | No observability pipeline or audit commit boundary exists yet. |
+| Security/Trust | 13 | DOCUMENTED_NOT_IMPLEMENTED | future `security-trust` | No active trust fabric, auth or authorization middleware exists yet. |
+| Tenancy/Boundaries | 14 | BOUNDARY_CONTRACTS_IMPLEMENTED_RESOLVER_RLS_NOT_IMPLEMENTED | `src/mycelia/tenancy-boundaries/` | No tenant resolver, RLS or enterprise isolation runtime exists yet. |
+| SDK/Tool Runtime | 15 | DOCUMENTED_NOT_IMPLEMENTED | future `tool-runtime` | No tool manifests or tool execution contracts exist yet. |
+| Infrastructure/Deployment | 16 | DOCUMENTED_NOT_IMPLEMENTED | future `infrastructure` | No IaC, deployment or production environment exists yet. |
+| SRE/Recovery | 17 | DOCUMENTED_NOT_IMPLEMENTED | future `sre-runbooks` | No active runbooks exist yet. |
+| External APIs/Integrations | 18 | DOCUMENTED_NOT_IMPLEMENTED | future `external-api` | No API endpoints or external integrations exist yet. |
+| Codex Alignment | 19 | VALIDATION_BASELINE_IMPLEMENTED | `scripts/`, `pnpm validate:phase0` | Validation remains the safe repository gate. |
+| Static Product Surfaces | 00, 01, 19 | STATIC_READ_ONLY_IMPLEMENTED | `app/`, `src/mycelia/*-surface/`, `src/mycelia/product-surface-index/` | Routes are static, descriptor-level and non-executing. |
+| Static Demo Descriptor Chain | 00, 01, 02, 03, 19 | STATIC_DESCRIPTOR_CHAIN_IMPLEMENTED | `src/mycelia/first-static-demo/`, `src/mycelia/static-demo-text-renderer/`, `src/mycelia/human-readable-static-demo-preview/` | Demo is in-memory/static only; no export or runtime execution. |
+| Product/Commercial Planning | 00, 01, 19 | INTERNAL_PLANNING_ARTIFACTS_IMPLEMENTED | `docs/product/`, `src/mycelia/initial-use-case-freeze/`, `src/mycelia/pilot-offer-package/` | Pricing ranges are internal planning assumptions, not guarantees. |
+| Operational UX | planned | STATIC_PRODUCT_SURFACES_ONLY | `app/`, `src/mycelia/*-surface/` | Runtime UX, investigation UX and workflow builder UX are not implemented. |
+| Workflow Builder | planned | NOT_IMPLEMENTED | future `workflow-builder` | Planned future domain. |
+| Investigation/Replay UX | planned | NOT_IMPLEMENTED | future `investigation-replay-ux` | Static walkthrough exists; real investigation/replay UX does not. |
+| Evaluation/Benchmark | planned | NOT_IMPLEMENTED | future `evaluation-benchmark` | Planned future domain. |
+| Enterprise Scaling | planned | NOT_IMPLEMENTED | future `enterprise-scaling` | Planned future domain. |
+| ADR Index | planned | NOT_IMPLEMENTED | `docs/adrs` | ADR files live under `docs/adrs/` until an ADR index exists. |
