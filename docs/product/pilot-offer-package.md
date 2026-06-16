@@ -194,6 +194,8 @@ Deal-breakers:
 - approval gate
 - investigation view
 
+Related technical planning artifact: [Runtime Slice Technical Plan](runtime-slice-technical-plan.md).
+
 ## Safety Boundary
 
 This phase does not execute a pilot, create sales automation, persist data, call APIs, call external services, create auth or create runtime. It only defines the commercial planning package.

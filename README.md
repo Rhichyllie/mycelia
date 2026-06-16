@@ -48,7 +48,8 @@ Implemented TypeScript foundations currently live under `src/mycelia/`:
 - static product surface view modules;
 - product surface shell and product surface index;
 - initial use case freeze;
-- pilot offer package.
+- pilot offer package;
+- runtime slice technical plan.
 
 Static App Router product surfaces currently exist at:
 
@@ -87,6 +88,7 @@ Product decision artifacts live under `docs/product/`:
 
 - `initial-use-case-freeze.md`
 - `pilot-offer-package.md`
+- `runtime-slice-technical-plan.md`
 
 Architecture alignment scaffolding lives under `docs/architecture/`.
 Canonical architecture lives under `docs/mycelia/`.

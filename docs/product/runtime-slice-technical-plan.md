@@ -1,0 +1,175 @@
+# Runtime Slice Technical Plan
+
+Phase 2Q defines the smallest technical runtime slice that can eventually prove the frozen use case: governed compliance/document review flow.
+
+Linked offer: Governed Compliance Flow Pilot.
+
+This is a technical plan only. It does not execute runtime, persist data, call APIs, call tools, call external services, create auth, create database schema, create Prisma migrations, export files, generate PDFs or create downloadable artifacts.
+
+## Runtime Slice Goal
+
+The first runtime slice must prove one narrow governed compliance/document review flow. It must transform existing descriptors and contracts into one controlled operational lifecycle without becoming a general-purpose workflow platform.
+
+The slice must support future assessment and pilot delivery by proving the minimum chain: request, context, tenant boundary, policy/admission, approval, state transition, audit, investigation and replay dry-run descriptor.
+
+## Minimal Runtime Flow
+
+1. Create governed request
+2. Resolve organizational context
+3. Check tenant/context boundary
+4. Classify risk/policy
+5. Decide admission
+6. Pause for approval when required
+7. Resume after approval
+8. Transition run state
+9. Commit audit record
+10. Prepare investigation view
+11. Prepare replay dry-run descriptor
+12. Mark run completed or rejected
+
+## Future Persistent Entity Plan
+
+This is an entity plan only, not schema implementation.
+
+First persistence slice:
+
+- GovernedRun
+- RuntimeStateSnapshot
+- PolicyDecisionRecord
+- AdmissionDecisionRecord
+- ApprovalRequest
+- AuditRecord
+
+Later slice:
+
+- InvestigationCase or InvestigationBundleView
+- ReplayDryRunPlan
+
+These entities relate to the existing descriptor modules under `src/mycelia/governed-run/`, `runtime-state/`, `state-transition/`, `policy-decision-gateway/`, `runtime-admission-gateway/`, `audit-record/`, `audit-recorder/`, `investigation-bundle/` and `replay-plan/`.
+
+## State Lifecycle Plan
+
+The narrow lifecycle for the first runtime slice is:
+
+- CREATED
+- CONTEXT_RESOLVED
+- POLICY_EVALUATED
+- ADMISSION_GRANTED
+- WAITING_APPROVAL
+- APPROVED
+- REJECTED
+- RUNNING
+- COMPLETED
+- CANCELLED
+- FAILED
+
+This is a plan only. It does not implement state machine behavior.
+
+## Policy/Admission v1
+
+Deterministic v1 behavior:
+
+- low risk: admit
+- medium risk: require approval
+- high risk: deny
+- missing context: deny
+- tenant/context mismatch: deny
+- unsafe/unknown classification: require approval when safe, otherwise deny
+
+The rule is fail-closed. Missing, malformed, ambiguous or unsafe inputs must deny or require approval without inferring tenant, workspace, project or risk context.
+
+This relates to `src/mycelia/policy-decision-gateway/` and `src/mycelia/runtime-admission-gateway/`, but does not implement a policy engine.
+
+## Approval Gate v1
+
+Approval is required when policy or admission returns `REQUIRE_APPROVAL`, when risk is medium, or when classification is uncertain but safe enough for human review.
+
+An approval request should contain run, tenant, request summary, policy/admission references, risk classification, conceptual approver role and safe evidence references.
+
+Allowed outcomes:
+
+- APPROVE
+- REJECT
+- TIMEOUT
+- CANCEL
+
+This does not implement an approval queue or UI.
+
+## Audit Commit Boundary
+
+Lifecycle moments that must eventually produce audit records:
+
+- governed request created
+- context resolved
+- policy evaluated
+- admission decided
+- approval requested
+- approval decided
+- state transitioned
+- run completed
+- run rejected
+- run cancelled
+- run failed
+
+Audit evidence references should include request, context, policy, admission, approval, runtime state, state transition, investigation and replay dry-run references.
+
+Hash-chain, signing, sealing, compliance export and audit storage are not implemented in this phase.
+
+## Investigation View v1
+
+A future investigation view should read the governed run, state snapshots, policy decision, admission decision, approval request, audit records and replay dry-run plan when available.
+
+It must show request identity, tenant scope, policy/admission outcome, approval status, state lifecycle history, audit evidence references and replay dry-run readiness.
+
+It must not infer tenant, workspace, project, approver identity, policy basis or missing audit evidence.
+
+This does not implement UI.
+
+## Replay Dry-Run v1
+
+Replay dry-run v1 is descriptor reconstruction from recorded run, state, decision, approval and audit references.
+
+It guarantees:
+
+- no side effects
+- no tool execution
+- no external calls
+- no real replay engine yet
+- no state reconstruction beyond recorded descriptors
+
+It differs from real replay execution because it only lists what would be inspected. It does not hydrate data, call tools, execute a replay engine or prove runtime determinism.
+
+## Implementation Sequence
+
+Recommended next phases:
+
+1. 2R Minimal Persistent Model Plan/Scaffold
+2. 2S Minimal Governed Run Lifecycle
+3. 2T Policy/Admission v1
+4. 2U Audit Commit Boundary
+5. 2V Approval Gate v1
+6. 2W Investigation View v1
+7. 2X Replay Dry-Run Descriptor v1
+8. 2Y Internal Runtime Service Boundary
+9. 2Z Runtime Slice Consistency Audit
+
+## Out of Scope
+
+- public API
+- auth
+- SaaS billing
+- workflow builder
+- general-purpose orchestration
+- multiple integrations
+- autonomous agents
+- SDK
+- external services
+- production deployment
+- enterprise multi-tenancy
+- full replay execution
+- hash-chain/signing/sealing
+- export/PDF/downloads
+
+## Safety Boundary
+
+This phase does not execute runtime, persist data, call APIs, call external services, create auth, create database schema or create Prisma migrations. It only defines the technical plan.
