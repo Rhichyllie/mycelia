@@ -125,6 +125,9 @@ Phase 2W consumes policy/admission decisions as provided investigation
 descriptors. It requires approval descriptors when the policy/admission outcome
 is `REQUIRE_APPROVAL` and does not infer missing policy basis.
 
+Phase 2X consumes policy/admission descriptors when classifying replayability.
+Denied policy outcomes are safe to describe but are not treated as replayable.
+
 ## Fail-Closed Behavior
 
 Invalid, missing, malformed, ambiguous or unsafe inputs return safe denials.
@@ -157,7 +160,7 @@ state.
 
 The next runtime-slice phase is:
 
-- 2X Replay Dry-Run Descriptor v1
+- 2Y Internal Runtime Service Boundary
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
 API, auth, persistence or external-integration expansion until the minimal

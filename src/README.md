@@ -45,6 +45,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/audit-commit-boundary/`: pure Phase 2U audit commit requirement classification logic.
 - `src/mycelia/approval-gate-v1/`: pure Phase 2V deterministic approval gate decision logic.
 - `src/mycelia/investigation-view-model-v1/`: pure Phase 2W deterministic investigation view model assembly.
+- `src/mycelia/replay-dry-run-descriptor-v1/`: pure Phase 2X deterministic replay dry-run descriptor assembly.
 
 ## Not Implemented Yet
 
@@ -60,7 +61,8 @@ fixture generation, demo export, demo execution, executable fixtures, demo seed
 data, seed data, database pagination, timeline indexes, evidence store, record
 sealing, signing, hash chaining, compliance export, observability pipeline,
 event broker, event publishing, event persistence, queues, streams, webhooks,
-files, canonical event catalog, replay execution, replay simulation, state
+files, canonical event catalog, replay execution, replay UI, replay runtime,
+replay simulation, state
 reconstruction, data hydration, tool calls, external service calls, active
 persistence, active Prisma schema, API routes, workflow execution, authentication system,
 authorization middleware, RLS, production deployment, SaaS billing or public SDK

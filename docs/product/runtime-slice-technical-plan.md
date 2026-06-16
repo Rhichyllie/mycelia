@@ -12,6 +12,7 @@ Related decision layer: [Policy/Admission v1](policy-admission-v1.md).
 Related audit boundary: [Audit Commit Boundary](audit-commit-boundary.md).
 Related approval layer: [Approval Gate v1](approval-gate-v1.md).
 Related investigation read model: [Investigation View Model v1](investigation-view-model-v1.md).
+Related replay dry-run descriptor: [Replay Dry-Run Descriptor v1](replay-dry-run-descriptor-v1.md).
 
 ## Runtime Slice Goal
 
@@ -36,7 +37,7 @@ The slice must support future assessment and pilot delivery by proving the minim
 
 ## Future Persistent Entity Plan
 
-This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic. Phase 2U adds pure in-memory audit requirement classification. Phase 2V adds pure in-memory approval gate decision logic. Phase 2W adds pure in-memory investigation view model assembly from provided descriptors.
+This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence. Phase 2S adds pure in-memory lifecycle transition logic. Phase 2T adds pure in-memory policy/admission decision logic. Phase 2U adds pure in-memory audit requirement classification. Phase 2V adds pure in-memory approval gate decision logic. Phase 2W adds pure in-memory investigation view model assembly from provided descriptors. Phase 2X adds pure in-memory replay dry-run descriptor assembly.
 
 First persistence slice:
 
@@ -152,6 +153,10 @@ It guarantees:
 
 It differs from real replay execution because it only lists what would be inspected. It does not hydrate data, call tools, execute a replay engine or prove runtime determinism.
 
+Phase 2X implements this as a pure TypeScript replay dry-run descriptor in `src/mycelia/replay-dry-run-descriptor-v1/`. It assembles safe descriptor steps from supplied investigation, lifecycle, policy/admission, approval, audit-boundary and persistence-reference descriptors.
+
+This does not execute replay, execute runtime, read databases, mutate state, call tools, call external services, emit events or write audit records.
+
 ## Implementation Sequence
 
 Recommended next phases:
@@ -185,4 +190,4 @@ Recommended next phases:
 
 ## Safety Boundary
 
-This plan now has five pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic, Phase 2U audit commit boundary classification, Phase 2V approval gate decision logic and Phase 2W investigation view model assembly. Runtime execution, active persistence, API routes, external services, auth, database schema, approval queue, approval UI, database-backed investigation views, audit writing and Prisma migrations remain not implemented.
+This plan now has six pure implementation layers: Phase 2S lifecycle transition logic, Phase 2T policy/admission decision logic, Phase 2U audit commit boundary classification, Phase 2V approval gate decision logic, Phase 2W investigation view model assembly and Phase 2X replay dry-run descriptor assembly. Runtime execution, replay execution, active persistence, API routes, external services, auth, database schema, approval queue, approval UI, database-backed investigation views, audit writing and Prisma migrations remain not implemented.

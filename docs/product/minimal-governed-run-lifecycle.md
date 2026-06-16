@@ -144,6 +144,10 @@ Phase 2W consumes lifecycle decisions as provided investigation descriptors. It
 does not replay transitions, infer missing lifecycle events, persist state or
 render UI.
 
+Phase 2X consumes lifecycle timeline descriptors when assembling replay dry-run
+steps. It does not execute transitions or reconstruct state beyond supplied
+descriptors.
+
 ## Out of Scope
 
 - runtime execution;
@@ -167,7 +171,7 @@ render UI.
 
 The next runtime-slice phase is:
 
-- 2X Replay Dry-Run Descriptor v1
+- 2Y Internal Runtime Service Boundary
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
 API, auth, persistence or external-integration expansion until the minimal

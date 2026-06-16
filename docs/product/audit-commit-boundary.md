@@ -117,6 +117,10 @@ Phase 2W investigation view model requires provided audit boundary coverage for
 `POLICY_EVALUATED` and `ADMISSION_DECIDED` before assembling a view. Missing
 core audit coverage fails closed instead of being inferred.
 
+Phase 2X replay dry-run descriptor also requires provided audit boundary
+coverage for `POLICY_EVALUATED` and `ADMISSION_DECIDED` before assembling a
+dry-run descriptor. It does not write audit records or append logs.
+
 ## Emission Mapping
 
 All decisions say `not emitted in this phase`.
@@ -164,7 +168,7 @@ approval internals, runtime internals or database state.
 
 The next runtime-slice phase is:
 
-- 2X Replay Dry-Run Descriptor v1
+- 2Y Internal Runtime Service Boundary
 
 Those phases should continue to preserve narrow scope and avoid broad workflow,
 API, auth, persistence or external-integration expansion until the minimal
