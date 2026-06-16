@@ -6,6 +6,8 @@ Linked offer: Governed Compliance Flow Pilot.
 
 This is a technical plan only. It does not execute runtime, persist data, call APIs, call tools, call external services, create auth, create database schema, create Prisma migrations, export files, generate PDFs or create downloadable artifacts.
 
+Related scaffold: [Minimal Persistent Model Scaffold](minimal-persistent-model-scaffold.md).
+
 ## Runtime Slice Goal
 
 The first runtime slice must prove one narrow governed compliance/document review flow. It must transform existing descriptors and contracts into one controlled operational lifecycle without becoming a general-purpose workflow platform.
@@ -29,7 +31,7 @@ The slice must support future assessment and pilot delivery by proving the minim
 
 ## Future Persistent Entity Plan
 
-This is an entity plan only, not schema implementation.
+This section is an entity plan. Phase 2R adds a TypeScript persistence scaffold for the first persistence slice, but still does not activate database access, migrations or runtime persistence.
 
 First persistence slice:
 

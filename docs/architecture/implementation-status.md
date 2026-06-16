@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 2Q.
+This status page captures repository truth after Phase 2R.
 
 ## Implemented Now
 
@@ -18,6 +18,7 @@ This status page captures repository truth after Phase 2Q.
 - Initial use case freeze for `Governed compliance/document review flow`.
 - Pilot offer package for `Governed Operations Assessment` and `Governed Compliance Flow Pilot`.
 - Runtime slice technical plan for the first minimal governed compliance/document review flow.
+- Minimal persistent model scaffold for the first six runtime slice records.
 
 ## Static/Demo-Only Now
 
@@ -48,7 +49,7 @@ commitments.
 
 - Runtime execution.
 - Workflow execution.
-- Persistence.
+- Active persistence.
 - Database-backed governed runs.
 - Real policy engine.
 - Real approval queue.
@@ -64,8 +65,9 @@ commitments.
 
 ## Next Planning Direction
 
-The runtime slice technical plan now defines the minimal future slice for the
-frozen governed compliance/document review flow. The next implementation phase
-should remain conservative: plan or scaffold the minimal persistent model before
-any runtime execution, API routes, auth, approval queue, audit commit path,
-investigation view or replay execution is activated.
+The minimal persistent model scaffold now defines the first six future record
+shapes for the frozen governed compliance/document review flow. The next
+implementation phase should remain conservative: implement only the minimal
+governed run lifecycle around these planned records before any API routes, auth,
+approval queue, broad policy engine, investigation view or replay execution is
+activated.

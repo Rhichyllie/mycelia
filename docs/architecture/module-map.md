@@ -43,6 +43,7 @@ SaaS readiness.
 | `src/mycelia/initial-use-case-freeze/` | IMPLEMENTED_STATIC_PLANNING | Phase 2N frozen first buyer-oriented use case. | No runtime or persistence. |
 | `src/mycelia/pilot-offer-package/` | IMPLEMENTED_STATIC_PLANNING | Phase 2O assessment and pilot offer package. | No sales automation or runtime. |
 | `src/mycelia/runtime-slice-technical-plan/` | IMPLEMENTED_STATIC_PLANNING | Phase 2Q minimal runtime slice technical plan. | No runtime execution, DB schema or persistence implementation. |
+| `src/mycelia/runtime-persistence-model/` | IMPLEMENTED_STATIC_SCAFFOLD | Phase 2R minimal persistent model scaffold. | No DB access, migration, Prisma generate or repository layer. |
 
 ## Implemented App Router Surfaces
 
@@ -61,7 +62,7 @@ SaaS readiness.
 |---|---|---|
 | `core-runtime` | NOT_IMPLEMENTED | No runtime kernel exists yet. |
 | `workflow-orchestration` | NOT_IMPLEMENTED | No workflow engine exists yet. |
-| `state-persistence` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no database-backed state exists yet. |
+| `state-persistence` | SCAFFOLD_ONLY | Runtime persistence model scaffold exists; no database-backed state exists yet. |
 | `governance-policy-runtime` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no real policy engine or approval queue exists yet. |
 | `audit-commit-boundary` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no durable audit commit path exists yet. |
 | `investigation-view` | NOT_IMPLEMENTED | Runtime slice technical plan exists; no real investigation view exists yet. |

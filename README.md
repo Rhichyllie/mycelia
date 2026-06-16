@@ -9,7 +9,7 @@ The current repository is honest about its state:
 - static product surfaces exist under the Next App Router;
 - the first buyer-oriented use case is frozen;
 - the first assessment and pilot offer package exists;
-- runtime execution, persistence, API routes, auth, database-backed runs and
+- runtime execution, active persistence, API routes, auth, database-backed runs and
   external integrations are not implemented yet.
 
 ## Current Product Direction
@@ -49,7 +49,8 @@ Implemented TypeScript foundations currently live under `src/mycelia/`:
 - product surface shell and product surface index;
 - initial use case freeze;
 - pilot offer package;
-- runtime slice technical plan.
+- runtime slice technical plan;
+- minimal persistent model scaffold.
 
 Static App Router product surfaces currently exist at:
 
@@ -68,7 +69,7 @@ The repository does not yet implement:
 
 - runtime execution;
 - workflow execution;
-- persistence;
+- active persistence;
 - database-backed governed runs;
 - real policy engine;
 - real approval queue;
@@ -89,6 +90,7 @@ Product decision artifacts live under `docs/product/`:
 - `initial-use-case-freeze.md`
 - `pilot-offer-package.md`
 - `runtime-slice-technical-plan.md`
+- `minimal-persistent-model-scaffold.md`
 
 Architecture alignment scaffolding lives under `docs/architecture/`.
 Canonical architecture lives under `docs/mycelia/`.
