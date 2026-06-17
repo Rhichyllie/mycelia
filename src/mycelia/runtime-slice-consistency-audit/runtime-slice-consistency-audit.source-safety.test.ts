@@ -1,19 +1,74 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+function repoPath(...segments: string[]): string {
+  return join(process.cwd(), ...segments);
+}
+
 const RUNTIME_SLICE_PRODUCTION_SOURCES = [
-  "C:/Projetos/mycelia/src/mycelia/runtime-slice-technical-plan/runtime-slice-technical-plan.ts",
-  "C:/Projetos/mycelia/src/mycelia/runtime-persistence-model/runtime-persistence-model.ts",
-  "C:/Projetos/mycelia/src/mycelia/governed-run-lifecycle/governed-run-lifecycle.ts",
-  "C:/Projetos/mycelia/src/mycelia/policy-admission-v1/policy-admission-v1.ts",
-  "C:/Projetos/mycelia/src/mycelia/audit-commit-boundary/audit-commit-boundary.ts",
-  "C:/Projetos/mycelia/src/mycelia/approval-gate-v1/approval-gate-v1.ts",
-  "C:/Projetos/mycelia/src/mycelia/investigation-view-model-v1/investigation-view-model-v1.ts",
-  "C:/Projetos/mycelia/src/mycelia/replay-dry-run-descriptor-v1/replay-dry-run-descriptor-v1.ts",
-  "C:/Projetos/mycelia/src/mycelia/internal-runtime-orchestrator-v1/internal-runtime-orchestrator-v1.ts",
-  "C:/Projetos/mycelia/src/mycelia/runtime-slice-consistency-audit/runtime-slice-consistency-audit.ts",
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime-slice-technical-plan",
+    "runtime-slice-technical-plan.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime-persistence-model",
+    "runtime-persistence-model.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "governed-run-lifecycle",
+    "governed-run-lifecycle.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "policy-admission-v1",
+    "policy-admission-v1.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "audit-commit-boundary",
+    "audit-commit-boundary.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "approval-gate-v1",
+    "approval-gate-v1.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "investigation-view-model-v1",
+    "investigation-view-model-v1.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "replay-dry-run-descriptor-v1",
+    "replay-dry-run-descriptor-v1.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "internal-runtime-orchestrator-v1",
+    "internal-runtime-orchestrator-v1.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime-slice-consistency-audit",
+    "runtime-slice-consistency-audit.ts",
+  ),
 ] as const;
 
 const FORBIDDEN_RUNTIME_SLICE_CODE_PATTERNS = [

@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
@@ -18,6 +19,10 @@ import {
 const tenantId = "tenant_01";
 const runId = "run_01";
 const correlationId = "correlation_01";
+
+function repoPath(...segments: string[]): string {
+  return join(process.cwd(), ...segments);
+}
 
 function persistenceRefs(tenant = tenantId) {
   return [
@@ -281,8 +286,11 @@ describe("runtime slice consistency audit", () => {
   });
 
   it("documents runtime slice consistency audit without activating runtime behavior", () => {
-    const docPath =
-      "C:/Projetos/mycelia/docs/product/runtime-slice-consistency-audit.md";
+    const docPath = repoPath(
+      "docs",
+      "product",
+      "runtime-slice-consistency-audit.md",
+    );
 
     expect(existsSync(docPath)).toBe(true);
 
@@ -299,9 +307,19 @@ describe("runtime slice consistency audit", () => {
 
   it("does not reference or modify protected future docs from audit code or docs", () => {
     const auditFiles = [
-      "C:/Projetos/mycelia/src/mycelia/runtime-slice-consistency-audit/runtime-slice-consistency-audit.ts",
-      "C:/Projetos/mycelia/src/mycelia/runtime-slice-consistency-audit/README.md",
-      "C:/Projetos/mycelia/docs/product/runtime-slice-consistency-audit.md",
+      repoPath(
+        "src",
+        "mycelia",
+        "runtime-slice-consistency-audit",
+        "runtime-slice-consistency-audit.ts",
+      ),
+      repoPath(
+        "src",
+        "mycelia",
+        "runtime-slice-consistency-audit",
+        "README.md",
+      ),
+      repoPath("docs", "product", "runtime-slice-consistency-audit.md"),
     ];
 
     for (const file of auditFiles) {
