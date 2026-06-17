@@ -3,6 +3,8 @@
 Phase 2Z audits the minimal governed runtime slice before Phase 3A Minimal
 Persistence Activation.
 
+Related activation: [Minimal Persistence Activation](minimal-persistence-activation.md).
+
 This audit is static and descriptor-level. It does not execute runtime, does
 not execute replay, does not persist data, does not query databases, does not
 call APIs, does not call tools, does not call external services, does not emit
@@ -133,6 +135,9 @@ Phase 3A can begin only if it stays narrow:
 - avoid forbidden side effects;
 - keep package and dependency boundaries unchanged unless explicitly approved;
 - keep Prisma inactive until the Phase 3A scope explicitly activates it.
+
+Phase 3A now activates the schema and migration contract only. Application DB
+reads/writes, repository/service code and runtime execution remain deferred.
 
 ## Phase 3A Go/No-Go
 

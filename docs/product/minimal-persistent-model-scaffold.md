@@ -109,11 +109,14 @@ AuditRecord:
 
 ## Prisma Scaffold Status
 
-The active `prisma/` directory currently contains a placeholder README and no active `schema.prisma` convention.
+Phase 2R defined the TypeScript scaffold before an active Prisma schema existed.
 
-Because there is no active Prisma schema to extend, Phase 2R does not create a full Prisma schema. No migration file was created. Prisma generate was not run.
+Phase 3A now adds `prisma/schema.prisma` and
+`prisma/migrations/000001_minimal_runtime_slice/migration.sql` as a narrow
+schema/migration contract for the same six records.
 
-Future Prisma modeling should derive from `src/mycelia/runtime-persistence-model/` and this document.
+Prisma generate is not run. Migrations are not run. Application source still
+does not import PrismaClient or read/write databases.
 
 ## TypeScript Descriptor Status
 
@@ -179,5 +182,5 @@ repository layer.
 
 ## Next Implementation Phases
 
-- 2Z Runtime Slice Consistency Audit confirms whether the 2R through 2Y runtime slice remains coherent before activation.
-- 3A Minimal Persistence Activation should remain limited to the six-record first slice and must not add runtime execution, APIs, auth, UI, audit writing or replay execution.
+- 3A Minimal Persistence Activation is the schema/migration contract for the six-record first slice.
+- 3B Runtime Repository Layer should own any future controlled DB reads/writes and must not add runtime execution, APIs, auth, UI, audit writing or replay execution without a separate phase.

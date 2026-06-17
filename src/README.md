@@ -48,6 +48,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/replay-dry-run-descriptor-v1/`: pure Phase 2X deterministic replay dry-run descriptor assembly.
 - `src/mycelia/internal-runtime-orchestrator-v1/`: pure Phase 2Y deterministic in-memory orchestration descriptor composition.
 - `src/mycelia/runtime-slice-consistency-audit/`: static Phase 2Z consistency audit for the minimal runtime slice before Phase 3A.
+- `src/mycelia/minimal-persistence-activation/`: static Phase 3A descriptor for the Prisma schema/migration contract.
 
 ## Not Implemented Yet
 
@@ -66,8 +67,9 @@ sealing, signing, hash chaining, compliance export, observability pipeline,
 event broker, event publishing, event persistence, queues, streams, webhooks,
 files, canonical event catalog, replay execution, replay UI, replay runtime,
 replay simulation, state
-reconstruction, data hydration, tool calls, external service calls, active
-persistence, active Prisma schema, API routes, workflow execution, authentication system,
+reconstruction, data hydration, tool calls, external service calls,
+application-level persistence operations, PrismaClient usage, API routes,
+workflow execution, authentication system,
 authorization middleware, RLS, production deployment, SaaS billing or public SDK
 exists yet.
 

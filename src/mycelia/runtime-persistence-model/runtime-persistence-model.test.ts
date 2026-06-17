@@ -259,7 +259,7 @@ describe("runtime persistence model scaffold", () => {
     ]);
   });
 
-  it("confirms Prisma remains inactive when no active schema convention exists", () => {
+  it("confirms Phase 3A adds schema contracts while PrismaClient remains inactive", () => {
     const model = getRuntimePersistenceModel();
     const prismaSchema = new URL(
       "../../../prisma/schema.prisma",
@@ -271,10 +271,13 @@ describe("runtime persistence model scaffold", () => {
     );
 
     expect(model.prisma_scaffold_status).toContain(
-      "no active Prisma schema exists in the current repository surface",
+      "Phase 3A now adds prisma/schema.prisma as a schema contract for the same six records",
     );
-    expect(existsSync(prismaSchema)).toBe(false);
-    expect(existsSync(prismaMigrations)).toBe(false);
+    expect(model.prisma_scaffold_status).toContain(
+      "application source does not import PrismaClient or read/write databases",
+    );
+    expect(existsSync(prismaSchema)).toBe(true);
+    expect(existsSync(prismaMigrations)).toBe(true);
   });
 
   it("defines pure schemas for each first-slice record", () => {

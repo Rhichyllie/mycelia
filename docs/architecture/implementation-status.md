@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 2Z.
+This status page captures repository truth after Phase 3A.
 
 ## Implemented Now
 
@@ -27,6 +27,7 @@ This status page captures repository truth after Phase 2Z.
 - Replay dry-run descriptor v1 as pure deterministic in-memory descriptor assembly.
 - Internal runtime orchestrator v1 as pure deterministic in-memory descriptor composition.
 - Runtime slice consistency audit for the 2R through 2Y minimal runtime slice.
+- Minimal persistence activation as Prisma schema and migration contract for the six first-slice records.
 
 ## Static/Demo-Only Now
 
@@ -57,8 +58,8 @@ commitments.
 
 - Runtime execution.
 - Workflow execution.
-- Active persistence.
-- Database-backed governed runs.
+- Application-level persistence operations.
+- Database-backed governed runs through a repository layer.
 - Real policy engine beyond deterministic policy/admission v1.
 - Real approval queue, approval UI and approval storage.
 - Real audit writer, audit storage and append log.
@@ -77,9 +78,10 @@ commitments.
 
 The minimal governed run lifecycle, policy/admission v1, audit commit boundary,
 approval gate v1, investigation view model v1, replay dry-run descriptor v1 and
-internal runtime orchestrator v1 now provide pure in-memory decision,
-requirement, read-model, replay planning and composition logic for the frozen
-governed compliance/document review flow. Phase 2Z audits that chain as ready
-for narrow Phase 3A Minimal Persistence Activation. Phase 3A should not add API
-routes, auth, broad policy engine, replay execution, audit storage, approval
-storage, database-backed investigation UI or runtime execution.
+internal runtime orchestrator v1 provide pure in-memory decision, requirement,
+read-model, replay planning and composition logic for the frozen governed
+compliance/document review flow. Phase 3A adds the schema/migration contract
+for the six first-slice records only. The next phase should be Phase 3B Runtime
+Repository Layer and should not add API routes, auth, broad policy engine,
+replay execution, audit storage, approval storage, database-backed
+investigation UI or runtime execution.
