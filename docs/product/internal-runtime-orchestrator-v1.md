@@ -171,3 +171,11 @@ product runtime surface.
 Phase 3E adds persisted investigation reconstruction over repository-backed
 records. The orchestrator remains descriptor-only and is not promoted to a
 database-backed runtime service, UI, API route or replay executor.
+
+Phase 3F adds a static read-only investigation UI surface over a safe fixture.
+The orchestrator remains descriptor-only and still does not become a live
+runtime service or replay executor.
+
+Phase 3G-A connects the investigation UI to the persisted investigation read
+model through a read-only loader. The orchestrator remains descriptor-only and
+is still not promoted into runtime execution.

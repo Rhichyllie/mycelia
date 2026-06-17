@@ -132,3 +132,11 @@ Phase 3D Approval + Audit Runtime Slice turns the pending approval path into a
 narrow persisted approval decision and audit trail. Phase 3E reconstructs those
 persisted records into an investigation-ready read model without broad UI, API,
 billing, replay execution or external integration scope.
+
+Phase 3F renders the investigation read-model shape in a static read-only UI
+surface. The persisted harness remains a controlled test harness, not a product
+runtime surface.
+
+Phase 3G-A connects the investigation route to the persisted investigation read
+model through a read-only loader. It still does not promote the harness into a
+runtime product surface.

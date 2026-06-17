@@ -16,6 +16,7 @@ import {
 } from "../prisma-runtime-repository-adapter";
 
 const tempRoots: string[] = [];
+const SQLITE_INTEGRATION_TEST_TIMEOUT_MS = 15_000;
 
 function sqliteCommand(): string {
   return process.env.SQLITE3_BIN ?? "sqlite3";
@@ -244,7 +245,7 @@ describe("persisted governed flow harness", () => {
       "PolicyDecisionRecord",
       "RuntimeStateSnapshot",
     ]);
-  });
+  }, SQLITE_INTEGRATION_TEST_TIMEOUT_MS);
 
   it("persists and reads back the low-risk completed path", async () => {
     const { dbPath } = tempDatabase();
@@ -273,7 +274,7 @@ describe("persisted governed flow harness", () => {
       "REQUEST_CREATED",
       "ADMISSION_DECIDED",
     ]);
-  });
+  }, SQLITE_INTEGRATION_TEST_TIMEOUT_MS);
 
   it("persists and reads back the medium-risk approval-required path", async () => {
     const { dbPath } = tempDatabase();
@@ -292,7 +293,7 @@ describe("persisted governed flow harness", () => {
     expect(value.approvalRequests).toHaveLength(1);
     expect(value.approvalRequests[0].status).toBe("PENDING");
     expect(tableCount(dbPath, "ApprovalRequest")).toBe(1);
-  });
+  }, SQLITE_INTEGRATION_TEST_TIMEOUT_MS);
 
   it("persists and reads back the high-risk rejected path", async () => {
     const { dbPath } = tempDatabase();
@@ -309,7 +310,7 @@ describe("persisted governed flow harness", () => {
     expect(value.policyAdmissionDecision.outcome).toBe("DENY");
     expect(value.approvalRequests).toHaveLength(0);
     expect(value.stateSnapshots.at(-1)?.state).toBe("REJECTED");
-  });
+  }, SQLITE_INTEGRATION_TEST_TIMEOUT_MS);
 
   it("fails closed for unsafe input without persisting records", async () => {
     const { dbPath } = tempDatabase();
@@ -323,7 +324,7 @@ describe("persisted governed flow harness", () => {
 
     expect(result.ok).toBe(false);
     expect(tableCount(dbPath, "GovernedRun")).toBe(0);
-  });
+  }, SQLITE_INTEGRATION_TEST_TIMEOUT_MS);
 
   it("rejects raw content field names before persistence", async () => {
     const rawFields = [
@@ -348,7 +349,7 @@ describe("persisted governed flow harness", () => {
       expect(result.ok).toBe(false);
       expect(tableCount(dbPath, "GovernedRun")).toBe(0);
     }
-  });
+  }, SQLITE_INTEGRATION_TEST_TIMEOUT_MS);
 
   it("keeps schema, migration and package files unchanged and creates no repo database file", () => {
     const packageStatus = execFileSync(

@@ -99,3 +99,11 @@ Phase 3E adds the persisted investigation read model. It reads the persisted
 governed run, approval and audit records safely through the repository boundary
 without creating API routes, UI, auth, replay execution or external
 integrations.
+
+Phase 3F renders that read-model shape in a static read-only investigation UI
+surface. It does not add live data access, approval UI, auth, replay execution
+or export behavior.
+
+Phase 3G-A keeps the UI read-only and connects it to the persisted
+investigation read model through a narrow loader. Approval decisions remain out
+of scope for the UI.

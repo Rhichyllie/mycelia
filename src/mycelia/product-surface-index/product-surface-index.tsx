@@ -6,6 +6,7 @@ export const PRODUCT_SURFACE_INDEX_ROUTES = [
   "/mycelia/executive",
   "/mycelia/static-demo",
   "/mycelia/walkthrough",
+  "/mycelia/investigation",
   "/mycelia/roadmap",
 ] as const;
 
@@ -15,6 +16,7 @@ export type ProductSurfaceIndexRoute =
 export type ProductSurfaceIndexStatus =
   | "Available now"
   | "Static preview"
+  | "Live read-only"
   | "Descriptor-level";
 
 export type ProductSurfaceIndexItem = {
@@ -82,6 +84,16 @@ export const PRODUCT_SURFACE_INDEX_ITEMS = [
     audience: ["mentors", "reviewers", "product evaluators"],
     status: "Available now",
     safety_note: "Guided explanation only with no replay simulation.",
+    available_now: true,
+  },
+  {
+    label: "Investigation",
+    route: "/mycelia/investigation",
+    description:
+      "A read-only investigation surface loaded through the persisted investigation read-model boundary.",
+    audience: ["operators", "investigators", "technical reviewers"],
+    status: "Live read-only",
+    safety_note: "Read-model loading only with no DB writes, API, auth or replay execution.",
     available_now: true,
   },
   {

@@ -24,8 +24,12 @@ export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
     href: PRODUCT_SURFACE_INDEX_ITEMS[4].route,
   },
   {
-    label: "Roadmap",
+    label: "Investigation",
     href: PRODUCT_SURFACE_INDEX_ITEMS[5].route,
+  },
+  {
+    label: "Roadmap",
+    href: PRODUCT_SURFACE_INDEX_ITEMS[6].route,
   },
 ] as const;
 
@@ -34,7 +38,7 @@ export const PRODUCT_SURFACE_SHELL_SAFETY_BADGES = [
   "Read-only",
   "Descriptor-level",
   "No runtime execution",
-  "No persistence",
+  "No DB writes",
   "No API calls",
   "No external services",
 ] as const;
@@ -47,6 +51,7 @@ export type ProductSurfaceShellNavItem = {
     | "/mycelia/static-demo"
     | "/mycelia/roadmap"
     | "/mycelia/walkthrough"
+    | "/mycelia/investigation"
     | "/mycelia/executive";
 };
 
@@ -66,7 +71,7 @@ export function getProductSurfaceShellModel(): ProductSurfaceShellModel {
     nav_items: PRODUCT_SURFACE_SHELL_NAV_ITEMS,
     safety_badges: PRODUCT_SURFACE_SHELL_SAFETY_BADGES,
     footer_note:
-      "Current surfaces are product previews only. They do not execute runtime or persist data.",
+      "Current surfaces are product previews only. They do not execute runtime or mutate persisted data.",
   };
 }
 
