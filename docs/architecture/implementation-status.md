@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 3C.
+This status page captures repository truth after Phase 3D.
 
 ## Implemented Now
 
@@ -31,6 +31,7 @@ This status page captures repository truth after Phase 3C.
 - Runtime repository layer as an injected-client validation boundary for the six first-slice records.
 - Prisma-like runtime repository adapter with injected client ownership.
 - Persisted governed flow harness exercising low-risk, approval-pending, rejected and unsafe paths against disposable SQLite persistence.
+- Approval + audit runtime slice deciding pending approvals, recording lifecycle snapshots and writing minimal `APPROVAL_DECIDED` audit records through the repository boundary.
 
 ## Static/Demo-Only Now
 
@@ -64,8 +65,9 @@ commitments.
 - Full governed request runtime product surface.
 - Global PrismaClient bootstrapping in application source.
 - Real policy engine beyond deterministic policy/admission v1.
-- Real approval queue, approval UI and approval storage.
-- Real audit writer, audit storage and append log.
+- Real approval queue, approval UI and broad approval storage.
+- Broad approval product, approval UI, RBAC and notification runtime.
+- Broad audit writer, append log, audit sealing and export.
 - Real investigation UI and database-backed investigation view.
 - Real replay execution.
 - Real replay UI and replay runtime.
@@ -87,7 +89,8 @@ compliance/document review flow. Phase 3A adds the schema/migration contract
 for the six first-slice records only. Phase 3B adds the injected-client
 repository boundary without PrismaClient instantiation or runtime execution.
 Phase 3C exercises that boundary through a persisted governed flow harness and
-disposable SQLite tests. The next phase should be Phase 3D Approval + Audit
-Runtime Slice and should not add broad API routes, auth, broad policy engine,
-replay execution, approval UI, database-backed investigation UI or external
-integrations.
+disposable SQLite tests. Phase 3D decides pending approvals and writes minimal
+approval audit records through the same boundary. The next phase should move
+toward a persisted investigation read model and should not add broad API
+routes, auth, broad policy engine, replay execution, approval UI,
+database-backed product UX or external integrations.

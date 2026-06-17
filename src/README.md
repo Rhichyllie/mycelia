@@ -52,12 +52,14 @@ Active MYCELIA source begins here.
 - `src/mycelia/runtime-repository-layer/`: Phase 3B injected-client repository boundary for the six first-slice records.
 - `src/mycelia/prisma-runtime-repository-adapter/`: Phase 3C injected Prisma-like adapter for the repository boundary.
 - `src/mycelia/persisted-governed-flow-harness/`: Phase 3C controlled persisted governed flow harness for local persistence tests.
+- `src/mycelia/approval-audit-runtime-slice/`: Phase 3D persisted approval decision and minimal approval audit runtime slice.
 
 ## Not Implemented Yet
 
 No `GovernedRun` execution, `RuntimeEnvelope` execution, real
 policy engine beyond deterministic policy/admission v1, internal runtime service,
-approval queue, approval UI, approval storage,
+approval queue, approval UI, broad approval product storage,
+RBAC, notification runtime,
 obligation execution, runtime admission side effects, real state transition
 coordinator, state machine mutation,
 next-state creation, checkpoint creation, audit storage, audit append log, audit

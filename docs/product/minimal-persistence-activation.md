@@ -100,3 +100,8 @@ Phase 3C Persisted Governed Flow Harness now applies the migration SQL to
 disposable SQLite test databases and exercises the six-record path through the
 repository boundary. It does not change the schema or migration and does not
 create `dev.db` in the repository.
+
+Phase 3D Approval + Audit Runtime Slice uses the existing `ApprovalRequest`
+decision fields and `AuditRecord` table to persist pending approval decisions
+and an `APPROVAL_DECIDED` audit moment. It does not change the schema or
+migration.

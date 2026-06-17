@@ -148,6 +148,10 @@ Phase 3C now exercises that boundary in a controlled persisted harness against
 disposable SQLite databases. Full API, UI, auth, broad audit service and replay
 execution remain deferred.
 
+Phase 3D now adds the narrow persisted approval decision and
+`APPROVAL_DECIDED` audit trail path. Full API, UI, auth, broad audit service,
+event store and replay execution remain deferred.
+
 ## Phase 3A Go/No-Go
 
 Verdict: `GREEN`.
@@ -183,3 +187,5 @@ These are guardrail risks, not blockers for Phase 3A.
   governed request runtime flow activation to Phase 3C.
 - After Phase 3C, keep Phase 3D limited to approval and audit runtime behavior
   rather than broad SaaS, UI, API or replay execution scope.
+- After Phase 3D, move toward a persisted investigation read model without
+  broad API, UI, auth, replay execution or external integration scope.

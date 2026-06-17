@@ -163,7 +163,7 @@ flow paths through the repository boundary and disposable SQLite persistence.
 The orchestrator remains descriptor-only and is not promoted to a product
 runtime surface.
 
-The next recommended implementation boundary is Phase 3D Approval + Audit
-Runtime Slice. That phase should keep scope narrow and must not add replay
-execution, broad API routes, auth, UI or external integrations without a
-separate phase.
+Phase 3D Approval + Audit Runtime Slice now decides persisted pending approval
+requests and records `APPROVAL_DECIDED` audit moments through the repository
+boundary. The orchestrator remains descriptor-only and is not promoted to a
+product runtime surface.

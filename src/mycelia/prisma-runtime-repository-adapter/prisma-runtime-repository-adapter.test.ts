@@ -79,6 +79,31 @@ function createMemoryDelegate<T extends { readonly id: string }>() {
         )
       );
     },
+    update({
+      where,
+      data,
+    }: {
+      readonly where: Partial<T>;
+      readonly data: Partial<T>;
+    }) {
+      const index = records.findIndex((record) =>
+        Object.entries(where).every(
+          ([key, value]) => record[key as keyof T] === value,
+        )
+      );
+
+      if (index === -1) {
+        throw new Error("SQLITE failure with stack and secret payload details");
+      }
+
+      const record = {
+        ...records[index],
+        ...data,
+      } as T;
+      records[index] = record;
+
+      return record;
+    },
   };
 }
 
@@ -109,6 +134,7 @@ describe("prisma runtime repository adapter", () => {
       "createPolicyDecisionRecord",
       "createAdmissionDecisionRecord",
       "createApprovalRequest",
+      "updateApprovalRequestDecision",
       "createAuditRecord",
       "findGovernedRunByTenantAndCorrelation",
       "listRuntimeStateSnapshotsByRun",
@@ -190,6 +216,22 @@ describe("prisma runtime repository adapter", () => {
           requestedRole: "compliance_reviewer",
           requesterRef: "requester_01",
           createdAt: timestamp,
+        }),
+      ).recordKind,
+    ).toBe("APPROVAL_REQUEST");
+
+    expect(
+      assertRuntimeRepositoryResult(
+        await repository.updateApprovalRequestDecision({
+          tenantId: "tenant_01",
+          governedRunId: "run_01",
+          approvalRequestId: "approval_01",
+          nextStatus: "APPROVED",
+          approverRef: "approver_01",
+          decisionOutcome: "APPROVE",
+          decisionReasonCode: "APPROVAL_ACCEPTED",
+          safeDecisionSummary: "Approval decision persisted.",
+          decidedAt: timestamp,
         }),
       ).recordKind,
     ).toBe("APPROVAL_REQUEST");

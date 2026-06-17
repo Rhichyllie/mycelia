@@ -27,6 +27,7 @@ export const RuntimeRepositoryWriteIntents = [
   "CREATE_POLICY_DECISION_RECORD",
   "CREATE_ADMISSION_DECISION_RECORD",
   "CREATE_APPROVAL_REQUEST",
+  "UPDATE_APPROVAL_REQUEST_DECISION",
   "CREATE_AUDIT_RECORD",
 ] as const;
 
@@ -217,6 +218,24 @@ export type RuntimeRepositoryApprovalRequestRecord = z.infer<
 >;
 export type RuntimeRepositoryAuditRecord = z.infer<typeof AuditRecordSchema>;
 
+const ApprovalRequestDecisionInputSchema = z
+  .object({
+    tenantId: RuntimeRepositorySafeRefSchema,
+    governedRunId: RuntimeRepositorySafeRefSchema,
+    approvalRequestId: RuntimeRepositorySafeRefSchema,
+    nextStatus: RuntimeRepositorySafeRefSchema,
+    approverRef: RuntimeRepositorySafeRefSchema.optional(),
+    decisionOutcome: RuntimeRepositorySafeRefSchema,
+    decisionReasonCode: RuntimeRepositoryReasonCodeSchema,
+    safeDecisionSummary: RuntimeRepositorySafeSummarySchema,
+    decidedAt: RuntimeRepositoryDateTimeSchema,
+  })
+  .strict();
+
+export type RuntimeRepositoryApprovalRequestDecisionInput = z.infer<
+  typeof ApprovalRequestDecisionInputSchema
+>;
+
 export type RuntimeRepositoryRecord =
   | RuntimeRepositoryGovernedRunRecord
   | RuntimeRepositoryStateSnapshotRecord
@@ -317,6 +336,9 @@ export type RuntimeRepositoryClient = {
   readonly createApprovalRequest: (
     input: RuntimeRepositoryApprovalRequestRecord,
   ) => MaybePromise<unknown>;
+  readonly updateApprovalRequestDecision: (
+    input: RuntimeRepositoryApprovalRequestDecisionInput,
+  ) => MaybePromise<unknown>;
   readonly createAuditRecord: (
     input: RuntimeRepositoryAuditRecord,
   ) => MaybePromise<unknown>;
@@ -356,6 +378,9 @@ export type RuntimeRepositoryLayer = {
   readonly createApprovalRequest: (
     input: unknown,
   ) => Promise<RuntimeRepositoryResult<RuntimeRepositoryWriteResult>>;
+  readonly updateApprovalRequestDecision: (
+    input: unknown,
+  ) => Promise<RuntimeRepositoryResult<RuntimeRepositoryWriteResult>>;
   readonly createAuditRecord: (
     input: unknown,
   ) => Promise<RuntimeRepositoryResult<RuntimeRepositoryWriteResult>>;
@@ -385,6 +410,7 @@ const CLIENT_METHODS = [
   "createPolicyDecisionRecord",
   "createAdmissionDecisionRecord",
   "createApprovalRequest",
+  "updateApprovalRequestDecision",
   "createAuditRecord",
   "findGovernedRunByTenantAndCorrelation",
   "listRuntimeStateSnapshotsByRun",
@@ -613,6 +639,24 @@ function parseReadByRun(
   return ok(parsed.data);
 }
 
+function parseApprovalRequestDecisionInput(
+  input: unknown,
+): RuntimeRepositoryResult<RuntimeRepositoryApprovalRequestDecisionInput> {
+  const parsed = ApprovalRequestDecisionInputSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return err(
+      failClosedRuntimeRepositoryDenial(
+        "RUNTIME_REPOSITORY_INPUT_INVALID",
+        "UPDATE_APPROVAL_REQUEST_DECISION",
+        "APPROVAL_REQUEST",
+      ),
+    );
+  }
+
+  return ok(parsed.data);
+}
+
 function createWriteOperation(
   client: RuntimeRepositoryClient,
   intent: RuntimeRepositoryWriteIntent,
@@ -624,6 +668,7 @@ function createWriteOperation(
     | "createPolicyDecisionRecord"
     | "createAdmissionDecisionRecord"
     | "createApprovalRequest"
+    | "updateApprovalRequestDecision"
     | "createAuditRecord"
   >,
 ) {
@@ -699,6 +744,64 @@ export function createRuntimeRepositoryLayer(
       "APPROVAL_REQUEST",
       "createApprovalRequest",
     ),
+    updateApprovalRequestDecision: async (input) => {
+      const parsed = parseApprovalRequestDecisionInput(input);
+
+      if (!parsed.ok) {
+        return parsed;
+      }
+
+      try {
+        const clientRecord = await client.updateApprovalRequestDecision(
+          parsed.value,
+        );
+        const record = validateClientReturn(
+          "APPROVAL_REQUEST",
+          clientRecord,
+          parsed.value.tenantId,
+          parsed.value.governedRunId,
+        );
+
+        if (!record.ok) {
+          return err(
+            failClosedRuntimeRepositoryDenial(
+              record.error.code,
+              "UPDATE_APPROVAL_REQUEST_DECISION",
+              "APPROVAL_REQUEST",
+            ),
+          );
+        }
+
+        if (
+          !("id" in record.value) ||
+          record.value.id !== parsed.value.approvalRequestId
+        ) {
+          return err(
+            failClosedRuntimeRepositoryDenial(
+              "RUNTIME_REPOSITORY_CLIENT_RETURN_INVALID",
+              "UPDATE_APPROVAL_REQUEST_DECISION",
+              "APPROVAL_REQUEST",
+            ),
+          );
+        }
+
+        return ok({
+          intent: "UPDATE_APPROVAL_REQUEST_DECISION",
+          recordKind: "APPROVAL_REQUEST",
+          record: record.value,
+          safeSummary:
+            "Runtime repository approval decision update completed with safe descriptor.",
+        });
+      } catch {
+        return err(
+          failClosedRuntimeRepositoryDenial(
+            "RUNTIME_REPOSITORY_CLIENT_ERROR",
+            "UPDATE_APPROVAL_REQUEST_DECISION",
+            "APPROVAL_REQUEST",
+          ),
+        );
+      }
+    },
     createAuditRecord: createWriteOperation(
       client,
       "CREATE_AUDIT_RECORD",

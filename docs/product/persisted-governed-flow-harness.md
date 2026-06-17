@@ -103,6 +103,11 @@ These are deterministic persisted descriptors, not a broad audit service.
 Phase 3C does not create an append-only event store, event emission,
 hash-chain, signing, sealing or audit export.
 
+Phase 3D extends this path by deciding pending approval requests and writing a
+minimal `APPROVAL_DECIDED` audit record. That extension remains repository
+bounded and still does not create approval UI, auth, event emission, audit
+sealing or a broad audit service.
+
 ## Out Of Scope
 
 Phase 3C does not add:
@@ -123,7 +128,7 @@ Phase 3C does not add:
 
 ## Next Phase
 
-The recommended next phase is Phase 3D Approval + Audit Runtime Slice. That
-phase should turn the current pending approval and minimal audit records into a
-narrow runtime slice without broad UI, API, billing, replay execution or
-external integration scope.
+Phase 3D Approval + Audit Runtime Slice now turns the pending approval path into
+a narrow persisted approval decision and audit trail. The next recommended
+phase should move toward a persisted investigation read model without broad UI,
+API, billing, replay execution or external integration scope.
