@@ -9,6 +9,7 @@ import {
   assertRuntimeRepositoryResult,
   createRuntimeRepositoryLayer,
   type RuntimeRepositoryAdmissionDecisionRecord,
+  type RuntimeRepositoryApprovalRequestDecisionInput,
   type RuntimeRepositoryApprovalRequestRecord,
   type RuntimeRepositoryAuditRecord,
   type RuntimeRepositoryClient,
@@ -102,6 +103,23 @@ function approvalRequest(
   };
 }
 
+function approvalDecision(
+  overrides: Partial<RuntimeRepositoryApprovalRequestDecisionInput> = {},
+): RuntimeRepositoryApprovalRequestDecisionInput {
+  return {
+    tenantId: "tenant_01",
+    governedRunId: "run_01",
+    approvalRequestId: "approval_01",
+    nextStatus: "APPROVED",
+    approverRef: "approver_01",
+    decisionOutcome: "APPROVE",
+    decisionReasonCode: "APPROVAL_ACCEPTED",
+    safeDecisionSummary: "Approval decision recorded.",
+    decidedAt: timestamp,
+    ...overrides,
+  };
+}
+
 function auditRecord(
   overrides: Partial<RuntimeRepositoryAuditRecord> = {},
 ): RuntimeRepositoryAuditRecord {
@@ -162,6 +180,32 @@ function createFakeClient(
     createApprovalRequest(input) {
       const record = { ...input };
       approvalRequests.push(record);
+      return record;
+    },
+    updateApprovalRequestDecision(input) {
+      const index = approvalRequests.findIndex(
+        (record) =>
+          record.id === input.approvalRequestId &&
+          record.tenantId === input.tenantId &&
+          record.governedRunId === input.governedRunId,
+      );
+
+      if (index === -1) {
+        throw new Error("SQLITE raw database failure with secret details");
+      }
+
+      const current = approvalRequests[index];
+      const record: RuntimeRepositoryApprovalRequestRecord = {
+        ...current,
+        status: input.nextStatus,
+        approverRef: input.approverRef,
+        decisionOutcome: input.decisionOutcome,
+        decisionReasonCode: input.decisionReasonCode,
+        safeDecisionSummary: input.safeDecisionSummary,
+        decidedAt: input.decidedAt,
+      };
+      approvalRequests[index] = record;
+
       return record;
     },
     createAuditRecord(input) {
@@ -236,6 +280,7 @@ describe("runtime repository layer", () => {
       "CREATE_POLICY_DECISION_RECORD",
       "CREATE_ADMISSION_DECISION_RECORD",
       "CREATE_APPROVAL_REQUEST",
+      "UPDATE_APPROVAL_REQUEST_DECISION",
       "CREATE_AUDIT_RECORD",
     ]);
     expect(RuntimeRepositoryReadIntents).toEqual([
@@ -283,6 +328,16 @@ describe("runtime repository layer", () => {
       () => layer.createApprovalRequest(approvalRequest({ tenantId: "" })),
       () =>
         layer.createApprovalRequest(approvalRequest({ governedRunId: "" })),
+      () =>
+        layer.updateApprovalRequestDecision(approvalDecision({ tenantId: "" })),
+      () =>
+        layer.updateApprovalRequestDecision(
+          approvalDecision({ governedRunId: "" }),
+        ),
+      () =>
+        layer.updateApprovalRequestDecision(
+          approvalDecision({ approvalRequestId: "" }),
+        ),
       () => layer.createAuditRecord(auditRecord({ tenantId: "" })),
       () => layer.createAuditRecord(auditRecord({ governedRunId: "" })),
     ];
@@ -314,6 +369,11 @@ describe("runtime repository layer", () => {
     expect(
       assertRuntimeRepositoryResult(
         await layer.createApprovalRequest(approvalRequest()),
+      ).recordKind,
+    ).toBe("APPROVAL_REQUEST");
+    expect(
+      assertRuntimeRepositoryResult(
+        await layer.updateApprovalRequestDecision(approvalDecision()),
       ).recordKind,
     ).toBe("APPROVAL_REQUEST");
     expect(
@@ -399,6 +459,7 @@ describe("runtime repository layer", () => {
     await layer.createPolicyDecisionRecord(policyDecision());
     await layer.createAdmissionDecisionRecord(admissionDecision());
     await layer.createApprovalRequest(approvalRequest());
+    await layer.updateApprovalRequestDecision(approvalDecision());
     await layer.createAuditRecord(auditRecord());
 
     expect(
@@ -478,6 +539,13 @@ describe("runtime repository layer", () => {
       });
 
       expect(result.ok).toBe(false);
+
+      const updateResult = await layer.updateApprovalRequestDecision({
+        ...approvalDecision(),
+        [field]: "unsafe_content",
+      });
+
+      expect(updateResult.ok).toBe(false);
     }
   });
 

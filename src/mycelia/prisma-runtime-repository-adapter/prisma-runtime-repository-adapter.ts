@@ -3,6 +3,7 @@ import { z } from "zod";
 import { err, ok, type Result } from "../shared-kernel";
 import type {
   RuntimeRepositoryAdmissionDecisionRecord,
+  RuntimeRepositoryApprovalRequestDecisionInput,
   RuntimeRepositoryApprovalRequestRecord,
   RuntimeRepositoryAuditRecord,
   RuntimeRepositoryClient,
@@ -41,6 +42,13 @@ type PrismaLikeListDelegate = {
   }) => MaybePromise<unknown>;
 };
 
+type PrismaLikeUpdateDelegate = {
+  readonly update: (args: {
+    readonly where: Record<string, unknown>;
+    readonly data: Record<string, unknown>;
+  }) => MaybePromise<unknown>;
+};
+
 type PrismaLikeModelDelegate =
   & PrismaLikeCreateDelegate
   & Partial<PrismaLikeFindDelegate>
@@ -54,7 +62,8 @@ export type PrismaRuntimeRepositoryLikeClient = {
     PrismaLikeModelDelegate & PrismaLikeListDelegate;
   readonly admissionDecisionRecord:
     PrismaLikeModelDelegate & PrismaLikeListDelegate;
-  readonly approvalRequest: PrismaLikeModelDelegate & PrismaLikeListDelegate;
+  readonly approvalRequest:
+    PrismaLikeModelDelegate & PrismaLikeListDelegate & PrismaLikeUpdateDelegate;
   readonly auditRecord: PrismaLikeModelDelegate & PrismaLikeListDelegate;
 };
 
@@ -100,6 +109,7 @@ const IMPLEMENTED_METHODS = [
   "createPolicyDecisionRecord",
   "createAdmissionDecisionRecord",
   "createApprovalRequest",
+  "updateApprovalRequestDecision",
   "createAuditRecord",
   "findGovernedRunByTenantAndCorrelation",
   "listRuntimeStateSnapshotsByRun",
@@ -159,6 +169,16 @@ function hasListDelegate(input: unknown, delegateName: string): boolean {
   return hasFunction(delegate, "findMany");
 }
 
+function hasUpdateDelegate(input: unknown, delegateName: string): boolean {
+  if (!isRecord(input)) {
+    return false;
+  }
+
+  const delegate = input[delegateName];
+
+  return hasFunction(delegate, "update");
+}
+
 function isPrismaLikeClient(
   input: unknown,
 ): input is PrismaRuntimeRepositoryLikeClient {
@@ -181,6 +201,7 @@ function isPrismaLikeClient(
   return (
     createDelegates.every((delegate) => hasDelegate(input, delegate)) &&
     hasFindDelegate(input, "governedRun") &&
+    hasUpdateDelegate(input, "approvalRequest") &&
     listDelegates.every((delegate) => hasListDelegate(input, delegate))
   );
 }
@@ -288,6 +309,14 @@ function findManyThroughDelegate(
   return delegate["findMany"](args);
 }
 
+function updateThroughDelegate(
+  delegate: PrismaLikeUpdateDelegate,
+  where: Record<string, unknown>,
+  data: Record<string, unknown>,
+): MaybePromise<unknown> {
+  return delegate["update"]({ where, data });
+}
+
 export function createPrismaRuntimeRepositoryAdapter(
   client: unknown,
 ): PrismaRuntimeRepositoryAdapterResult {
@@ -329,6 +358,28 @@ export function createPrismaRuntimeRepositoryAdapter(
     createApprovalRequest(input: RuntimeRepositoryApprovalRequestRecord) {
       return safeClientCall(() =>
         createThroughDelegate(client.approvalRequest, { ...input })
+      );
+    },
+    updateApprovalRequestDecision(
+      input: RuntimeRepositoryApprovalRequestDecisionInput,
+    ) {
+      return safeClientCall(() =>
+        updateThroughDelegate(
+          client.approvalRequest,
+          {
+            id: input.approvalRequestId,
+            tenantId: input.tenantId,
+            governedRunId: input.governedRunId,
+          },
+          {
+            status: input.nextStatus,
+            approverRef: input.approverRef,
+            decisionOutcome: input.decisionOutcome,
+            decisionReasonCode: input.decisionReasonCode,
+            safeDecisionSummary: input.safeDecisionSummary,
+            decidedAt: input.decidedAt,
+          },
+        )
       );
     },
     createAuditRecord(input: RuntimeRepositoryAuditRecord) {

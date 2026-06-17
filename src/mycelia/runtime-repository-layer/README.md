@@ -12,6 +12,9 @@ not execute runtime, execute replay, call APIs, create UI, create auth, emit
 events, write audit records as runtime behavior, append logs, call tools, call
 external services, export files, generate PDFs or create downloadable artifacts.
 
+Phase 3D adds only the narrow approval decision update path required to resolve
+a pending `ApprovalRequest` through the same injected-client boundary.
+
 It stores no raw sensitive document content and accepts only safe refs,
 summaries and bounded record fields.
 

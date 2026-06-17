@@ -42,3 +42,10 @@ must remain explicit in later phases.
 Phase 3C applies this migration SQL to disposable SQLite test databases through
 the persisted governed flow harness. Those tests remove temporary database
 files and do not create or commit `dev.db`.
+
+Phase 3D uses the existing `ApprovalRequest`, `RuntimeStateSnapshot` and
+`AuditRecord` schema fields to decide pending approvals and record
+`APPROVAL_DECIDED` audit entries through the injected repository boundary. It
+does not modify the schema, run Prisma generate, run production migrations,
+create `dev.db`, instantiate PrismaClient globally or create API/UI/auth
+surfaces.

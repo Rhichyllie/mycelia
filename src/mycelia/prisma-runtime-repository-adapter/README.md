@@ -18,6 +18,10 @@ The adapter maps safe repository records to the six Phase 3A models:
 - ApprovalRequest
 - AuditRecord
 
+Phase 3D uses the adapter's injected approval-request update method to persist
+approval decisions without changing the schema or instantiating PrismaClient in
+production source.
+
 Errors from the injected client are converted to generic adapter failures so
 SQL text, stack traces and storage internals are not exposed.
 

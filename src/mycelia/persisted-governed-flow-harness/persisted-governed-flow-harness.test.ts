@@ -122,6 +122,32 @@ function createSqliteDelegate(dbPath: string, table: string) {
         `SELECT * FROM "${table}" WHERE ${whereClause(where)}${order};`,
       );
     },
+    update({
+      where,
+      data,
+    }: {
+      readonly where: Record<string, unknown>;
+      readonly data: Record<string, unknown>;
+    }) {
+      const entries = Object.entries(data).filter(
+        ([, value]) => value !== undefined,
+      );
+      const assignments = entries
+        .map(([key, value]) => `"${key}" = ${sqlValue(value)}`)
+        .join(", ");
+
+      executeSql(
+        dbPath,
+        `UPDATE "${table}" SET ${assignments} WHERE ${whereClause(where)};`,
+      );
+
+      return (
+        queryJson<Record<string, unknown>>(
+          dbPath,
+          `SELECT * FROM "${table}" WHERE ${whereClause(where)} LIMIT 1;`,
+        )[0] ?? null
+      );
+    },
   };
 }
 

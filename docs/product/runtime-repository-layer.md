@@ -41,6 +41,7 @@ The write intents are:
 - `CREATE_POLICY_DECISION_RECORD`
 - `CREATE_ADMISSION_DECISION_RECORD`
 - `CREATE_APPROVAL_REQUEST`
+- `UPDATE_APPROVAL_REQUEST_DECISION`
 - `CREATE_AUDIT_RECORD`
 
 Writes accept safe refs and summaries only. They do not accept raw document
@@ -111,9 +112,12 @@ Phase 3B does not add:
 
 ## Next Phase
 
-Phase 3C Persisted Governed Flow Harness now uses this repository boundary with
-an injected Prisma-like adapter and disposable SQLite tests. It proves the
+Phase 3C Persisted Governed Flow Harness uses this repository boundary with an
+injected Prisma-like adapter and disposable SQLite tests. It proves the
 low-risk, medium-risk approval-pending and high-risk rejected paths without
 adding API routes, UI, auth, replay execution or external integration scope.
 
-The next recommended boundary is Phase 3D Approval + Audit Runtime Slice.
+Phase 3D adds the narrow `UPDATE_APPROVAL_REQUEST_DECISION` path so a pending
+approval can be decided, reflected in a runtime state snapshot and recorded as
+an `APPROVAL_DECIDED` audit record. It still does not add API routes, approval
+UI, auth, event emission or a broad audit service.

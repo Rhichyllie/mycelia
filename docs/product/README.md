@@ -23,6 +23,7 @@ Current product decision artifacts:
 - [Minimal Persistence Activation](minimal-persistence-activation.md): activates the Prisma schema and migration contract for the six first-slice records without application DB reads/writes.
 - [Runtime Repository Layer](runtime-repository-layer.md): defines an injected-client repository boundary for the six first-slice records without PrismaClient instantiation, API routes or runtime execution.
 - [Persisted Governed Flow Harness](persisted-governed-flow-harness.md): exercises the schema, repository boundary and deterministic governed flow paths against disposable SQLite persistence without API, UI, auth or SaaS scope.
+- [Approval + Audit Runtime Slice](approval-audit-runtime-slice.md): decides persisted pending approval requests, records lifecycle snapshots and writes minimal `APPROVAL_DECIDED` audit records without API, UI, auth, replay execution or event emission.
 
 Current truth:
 
@@ -43,4 +44,5 @@ Current truth:
 - minimal persistence activation exists as schema/migration contract only;
 - runtime repository layer exists as an injected-client validation boundary;
 - persisted governed flow harness exists for controlled local persistence tests;
-- runtime product execution, API routes, auth, global PrismaClient bootstrapping and external integrations are not implemented yet.
+- approval + audit runtime slice exists for persisted approval decisions and minimal approval audit records;
+- runtime product execution, API routes, auth, global PrismaClient bootstrapping, broad approval UI, broad audit service and external integrations are not implemented yet.
