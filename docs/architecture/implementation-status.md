@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 3E.
+This status page captures repository truth after Phase 3G-A.
 
 ## Implemented Now
 
@@ -33,6 +33,7 @@ This status page captures repository truth after Phase 3E.
 - Persisted governed flow harness exercising low-risk, approval-pending, rejected and unsafe paths against disposable SQLite persistence.
 - Approval + audit runtime slice deciding pending approvals, recording lifecycle snapshots and writing minimal `APPROVAL_DECIDED` audit records through the repository boundary.
 - Persisted investigation read model reconstructing governed run history from repository-backed records into safe investigation descriptors.
+- Minimal investigation UI surface rendering the persisted investigation read-model shape at `/mycelia/investigation` through a narrow live read-only loader.
 
 ## Static/Demo-Only Now
 
@@ -42,6 +43,7 @@ This status page captures repository truth after Phase 3E.
 - Static demo `/mycelia/static-demo`.
 - Walkthrough `/mycelia/walkthrough`.
 - Roadmap `/mycelia/roadmap`.
+- Investigation `/mycelia/investigation` with live read-only read-model loading.
 - Product surface index.
 
 These surfaces are static, read-only, descriptor-level and non-executing.
@@ -69,7 +71,7 @@ commitments.
 - Real approval queue, approval UI and broad approval storage.
 - Broad approval product, approval UI, RBAC and notification runtime.
 - Broad audit writer, append log, audit sealing and export.
-- Real investigation UI.
+- Production investigation UI backed by a production read-only repository client.
 - Real replay execution.
 - Real replay UI and replay runtime.
 - Real internal runtime service boundary.
@@ -92,7 +94,10 @@ repository boundary without PrismaClient instantiation or runtime execution.
 Phase 3C exercises that boundary through a persisted governed flow harness and
 disposable SQLite tests. Phase 3D decides pending approvals and writes minimal
 approval audit records through the same boundary. Phase 3E reconstructs
-repository-backed run history into an investigation-ready read model. The next
-phase should move toward a minimal investigation UI surface and should not add
-broad API routes, auth, broad policy engine, replay execution, approval UI,
-database-backed product UX beyond the read model or external integrations.
+repository-backed run history into an investigation-ready read model. Phase 3F
+renders that shape in a read-only UI surface. Phase 3G-A connects the route to
+the read model through a narrow live read-only loader. The next phase can move
+toward replacing the controlled reference source with a production read-only
+repository client and should not add broad API routes, auth, broad policy
+engine, replay execution, approval UI, database-backed product UX beyond the
+read-only investigation path or external integrations.

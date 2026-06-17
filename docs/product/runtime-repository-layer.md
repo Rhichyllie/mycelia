@@ -126,3 +126,12 @@ Phase 3E uses the same repository boundary to reconstruct persisted run
 history into an investigation-ready read model. It reads safe descriptors only
 and still does not add UI, API routes, auth, replay execution, export behavior
 or broad database access.
+
+Phase 3F renders a static fixture shaped like that read model. It does not add
+new repository methods, live reads, API routes, auth, replay execution or
+database client ownership.
+
+Phase 3G-A uses a read-only repository client boundary to feed the Phase 3E
+read model and map it into the UI contract. It does not add repository writes,
+new repository methods, API routes, auth or route-local database client
+ownership.

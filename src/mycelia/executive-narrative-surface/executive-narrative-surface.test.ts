@@ -18,6 +18,7 @@ const ALLOWED_INTERNAL_ROUTES = new Set<string>([
   "/mycelia/static-demo",
   "/mycelia/roadmap",
   "/mycelia/walkthrough",
+  "/mycelia/investigation",
   "/mycelia/executive",
 ]);
 const UNSAFE_EXECUTIVE_STRING_PATTERN =
@@ -62,13 +63,14 @@ describe("executive narrative surface", () => {
     expect(getExecutiveNarrativeSurfaceModel().title).toBe("MYCELIA");
   });
 
-  it("includes all six product routes", () => {
+  it("includes all seven product routes", () => {
     expect(getExecutiveNarrativeSurfaceModel().routes).toEqual([
       "/",
       "/mycelia",
       "/mycelia/executive",
       "/mycelia/static-demo",
       "/mycelia/walkthrough",
+      "/mycelia/investigation",
       "/mycelia/roadmap",
     ]);
   });

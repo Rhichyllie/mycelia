@@ -116,6 +116,12 @@ without creating UI.
 
 ## Next Phase
 
-The recommended next phase is a minimal investigation UI surface that consumes
-this read model. That future UI should remain bounded by the same repository,
-tenant/run and raw-content safety rules.
+Phase 3F adds the minimal investigation UI surface. It consumes the same
+read-model shape through a static fixture and hardened presenter, keeping the
+route read-only with no live database, API, auth, replay execution or export
+behavior.
+
+Phase 3G-A connects that surface back to this read model through a narrow
+read-only loader and mapper. The route no longer depends exclusively on UI
+fixtures, but it still does not create API routes, auth, mutation, replay,
+exports or broad database ownership.
