@@ -24,6 +24,7 @@ Current product decision artifacts:
 - [Runtime Repository Layer](runtime-repository-layer.md): defines an injected-client repository boundary for the six first-slice records without PrismaClient instantiation, API routes or runtime execution.
 - [Persisted Governed Flow Harness](persisted-governed-flow-harness.md): exercises the schema, repository boundary and deterministic governed flow paths against disposable SQLite persistence without API, UI, auth or SaaS scope.
 - [Approval + Audit Runtime Slice](approval-audit-runtime-slice.md): decides persisted pending approval requests, records lifecycle snapshots and writes minimal `APPROVAL_DECIDED` audit records without API, UI, auth, replay execution or event emission.
+- [Persisted Investigation Read Model](persisted-investigation-read-model.md): reconstructs persisted run history into an investigation-ready descriptor without UI, API, auth, replay execution or export behavior.
 
 Current truth:
 
@@ -45,4 +46,5 @@ Current truth:
 - runtime repository layer exists as an injected-client validation boundary;
 - persisted governed flow harness exists for controlled local persistence tests;
 - approval + audit runtime slice exists for persisted approval decisions and minimal approval audit records;
-- runtime product execution, API routes, auth, global PrismaClient bootstrapping, broad approval UI, broad audit service and external integrations are not implemented yet.
+- persisted investigation read model exists for repository-backed reconstruction;
+- runtime product execution, API routes, auth, global PrismaClient bootstrapping, broad approval UI, investigation UI, broad audit service and external integrations are not implemented yet.

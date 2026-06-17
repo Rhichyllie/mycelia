@@ -105,3 +105,8 @@ Phase 3D Approval + Audit Runtime Slice uses the existing `ApprovalRequest`
 decision fields and `AuditRecord` table to persist pending approval decisions
 and an `APPROVAL_DECIDED` audit moment. It does not change the schema or
 migration.
+
+Phase 3E Persisted Investigation Read Model reads those same six records
+through the repository boundary to reconstruct investigation-ready descriptors.
+It does not change the schema or migration and does not add UI, API routes,
+auth, replay execution, export behavior or broad audit storage.

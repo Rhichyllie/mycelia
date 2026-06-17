@@ -167,3 +167,7 @@ Phase 3D Approval + Audit Runtime Slice now decides persisted pending approval
 requests and records `APPROVAL_DECIDED` audit moments through the repository
 boundary. The orchestrator remains descriptor-only and is not promoted to a
 product runtime surface.
+
+Phase 3E adds persisted investigation reconstruction over repository-backed
+records. The orchestrator remains descriptor-only and is not promoted to a
+database-backed runtime service, UI, API route or replay executor.

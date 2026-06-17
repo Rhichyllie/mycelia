@@ -121,3 +121,8 @@ Phase 3D adds the narrow `UPDATE_APPROVAL_REQUEST_DECISION` path so a pending
 approval can be decided, reflected in a runtime state snapshot and recorded as
 an `APPROVAL_DECIDED` audit record. It still does not add API routes, approval
 UI, auth, event emission or a broad audit service.
+
+Phase 3E uses the same repository boundary to reconstruct persisted run
+history into an investigation-ready read model. It reads safe descriptors only
+and still does not add UI, API routes, auth, replay execution, export behavior
+or broad database access.
