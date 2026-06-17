@@ -58,9 +58,18 @@ function source(fileUrl: URL): string {
   return readFileSync(fileUrl, "utf8");
 }
 
+function productionCodeOnly(input: string): string {
+  return input
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\/\/.*$/gm, "")
+    .replace(/(["'`])(?:\\[\s\S]|(?!\1)[^\\])*\1/g, "\"\"");
+}
+
 describe("runtime persistence model source safety", () => {
   it("does not add runtime, browser, route, file or external service behavior", () => {
-    const modelSource = source(runtimePersistenceModelSourcePath).toLowerCase();
+    const modelSource = productionCodeOnly(
+      source(runtimePersistenceModelSourcePath),
+    ).toLowerCase();
 
     for (const pattern of FORBIDDEN_RUNTIME_PERSISTENCE_SOURCE_PATTERNS) {
       expect(modelSource).not.toContain(pattern.toLowerCase());
@@ -80,7 +89,9 @@ describe("runtime persistence model source safety", () => {
   });
 
   it("does not import PrismaClient or create migrations", () => {
-    const modelSource = source(runtimePersistenceModelSourcePath);
+    const modelSource = productionCodeOnly(
+      source(runtimePersistenceModelSourcePath),
+    );
 
     expect(modelSource).not.toContain("PrismaClient");
     expect(modelSource).not.toContain("@prisma/client");

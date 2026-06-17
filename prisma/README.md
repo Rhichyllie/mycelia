@@ -1,22 +1,35 @@
-# Active Prisma Placeholder
+# Active Prisma Surface
 
-This active directory is intentionally empty after Phase 0B quarantine.
+Phase 3A introduces the first active Prisma schema and migration contract for
+the minimal governed runtime slice.
 
-MYCELIA persistence implementation will be created in future phases. Do not copy
-MapIA legacy Prisma schema or migrations back into this directory without
-architecture review.
+The active files are:
 
-No runtime behavior or database migrations exist here yet.
+- `schema.prisma`
+- `migrations/000001_minimal_runtime_slice/migration.sql`
 
-Before adding persistence files, consult:
+They define exactly six first-slice records:
 
-- `docs/architecture/registry.md`
-- `docs/architecture/module-map.md`
-- `contracts/README.md`
+- GovernedRun
+- RuntimeStateSnapshot
+- PolicyDecisionRecord
+- AdmissionDecisionRecord
+- ApprovalRequest
+- AuditRecord
 
-Phase 0C adds documentation and registry scaffolding only. No Prisma schema or
-migration exists in the active implementation surface yet.
+The datasource is SQLite and expects:
 
-Phase 2R adds a TypeScript minimal persistent model scaffold under
-`src/mycelia/runtime-persistence-model/`. The active Prisma surface still has no
-schema, no migrations, no database connection and no generated client.
+```text
+DATABASE_URL="file:./dev.db"
+```
+
+Do not create `.env` secrets or commit generated database files.
+
+Phase 3A is schema/migration contract activation only. It does not run
+migrations, does not run Prisma generate, does not import PrismaClient in
+application source, does not create repositories or services, does not execute
+runtime, does not write audit records and does not store raw sensitive document
+content.
+
+Phase 3B should own any future runtime repository layer, PrismaClient usage and
+controlled DB read/write activation.

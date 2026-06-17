@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model GovernedRun {
+  id            String   @id
+  tenantId      String
+  correlationId String
+  currentState  String
+  status        String
+  resourceRef   String
+  requesterRef  String
+  purpose       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  runtimeStateSnapshots RuntimeStateSnapshot[]
+  policyDecisionRecords PolicyDecisionRecord[]
+  admissionDecisions    AdmissionDecisionRecord[]
+  approvalRequests      ApprovalRequest[]
+  auditRecords          AuditRecord[]
+
+  @@unique([tenantId, correlationId])
+  @@index([tenantId])
+}
+
+model RuntimeStateSnapshot {
+  id            String   @id
+  tenantId      String
+  governedRunId String
+  state         String
+  sequence      Int
+  reasonCode    String
+  safeSummary   String
+  createdAt     DateTime @default(now())
+
+  governedRun GovernedRun @relation(fields: [governedRunId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([governedRunId])
+}
+
+model PolicyDecisionRecord {
+  id            String   @id
+  tenantId      String
+  governedRunId String
+  riskLevel     String
+  outcome       String
+  reasonCode    String
+  safeSummary   String
+  policyRef     String
+  createdAt     DateTime @default(now())
+
+  governedRun GovernedRun @relation(fields: [governedRunId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([governedRunId])
+}
+
+model AdmissionDecisionRecord {
+  id                  String   @id
+  tenantId            String
+  governedRunId       String
+  outcome             String
+  reasonCode          String
+  safeSummary         String
+  lifecycleIntentHint String
+  createdAt           DateTime @default(now())
+
+  governedRun      GovernedRun       @relation(fields: [governedRunId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  approvalRequests ApprovalRequest[]
+
+  @@index([tenantId])
+  @@index([governedRunId])
+}
+
+model ApprovalRequest {
+  id                        String   @id
+  tenantId                  String
+  governedRunId             String
+  admissionDecisionRecordId String
+  status                    String
+  requestedRole             String
+  requesterRef              String
+  approverRef               String?
+  decisionOutcome           String?
+  decisionReasonCode        String?
+  safeDecisionSummary       String?
+  createdAt                 DateTime @default(now())
+  decidedAt                 DateTime?
+
+  governedRun             GovernedRun             @relation(fields: [governedRunId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  admissionDecisionRecord AdmissionDecisionRecord @relation(fields: [admissionDecisionRecordId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([governedRunId])
+  @@index([admissionDecisionRecordId])
+}
+
+model AuditRecord {
+  id             String   @id
+  tenantId       String
+  governedRunId  String
+  moment         String
+  requirement    String
+  recordKindHint String
+  reasonCode     String
+  safeSummary    String
+  subjectRef     String
+  actorRef       String?
+  evidenceRef    String?
+  createdAt      DateTime @default(now())
+
+  governedRun GovernedRun @relation(fields: [governedRunId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([governedRunId])
+}

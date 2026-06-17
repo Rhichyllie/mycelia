@@ -534,11 +534,11 @@ export const RUNTIME_PERSISTENCE_SHARED_INVARIANTS = [
 ] as const;
 
 export const RUNTIME_PERSISTENCE_PRISMA_SCAFFOLD_STATUS = [
-  "no active Prisma schema exists in the current repository surface",
-  "this phase does not create a full Prisma schema because active Prisma conventions are not present",
-  "no migration file is created",
+  "Phase 2R originally defined the TypeScript scaffold before an active Prisma schema existed",
+  "Phase 3A now adds prisma/schema.prisma as a schema contract for the same six records",
+  "Phase 3A now adds one SQL migration contract for the same six records",
   "Prisma generate is not run",
-  "future Prisma modeling should derive from this TypeScript scaffold and product documentation",
+  "application source does not import PrismaClient or read/write databases",
 ] as const;
 
 export const RUNTIME_PERSISTENCE_TYPESCRIPT_DESCRIPTOR_STATUS = [

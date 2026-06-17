@@ -151,9 +151,10 @@ runtime execution or replay execution.
 ## Next Phases
 
 Phase 2Z audits the pure runtime-slice layers and keeps this orchestrator as
-descriptor-only composition.
+descriptor-only composition. Phase 3A adds only the schema/migration contract
+for the persistence records referenced by the orchestrator descriptors.
 
-The next recommended phase is Phase 3A Minimal Persistence Activation. That
-phase should remain limited to narrow persistence activation and must not add
-runtime execution, replay execution, API routes, auth, UI, audit writing or
-external integrations.
+The next recommended implementation boundary is Phase 3B Runtime Repository
+Layer. That phase should remain limited to controlled repository activation and
+must not add runtime execution, replay execution, API routes, auth, UI, audit
+writing or external integrations.
