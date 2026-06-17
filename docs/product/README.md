@@ -21,6 +21,7 @@ Current product decision artifacts:
 - [Internal Runtime Orchestrator v1](internal-runtime-orchestrator-v1.md): composes the pure runtime-slice layers into one deterministic in-memory descriptor flow without runtime execution, persistence, APIs or external calls.
 - [Runtime Slice Consistency Audit](runtime-slice-consistency-audit.md): audits the 2R-2Y runtime slice and recommends narrow Phase 3A persistence activation without runtime execution.
 - [Minimal Persistence Activation](minimal-persistence-activation.md): activates the Prisma schema and migration contract for the six first-slice records without application DB reads/writes.
+- [Runtime Repository Layer](runtime-repository-layer.md): defines an injected-client repository boundary for the six first-slice records without PrismaClient instantiation, API routes or runtime execution.
 
 Current truth:
 
@@ -39,4 +40,5 @@ Current truth:
 - internal runtime orchestrator v1 exists as pure TypeScript deterministic in-memory descriptor composition;
 - runtime slice consistency audit exists as a static descriptor-level GREEN audit for Phase 3A readiness;
 - minimal persistence activation exists as schema/migration contract only;
-- runtime execution, application DB reads/writes, API routes, auth and external integrations are not implemented yet.
+- runtime repository layer exists as an injected-client validation boundary;
+- runtime execution, API routes, auth, PrismaClient bootstrapping and external integrations are not implemented yet.

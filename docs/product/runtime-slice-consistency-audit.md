@@ -4,6 +4,7 @@ Phase 2Z audits the minimal governed runtime slice before Phase 3A Minimal
 Persistence Activation.
 
 Related activation: [Minimal Persistence Activation](minimal-persistence-activation.md).
+Related repository boundary: [Runtime Repository Layer](runtime-repository-layer.md).
 
 This audit is static and descriptor-level. It does not execute runtime, does
 not execute replay, does not persist data, does not query databases, does not
@@ -139,6 +140,10 @@ Phase 3A can begin only if it stays narrow:
 Phase 3A now activates the schema and migration contract only. Application DB
 reads/writes, repository/service code and runtime execution remain deferred.
 
+Phase 3B now adds the injected-client repository boundary for the same
+six-record first slice. Runtime execution, API routes, auth, PrismaClient
+bootstrapping and audit writing remain deferred.
+
 ## Phase 3A Go/No-Go
 
 Verdict: `GREEN`.
@@ -170,3 +175,5 @@ These are guardrail risks, not blockers for Phase 3A.
   audit, investigation and replay layers.
 - Do not add runtime execution, replay execution, API routes, auth, UI, external
   calls, event emission or audit writing in Phase 3A.
+- After Phase 3A, keep Phase 3B limited to the repository boundary and leave
+  governed request runtime flow activation to Phase 3C.

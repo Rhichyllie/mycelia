@@ -31,5 +31,10 @@ application source, does not create repositories or services, does not execute
 runtime, does not write audit records and does not store raw sensitive document
 content.
 
-Phase 3B should own any future runtime repository layer, PrismaClient usage and
-controlled DB read/write activation.
+Phase 3B adds an injected-client runtime repository layer for the six records.
+That repository boundary does not instantiate PrismaClient, create a global
+database client, run migrations, run Prisma generate, execute runtime or write
+audit records.
+
+Future PrismaClient ownership and controlled runtime DB read/write activation
+must remain explicit in later phases.

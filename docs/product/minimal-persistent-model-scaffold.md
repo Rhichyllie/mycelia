@@ -151,6 +151,11 @@ references as conceptual mapping inputs while composing the pure runtime-slice
 descriptor flow. It does not persist records, query databases or create a
 repository layer.
 
+Phase 3B runtime repository layer validates safe inputs for the same six
+records and delegates through an injected structural client. It does not import
+or instantiate PrismaClient, create global database clients, execute runtime or
+write audit records.
+
 ## Mapping to Existing Modules
 
 - GovernedRun maps to `src/mycelia/governed-run/`.
@@ -183,4 +188,5 @@ repository layer.
 ## Next Implementation Phases
 
 - 3A Minimal Persistence Activation is the schema/migration contract for the six-record first slice.
-- 3B Runtime Repository Layer should own any future controlled DB reads/writes and must not add runtime execution, APIs, auth, UI, audit writing or replay execution without a separate phase.
+- 3B Runtime Repository Layer defines the injected-client repository boundary for the six-record first slice.
+- 3C Governed Request Runtime Flow should be the first phase to use that boundary in a runtime flow, without broad API, auth, UI, replay execution or external integration scope.
