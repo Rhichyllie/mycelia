@@ -16,6 +16,7 @@ import {
   loadMinimalInvestigationUiDescriptor,
   presentMinimalInvestigationDescriptor,
 } from ".";
+import { resolveInvestigationSelectionTarget } from "../investigation-selection-readonly-boundary";
 
 function htmlForFixture(
   fixture: keyof typeof MINIMAL_INVESTIGATION_UI_FIXTURES =
@@ -67,6 +68,28 @@ describe("minimal investigation ui surface", () => {
 
     expect(html).toContain("run_approved_reference");
     expect(html).toContain("persisted investigation read model");
+    expect(html).toContain("Repository boundary reads only");
+    expect(html).not.toContain("run_approved_static");
+  });
+
+  it("renders selected read-only investigation boundary output through the same renderer contract", async () => {
+    const selected = await resolveInvestigationSelectionTarget();
+
+    expect(selected.ok).toBe(true);
+
+    if (!selected.ok) {
+      throw new Error("Selection unexpectedly denied.");
+    }
+
+    const html = renderToStaticMarkup(
+      createElement(MinimalInvestigationUiSurface, {
+        descriptor: selected.value.uiDescriptor,
+        sourceSummary: selected.value.safeSummary,
+      }),
+    );
+
+    expect(html).toContain("run_approved_reference");
+    expect(html).toContain("Investigation target resolved");
     expect(html).toContain("Repository boundary reads only");
     expect(html).not.toContain("run_approved_static");
   });

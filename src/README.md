@@ -54,7 +54,8 @@ Active MYCELIA source begins here.
 - `src/mycelia/persisted-governed-flow-harness/`: Phase 3C controlled persisted governed flow harness for local persistence tests.
 - `src/mycelia/approval-audit-runtime-slice/`: Phase 3D persisted approval decision and minimal approval audit runtime slice.
 - `src/mycelia/persisted-investigation-read-model/`: Phase 3E persisted investigation read model over repository-backed records.
-- `src/mycelia/minimal-investigation-ui-surface/`: Phase 3F/3G-A read-only investigation UI surface with persisted read-model loader.
+- `src/mycelia/minimal-investigation-ui-surface/`: Phase 3F read-only investigation UI surface with persisted read-model loader.
+- `src/mycelia/investigation-selection-readonly-boundary/`: Phase 3G controlled investigation target selection boundary for read-only UI rendering.
 
 ## Not Implemented Yet
 
@@ -65,8 +66,8 @@ RBAC, notification runtime,
 obligation execution, runtime admission side effects, real state transition
 coordinator, state machine mutation,
 next-state creation, checkpoint creation, audit storage, audit append log, audit
-emission infrastructure, audit timeline storage, audit writing, real investigation UI,
-live investigation UI, case management, downloadable artifacts, static
+emission infrastructure, audit timeline storage, audit writing, production dynamic investigation UI beyond controlled read-only selection,
+case management, downloadable artifacts, static
 artifact file generation, markdown file generation, PDF generation, JSON
 fixture generation, demo export, demo execution, executable fixtures, demo seed
 data, seed data, database pagination, timeline indexes, evidence store, record
@@ -80,7 +81,8 @@ workflow execution, authentication system,
 authorization middleware, RLS, production deployment, SaaS billing or public SDK
 exists yet.
 
-Static product surfaces exist, but operational/runtime UI does not.
+Static product surfaces and controlled read-only investigation selection exist,
+but mutable operational/runtime UI does not.
 
 Legacy MapIA code must remain under `legacy/` and must not be copied back
 without architecture review.

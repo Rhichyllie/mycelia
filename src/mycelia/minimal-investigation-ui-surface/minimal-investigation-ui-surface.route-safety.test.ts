@@ -28,8 +28,8 @@ describe("minimal investigation ui route safety", () => {
 
     expect(existsSync(routePath)).toBe(true);
     expect(source).toContain("export default async function MyceliaInvestigationPage");
-    expect(source).toContain("loadMinimalInvestigationUiDescriptor");
-    expect(source).toContain("sourceSummary={investigation.safeSummary}");
+    expect(source).toContain("resolveInvestigationSelectionTarget");
+    expect(source).toContain("sourceSummary={sourceSummary}");
   });
 
   it("does not create a route handler or API behavior", () => {
@@ -47,7 +47,8 @@ describe("minimal investigation ui route safety", () => {
     const source = routeSource();
 
     expect(source).toContain("MinimalInvestigationUiSurface");
-    expect(source).toContain("loadMinimalInvestigationUiDescriptor");
+    expect(source).toContain("resolveInvestigationSelectionTarget");
+    expect(source).not.toContain("loadMinimalInvestigationUiDescriptor");
     expect(source).not.toContain("DEFAULT_MINIMAL_INVESTIGATION_UI_DESCRIPTOR");
     expect(source).not.toContain("MINIMAL_INVESTIGATION_UI_FIXTURES");
     expect(source).not.toContain("\"use client\"");

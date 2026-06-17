@@ -1,7 +1,7 @@
 # Minimal Investigation UI Surface
 
-Phase 3G-A connects the Phase 3F investigation surface to the Phase 3E
-persisted investigation read model through a narrow live read-only loader.
+Phase 3G connects the Phase 3F investigation surface to the Phase 3E persisted
+investigation read model through a controlled read-only selection boundary.
 
 The module separates:
 
@@ -9,6 +9,7 @@ The module separates:
 - safe static fixtures;
 - read-only reference records behind the repository boundary;
 - read-model loader and mapper;
+- integration with the Phase 3G selection boundary;
 - presentation normalization for missing, incomplete and blocked states;
 - semantic React rendering.
 

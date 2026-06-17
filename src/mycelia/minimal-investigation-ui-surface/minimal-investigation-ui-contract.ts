@@ -4,7 +4,7 @@ import type {
   PersistedInvestigationReadModelVerdict,
 } from "../persisted-investigation-read-model";
 
-export const MINIMAL_INVESTIGATION_UI_PHASE = "3G-A";
+export const MINIMAL_INVESTIGATION_UI_PHASE = "3G";
 
 export const MINIMAL_INVESTIGATION_UI_NAME =
   "Minimal Investigation UI Surface";

@@ -137,6 +137,6 @@ Phase 3F renders the investigation read-model shape in a static read-only UI
 surface. The persisted harness remains a controlled test harness, not a product
 runtime surface.
 
-Phase 3G-A connects the investigation route to the persisted investigation read
-model through a read-only loader. It still does not promote the harness into a
-runtime product surface.
+Phase 3G connects the investigation route to the persisted investigation read
+model through a controlled read-only selection boundary. It still does not
+promote the harness into a runtime product surface.
