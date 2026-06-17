@@ -144,6 +144,10 @@ Phase 3B now adds the injected-client repository boundary for the same
 six-record first slice. Runtime execution, API routes, auth, PrismaClient
 bootstrapping and audit writing remain deferred.
 
+Phase 3C now exercises that boundary in a controlled persisted harness against
+disposable SQLite databases. Full API, UI, auth, broad audit service and replay
+execution remain deferred.
+
 ## Phase 3A Go/No-Go
 
 Verdict: `GREEN`.
@@ -177,3 +181,5 @@ These are guardrail risks, not blockers for Phase 3A.
   calls, event emission or audit writing in Phase 3A.
 - After Phase 3A, keep Phase 3B limited to the repository boundary and leave
   governed request runtime flow activation to Phase 3C.
+- After Phase 3C, keep Phase 3D limited to approval and audit runtime behavior
+  rather than broad SaaS, UI, API or replay execution scope.

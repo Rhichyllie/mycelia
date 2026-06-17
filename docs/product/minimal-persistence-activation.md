@@ -95,3 +95,8 @@ relationships and raw-content boundary can be reviewed independently.
 Phase 3B Runtime Repository Layer owns the first narrow repository boundary.
 PrismaClient ownership, runtime flow usage and broader controlled DB
 read/write activation remain separate future concerns.
+
+Phase 3C Persisted Governed Flow Harness now applies the migration SQL to
+disposable SQLite test databases and exercises the six-record path through the
+repository boundary. It does not change the schema or migration and does not
+create `dev.db` in the repository.
