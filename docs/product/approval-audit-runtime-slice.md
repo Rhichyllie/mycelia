@@ -95,6 +95,7 @@ minimal audit trail for the decision.
 
 ## Next Phase
 
-The recommended next phase is a persisted investigation read model. It should
-read the persisted governed run, approval and audit records safely without
-creating API routes, UI, auth, replay execution or external integrations.
+Phase 3E adds the persisted investigation read model. It reads the persisted
+governed run, approval and audit records safely through the repository boundary
+without creating API routes, UI, auth, replay execution or external
+integrations.

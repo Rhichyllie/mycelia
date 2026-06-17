@@ -49,3 +49,8 @@ Phase 3D uses the existing `ApprovalRequest`, `RuntimeStateSnapshot` and
 does not modify the schema, run Prisma generate, run production migrations,
 create `dev.db`, instantiate PrismaClient globally or create API/UI/auth
 surfaces.
+
+Phase 3E reads the same records through the repository boundary to reconstruct
+persisted investigation descriptors. It does not modify the schema, run Prisma
+generate, run production migrations, create `dev.db`, instantiate PrismaClient
+globally or create API/UI/auth surfaces.

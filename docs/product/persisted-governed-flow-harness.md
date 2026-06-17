@@ -128,7 +128,7 @@ Phase 3C does not add:
 
 ## Next Phase
 
-Phase 3D Approval + Audit Runtime Slice now turns the pending approval path into
-a narrow persisted approval decision and audit trail. The next recommended
-phase should move toward a persisted investigation read model without broad UI,
-API, billing, replay execution or external integration scope.
+Phase 3D Approval + Audit Runtime Slice turns the pending approval path into a
+narrow persisted approval decision and audit trail. Phase 3E reconstructs those
+persisted records into an investigation-ready read model without broad UI, API,
+billing, replay execution or external integration scope.

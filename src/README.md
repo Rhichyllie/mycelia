@@ -53,6 +53,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/prisma-runtime-repository-adapter/`: Phase 3C injected Prisma-like adapter for the repository boundary.
 - `src/mycelia/persisted-governed-flow-harness/`: Phase 3C controlled persisted governed flow harness for local persistence tests.
 - `src/mycelia/approval-audit-runtime-slice/`: Phase 3D persisted approval decision and minimal approval audit runtime slice.
+- `src/mycelia/persisted-investigation-read-model/`: Phase 3E persisted investigation read model over repository-backed records.
 
 ## Not Implemented Yet
 
@@ -64,7 +65,7 @@ obligation execution, runtime admission side effects, real state transition
 coordinator, state machine mutation,
 next-state creation, checkpoint creation, audit storage, audit append log, audit
 emission infrastructure, audit timeline storage, audit writing, real investigation UI,
-investigation storage queries, case management, downloadable artifacts, static
+investigation UI, case management, downloadable artifacts, static
 artifact file generation, markdown file generation, PDF generation, JSON
 fixture generation, demo export, demo execution, executable fixtures, demo seed
 data, seed data, database pagination, timeline indexes, evidence store, record
