@@ -11,7 +11,7 @@ import {
   createMinimalInvestigationReadonlyRepositoryClient,
 } from "./minimal-investigation-ui-readonly-source";
 
-export const MINIMAL_INVESTIGATION_UI_LIVE_READONLY_PHASE = "3G-A";
+export const MINIMAL_INVESTIGATION_UI_LIVE_READONLY_PHASE = "3G";
 
 export const MINIMAL_INVESTIGATION_UI_LIVE_READONLY_NAME =
   "Live Read-Only Investigation Surface";

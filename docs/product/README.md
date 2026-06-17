@@ -26,6 +26,7 @@ Current product decision artifacts:
 - [Approval + Audit Runtime Slice](approval-audit-runtime-slice.md): decides persisted pending approval requests, records lifecycle snapshots and writes minimal `APPROVAL_DECIDED` audit records without API, UI, auth, replay execution or event emission.
 - [Persisted Investigation Read Model](persisted-investigation-read-model.md): reconstructs persisted run history into an investigation-ready descriptor without UI, API, auth, replay execution or export behavior.
 - [Minimal Investigation UI Surface](minimal-investigation-ui-surface.md): renders the persisted investigation read-model shape through a narrow live read-only loader without API, auth, replay, mutation or export behavior.
+- [Investigation Selection & Read-Only Boundary](investigation-selection-readonly-boundary.md): resolves controlled investigation targets before rendering without mutation, broad search, API, auth, replay or export behavior.
 
 Current truth:
 
@@ -49,4 +50,5 @@ Current truth:
 - approval + audit runtime slice exists for persisted approval decisions and minimal approval audit records;
 - persisted investigation read model exists for repository-backed reconstruction;
 - minimal investigation UI surface exists with a narrow live read-only read-model loader;
-- runtime product execution, API routes, auth, global PrismaClient bootstrapping, broad approval UI, live investigation UI, broad audit service and external integrations are not implemented yet.
+- investigation selection read-only boundary exists for controlled target resolution;
+- runtime product execution, API routes, auth, global PrismaClient bootstrapping, broad approval UI, production dynamic investigation UI beyond controlled read-only selection, broad audit service and external integrations are not implemented yet.

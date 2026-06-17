@@ -1,21 +1,21 @@
 # Minimal Investigation UI Surface
 
 Phase 3F created the first minimal investigation UI surface for MYCELIA.
-Phase 3G-A connects that surface to a narrow live read-only persisted
-investigation read-model loader.
+Phase 3G connects that surface to a narrow investigation selection read-only
+boundary.
 
-The route `/mycelia/investigation` now loads through the Phase 3E persisted
-investigation read model, maps the result into the hardened UI contract and
-renders it read-only. The goal is to let a human understand a governed run
-story visually without introducing mutation, API routes, auth, replay or
-case-management workflow.
+The route `/mycelia/investigation` now resolves a controlled investigation
+target, loads through the Phase 3E persisted investigation read model, maps the
+result into the hardened UI contract and renders it read-only. The goal is to
+let a human understand a governed run story visually without introducing
+mutation, API routes, auth, replay or case-management workflow.
 
 ## Why This Comes After 3E
 
 Phase 3E defined the repository-backed investigation read model and its
 completeness behavior. Phase 3F hardened the visual contract around the same
-sections. Phase 3G-A keeps that contract and changes the source path from
-renderer fixture to read-model loader:
+sections. Phase 3G keeps that contract and adds controlled target selection
+before the read-model loader:
 
 - overview;
 - state timeline;
@@ -33,13 +33,14 @@ The surface is split into:
 - descriptor contract and record-kind invariants;
 - safe static fixtures;
 - read-only source records for the controlled reference case;
+- selection boundary that resolves controlled or explicit run-scope targets;
 - loader that calls the Phase 3E read model;
 - mapper from read model to UI contract;
 - presentation normalization for missing, incomplete and blocked states;
 - semantic React rendering;
 - route safety tests for the App Router page.
 
-The route remains thin: it loads a descriptor through the read-only loader and
+The route remains thin: it resolves a target through the selection boundary and
 passes the mapped descriptor into the surface component.
 
 ## Read-Only Boundary
@@ -47,6 +48,10 @@ passes the mapped descriptor into the surface component.
 The UI is intentionally read-only. It does not accept state-changing input,
 does not display controls that imply live mutation and does not expose storage
 records directly to JSX.
+
+Selection is also read-only. The boundary supports a controlled reference
+target and a narrow tenant/run/correlation target shape. It does not create
+search, listing, pagination or dashboard behavior.
 
 It does not:
 
@@ -85,9 +90,10 @@ Phase 3F hardens:
 ## Relationship To 3E
 
 The surface now calls the 3E read model through an injected read-only
-repository client. The default route uses a controlled reference source, not a
-production database connection. This proves the read-model path without adding
-mutable runtime behavior.
+repository client via the Phase 3G selection boundary. The default route uses a
+controlled reference source, not a production database connection. This proves
+the target-selection and read-model path without adding mutable runtime
+behavior.
 
 ## Next Phase
 

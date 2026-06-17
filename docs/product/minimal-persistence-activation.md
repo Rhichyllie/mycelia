@@ -114,6 +114,6 @@ auth, replay execution, export behavior or broad audit storage.
 Phase 3F renders the investigation descriptor shape in a static UI surface. It
 does not change the schema or migration and does not introduce live DB reads.
 
-Phase 3G-A connects the surface to a read-only read-model loader without
-changing the schema or migration and without introducing route-local database
-client ownership.
+Phase 3G connects the surface to a controlled read-only investigation selection
+boundary without changing the schema or migration and without introducing
+route-local database client ownership.

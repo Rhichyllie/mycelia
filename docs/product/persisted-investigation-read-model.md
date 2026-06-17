@@ -121,7 +121,8 @@ read-model shape through a static fixture and hardened presenter, keeping the
 route read-only with no live database, API, auth, replay execution or export
 behavior.
 
-Phase 3G-A connects that surface back to this read model through a narrow
-read-only loader and mapper. The route no longer depends exclusively on UI
-fixtures, but it still does not create API routes, auth, mutation, replay,
-exports or broad database ownership.
+Phase 3G connects that surface back to this read model through a controlled
+investigation selection boundary, read-only loader and mapper. The route no
+longer depends exclusively on UI fixtures, but it still does not create API
+routes, auth, mutation, replay, exports, broad search or broad database
+ownership.

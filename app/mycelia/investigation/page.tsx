@@ -1,15 +1,23 @@
 import {
+  resolveInvestigationSelectionTarget,
+} from "@/mycelia/investigation-selection-readonly-boundary";
+import {
   MinimalInvestigationUiSurface,
-  loadMinimalInvestigationUiDescriptor,
 } from "@/mycelia/minimal-investigation-ui-surface";
 
 export default async function MyceliaInvestigationPage() {
-  const investigation = await loadMinimalInvestigationUiDescriptor();
+  const investigation = await resolveInvestigationSelectionTarget();
+  const descriptor = investigation.ok
+    ? investigation.value.uiDescriptor
+    : investigation.error.uiDescriptor;
+  const sourceSummary = investigation.ok
+    ? investigation.value.safeSummary
+    : investigation.error.safeReason;
 
   return (
     <MinimalInvestigationUiSurface
-      descriptor={investigation.descriptor}
-      sourceSummary={investigation.safeSummary}
+      descriptor={descriptor}
+      sourceSummary={sourceSummary}
     />
   );
 }

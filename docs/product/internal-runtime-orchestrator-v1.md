@@ -176,6 +176,6 @@ Phase 3F adds a static read-only investigation UI surface over a safe fixture.
 The orchestrator remains descriptor-only and still does not become a live
 runtime service or replay executor.
 
-Phase 3G-A connects the investigation UI to the persisted investigation read
-model through a read-only loader. The orchestrator remains descriptor-only and
-is still not promoted into runtime execution.
+Phase 3G connects the investigation UI to the persisted investigation read
+model through a controlled read-only selection boundary. The orchestrator
+remains descriptor-only and is still not promoted into runtime execution.

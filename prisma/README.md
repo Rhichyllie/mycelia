@@ -60,7 +60,7 @@ read model. It does not modify the schema, run Prisma generate, run production
 migrations, create `dev.db`, instantiate PrismaClient globally or create live
 database reads.
 
-Phase 3G-A connects that UI to the Phase 3E read model through a read-only
-repository client boundary. It still does not modify the schema, run Prisma
-generate, run production migrations, create `dev.db` or instantiate
-PrismaClient globally.
+Phase 3G connects that UI to the Phase 3E read model through a controlled
+read-only investigation selection boundary. It still does not modify the
+schema, run Prisma generate, run production migrations, create `dev.db` or
+instantiate PrismaClient globally.

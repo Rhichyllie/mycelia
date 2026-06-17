@@ -90,7 +90,7 @@ export const PRODUCT_SURFACE_INDEX_ITEMS = [
     label: "Investigation",
     route: "/mycelia/investigation",
     description:
-      "A read-only investigation surface loaded through the persisted investigation read-model boundary.",
+      "A read-only investigation surface loaded through the controlled investigation selection boundary.",
     audience: ["operators", "investigators", "technical reviewers"],
     status: "Live read-only",
     safety_note: "Read-model loading only with no DB writes, API, auth or replay execution.",
