@@ -158,7 +158,12 @@ Phase 3B adds the injected-client Runtime Repository Layer for the same
 six-record slice. The orchestrator still does not execute runtime, persist
 records, bootstrap PrismaClient, emit events or write audit records.
 
-The next recommended implementation boundary is Phase 3C Governed Request
-Runtime Flow. That phase should use the repository boundary narrowly and must
-not add replay execution, broad API routes, auth, UI, audit writing or external
-integrations without a separate phase.
+Phase 3C adds the Persisted Governed Flow Harness, which exercises deterministic
+flow paths through the repository boundary and disposable SQLite persistence.
+The orchestrator remains descriptor-only and is not promoted to a product
+runtime surface.
+
+The next recommended implementation boundary is Phase 3D Approval + Audit
+Runtime Slice. That phase should keep scope narrow and must not add replay
+execution, broad API routes, auth, UI or external integrations without a
+separate phase.

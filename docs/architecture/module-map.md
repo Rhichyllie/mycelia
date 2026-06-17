@@ -54,6 +54,8 @@ SaaS readiness.
 | `src/mycelia/runtime-slice-consistency-audit/` | IMPLEMENTED_STATIC_AUDIT | Phase 2Z consistency audit for the 2R through 2Y minimal runtime slice. | No runtime execution, replay execution, persistence, DB reads, API, event emission or audit writing. |
 | `src/mycelia/minimal-persistence-activation/` | IMPLEMENTED_STATIC_DESCRIPTOR | Phase 3A descriptor for the schema/migration contract. | No PrismaClient import, repository layer, DB reads/writes, runtime execution or audit writing. |
 | `src/mycelia/runtime-repository-layer/` | IMPLEMENTED_REPOSITORY_BOUNDARY | Phase 3B injected-client repository boundary for the six first-slice records. | No PrismaClient instantiation, global DB client, API route, runtime execution, event emission or audit writing. |
+| `src/mycelia/prisma-runtime-repository-adapter/` | IMPLEMENTED_INJECTED_ADAPTER | Phase 3C Prisma-like adapter for the repository boundary. | No global PrismaClient, import-time connection, API route, UI, auth or external service. |
+| `src/mycelia/persisted-governed-flow-harness/` | IMPLEMENTED_PERSISTED_TEST_HARNESS | Phase 3C persisted governed flow harness for controlled local persistence. | No product runtime surface, API route, UI, auth, replay execution or external integration. |
 
 ## Implemented App Router Surfaces
 
@@ -72,7 +74,7 @@ SaaS readiness.
 |---|---|---|
 | `core-runtime` | PURE_ORCHESTRATOR_ONLY | Internal runtime orchestrator v1 exists as descriptor composition only; no runtime kernel exists yet. |
 | `workflow-orchestration` | NOT_IMPLEMENTED | No workflow engine exists yet. |
-| `state-persistence` | SCHEMA_CONTRACT_AND_REPOSITORY_BOUNDARY_ACTIVE | Runtime persistence model scaffold, Prisma schema/migration contract and injected-client repository boundary exist; no runtime flow, PrismaClient bootstrap or broad application DB integration exists yet. |
+| `state-persistence` | SCHEMA_REPOSITORY_AND_HARNESS_ACTIVE | Runtime persistence model scaffold, Prisma schema/migration contract, injected-client repository boundary, Prisma-like adapter and persisted harness exist; no product runtime surface, global PrismaClient bootstrap or broad application DB integration exists yet. |
 | `governance-policy-runtime` | PURE_V1_ONLY | Deterministic policy/admission v1 and approval gate v1 exist in memory only; no real policy engine, approval queue or approval UI exists yet. |
 | `audit-commit-boundary` | PURE_BOUNDARY_ONLY | Audit requirement classification exists in memory only; no durable audit writer, append log or audit storage exists yet. |
 | `investigation-view` | PURE_MODEL_ONLY | Investigation view model v1 exists in memory only; no real investigation UI, DB read layer or case management exists yet. |

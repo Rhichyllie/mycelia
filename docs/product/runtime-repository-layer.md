@@ -111,7 +111,9 @@ Phase 3B does not add:
 
 ## Next Phase
 
-Phase 3C Governed Request Runtime Flow should use this repository boundary to
-coordinate the first narrow runtime flow. Phase 3C should still keep Prisma
-client ownership explicit, preserve tenant/run validation and avoid broad API,
-auth, UI, replay execution or external integration scope.
+Phase 3C Persisted Governed Flow Harness now uses this repository boundary with
+an injected Prisma-like adapter and disposable SQLite tests. It proves the
+low-risk, medium-risk approval-pending and high-risk rejected paths without
+adding API routes, UI, auth, replay execution or external integration scope.
+
+The next recommended boundary is Phase 3D Approval + Audit Runtime Slice.

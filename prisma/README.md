@@ -38,3 +38,7 @@ audit records.
 
 Future PrismaClient ownership and controlled runtime DB read/write activation
 must remain explicit in later phases.
+
+Phase 3C applies this migration SQL to disposable SQLite test databases through
+the persisted governed flow harness. Those tests remove temporary database
+files and do not create or commit `dev.db`.

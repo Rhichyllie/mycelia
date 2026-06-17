@@ -22,6 +22,7 @@ Current product decision artifacts:
 - [Runtime Slice Consistency Audit](runtime-slice-consistency-audit.md): audits the 2R-2Y runtime slice and recommends narrow Phase 3A persistence activation without runtime execution.
 - [Minimal Persistence Activation](minimal-persistence-activation.md): activates the Prisma schema and migration contract for the six first-slice records without application DB reads/writes.
 - [Runtime Repository Layer](runtime-repository-layer.md): defines an injected-client repository boundary for the six first-slice records without PrismaClient instantiation, API routes or runtime execution.
+- [Persisted Governed Flow Harness](persisted-governed-flow-harness.md): exercises the schema, repository boundary and deterministic governed flow paths against disposable SQLite persistence without API, UI, auth or SaaS scope.
 
 Current truth:
 
@@ -41,4 +42,5 @@ Current truth:
 - runtime slice consistency audit exists as a static descriptor-level GREEN audit for Phase 3A readiness;
 - minimal persistence activation exists as schema/migration contract only;
 - runtime repository layer exists as an injected-client validation boundary;
-- runtime execution, API routes, auth, PrismaClient bootstrapping and external integrations are not implemented yet.
+- persisted governed flow harness exists for controlled local persistence tests;
+- runtime product execution, API routes, auth, global PrismaClient bootstrapping and external integrations are not implemented yet.

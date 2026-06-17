@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 3B.
+This status page captures repository truth after Phase 3C.
 
 ## Implemented Now
 
@@ -29,6 +29,8 @@ This status page captures repository truth after Phase 3B.
 - Runtime slice consistency audit for the 2R through 2Y minimal runtime slice.
 - Minimal persistence activation as Prisma schema and migration contract for the six first-slice records.
 - Runtime repository layer as an injected-client validation boundary for the six first-slice records.
+- Prisma-like runtime repository adapter with injected client ownership.
+- Persisted governed flow harness exercising low-risk, approval-pending, rejected and unsafe paths against disposable SQLite persistence.
 
 ## Static/Demo-Only Now
 
@@ -59,8 +61,8 @@ commitments.
 
 - Runtime execution.
 - Workflow execution.
-- Governed request runtime flow using the repository boundary.
-- PrismaClient bootstrapping in application source.
+- Full governed request runtime product surface.
+- Global PrismaClient bootstrapping in application source.
 - Real policy engine beyond deterministic policy/admission v1.
 - Real approval queue, approval UI and approval storage.
 - Real audit writer, audit storage and append log.
@@ -84,7 +86,8 @@ read-model, replay planning and composition logic for the frozen governed
 compliance/document review flow. Phase 3A adds the schema/migration contract
 for the six first-slice records only. Phase 3B adds the injected-client
 repository boundary without PrismaClient instantiation or runtime execution.
-The next phase should be Phase 3C Governed Request Runtime Flow and should not
-add broad API routes, auth, broad policy engine, replay execution, audit
-storage, approval UI, database-backed investigation UI or external
+Phase 3C exercises that boundary through a persisted governed flow harness and
+disposable SQLite tests. The next phase should be Phase 3D Approval + Audit
+Runtime Slice and should not add broad API routes, auth, broad policy engine,
+replay execution, approval UI, database-backed investigation UI or external
 integrations.
