@@ -154,7 +154,11 @@ Phase 2Z audits the pure runtime-slice layers and keeps this orchestrator as
 descriptor-only composition. Phase 3A adds only the schema/migration contract
 for the persistence records referenced by the orchestrator descriptors.
 
-The next recommended implementation boundary is Phase 3B Runtime Repository
-Layer. That phase should remain limited to controlled repository activation and
-must not add runtime execution, replay execution, API routes, auth, UI, audit
-writing or external integrations.
+Phase 3B adds the injected-client Runtime Repository Layer for the same
+six-record slice. The orchestrator still does not execute runtime, persist
+records, bootstrap PrismaClient, emit events or write audit records.
+
+The next recommended implementation boundary is Phase 3C Governed Request
+Runtime Flow. That phase should use the repository boundary narrowly and must
+not add replay execution, broad API routes, auth, UI, audit writing or external
+integrations without a separate phase.

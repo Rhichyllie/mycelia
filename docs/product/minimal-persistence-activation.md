@@ -71,7 +71,6 @@ governed-run indexes, plus a unique `tenantId + correlationId` constraint on
 
 Phase 3A does not add:
 
-- repository or service layer;
 - PrismaClient imports or calls from application source;
 - runtime execution;
 - replay execution;
@@ -84,10 +83,15 @@ Phase 3A does not add:
 - external integrations;
 - tool execution.
 
+Phase 3B adds an injected-client runtime repository layer after this schema
+contract. That boundary still does not instantiate PrismaClient, bootstrap a
+database client, execute runtime, expose API routes or write audit records.
+
 ## Why 3B Owns Repository Work
 
 Phase 3A creates the durable contract first so the schema, migration,
 relationships and raw-content boundary can be reviewed independently.
 
-Phase 3B Runtime Repository Layer should be responsible for any future
-PrismaClient usage, repository APIs and controlled DB reads/writes.
+Phase 3B Runtime Repository Layer owns the first narrow repository boundary.
+PrismaClient ownership, runtime flow usage and broader controlled DB
+read/write activation remain separate future concerns.

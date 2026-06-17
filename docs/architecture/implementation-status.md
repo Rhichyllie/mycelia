@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 3A.
+This status page captures repository truth after Phase 3B.
 
 ## Implemented Now
 
@@ -28,6 +28,7 @@ This status page captures repository truth after Phase 3A.
 - Internal runtime orchestrator v1 as pure deterministic in-memory descriptor composition.
 - Runtime slice consistency audit for the 2R through 2Y minimal runtime slice.
 - Minimal persistence activation as Prisma schema and migration contract for the six first-slice records.
+- Runtime repository layer as an injected-client validation boundary for the six first-slice records.
 
 ## Static/Demo-Only Now
 
@@ -58,8 +59,8 @@ commitments.
 
 - Runtime execution.
 - Workflow execution.
-- Application-level persistence operations.
-- Database-backed governed runs through a repository layer.
+- Governed request runtime flow using the repository boundary.
+- PrismaClient bootstrapping in application source.
 - Real policy engine beyond deterministic policy/admission v1.
 - Real approval queue, approval UI and approval storage.
 - Real audit writer, audit storage and append log.
@@ -81,7 +82,9 @@ approval gate v1, investigation view model v1, replay dry-run descriptor v1 and
 internal runtime orchestrator v1 provide pure in-memory decision, requirement,
 read-model, replay planning and composition logic for the frozen governed
 compliance/document review flow. Phase 3A adds the schema/migration contract
-for the six first-slice records only. The next phase should be Phase 3B Runtime
-Repository Layer and should not add API routes, auth, broad policy engine,
-replay execution, audit storage, approval storage, database-backed
-investigation UI or runtime execution.
+for the six first-slice records only. Phase 3B adds the injected-client
+repository boundary without PrismaClient instantiation or runtime execution.
+The next phase should be Phase 3C Governed Request Runtime Flow and should not
+add broad API routes, auth, broad policy engine, replay execution, audit
+storage, approval UI, database-backed investigation UI or external
+integrations.
