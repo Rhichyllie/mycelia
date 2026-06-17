@@ -47,6 +47,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/investigation-view-model-v1/`: pure Phase 2W deterministic investigation view model assembly.
 - `src/mycelia/replay-dry-run-descriptor-v1/`: pure Phase 2X deterministic replay dry-run descriptor assembly.
 - `src/mycelia/internal-runtime-orchestrator-v1/`: pure Phase 2Y deterministic in-memory orchestration descriptor composition.
+- `src/mycelia/runtime-slice-consistency-audit/`: static Phase 2Z consistency audit for the minimal runtime slice before Phase 3A.
 
 ## Not Implemented Yet
 
