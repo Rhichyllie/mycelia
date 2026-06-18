@@ -51,7 +51,7 @@ describe("product surface shell", () => {
     expect(model.positioning).toContain("governed agentic runtime");
   });
 
-  it("includes Home, MYCELIA, Executive, Static Demo, Walkthrough, Request Draft, Investigation and Roadmap nav items", () => {
+  it("includes Home, MYCELIA, Executive, Static Demo, Walkthrough, Request Draft, Approval, Investigation and Roadmap nav items", () => {
     const model = getProductSurfaceShellModel();
 
     expect(model.nav_items.map((item) => item.label)).toEqual([
@@ -61,6 +61,7 @@ describe("product surface shell", () => {
       "Static Demo",
       "Walkthrough",
       "Request Draft",
+      "Approval",
       "Investigation",
       "Roadmap",
     ]);
@@ -76,6 +77,7 @@ describe("product surface shell", () => {
       "/mycelia/static-demo",
       "/mycelia/walkthrough",
       "/mycelia/request/new",
+      "/mycelia/approval/decision",
       "/mycelia/investigation",
       "/mycelia/roadmap",
     ]);

@@ -29,6 +29,10 @@ const requestCreationRoutePath = new URL(
   "../../../app/mycelia/request/new/page.tsx",
   import.meta.url,
 );
+const approvalDecisionRoutePath = new URL(
+  "../../../app/mycelia/approval/decision/page.tsx",
+  import.meta.url,
+);
 const executiveRoutePath = new URL(
   "../../../app/mycelia/executive/page.tsx",
   import.meta.url,
@@ -136,6 +140,14 @@ describe("product surface shell route safety", () => {
     }
   });
 
+  it("keeps the approval decision route safe", () => {
+    const routeSource = source(approvalDecisionRoutePath).toLowerCase();
+
+    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
+      expect(routeSource).not.toContain(pattern.toLowerCase());
+    }
+  });
+
   it("keeps the executive route safe", () => {
     const routeSource = source(executiveRoutePath).toLowerCase();
 
@@ -170,6 +182,7 @@ describe("product surface shell route safety", () => {
       source(roadmapRoutePath),
       source(walkthroughRoutePath),
       source(requestCreationRoutePath),
+      source(approvalDecisionRoutePath),
       source(investigationRoutePath),
       source(executiveRoutePath),
       source(shellPath),

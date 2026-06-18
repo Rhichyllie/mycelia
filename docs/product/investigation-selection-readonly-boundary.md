@@ -67,3 +67,6 @@ Phase 3H adds a controlled governed request creation surface so operators can
 inspect the safe request seed shape before policy/admission, approval and
 investigation. It remains non-mutating and does not introduce API/auth scope,
 replay execution, export behavior or broad dashboard/list/search.
+
+Phase 3I adds a separate controlled approval decision preview for the approval
+step. It does not execute approval decisions or add broad inbox behavior.

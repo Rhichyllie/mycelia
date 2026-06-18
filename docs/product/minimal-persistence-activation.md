@@ -120,3 +120,6 @@ route-local database client ownership.
 
 Phase 3H adds a controlled governed request creation preview without changing
 the schema or migration and without writing request records.
+
+Phase 3I adds a controlled approval decision UI preview without changing the
+schema or migration and without writing approval decision records.

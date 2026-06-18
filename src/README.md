@@ -57,6 +57,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/minimal-investigation-ui-surface/`: Phase 3F read-only investigation UI surface with persisted read-model loader.
 - `src/mycelia/investigation-selection-readonly-boundary/`: Phase 3G controlled investigation target selection boundary for read-only UI rendering.
 - `src/mycelia/governed-request-creation-surface/`: Phase 3H controlled non-mutating governed request seed preview surface.
+- `src/mycelia/approval-decision-ui-surface/`: Phase 3I controlled non-mutating approval decision preview surface.
 
 ## Not Implemented Yet
 
@@ -77,14 +78,14 @@ event broker, event publishing, event persistence, queues, streams, webhooks,
 files, canonical event catalog, replay execution, replay UI, replay runtime,
 replay simulation, state
 reconstruction, data hydration, tool calls, external service calls,
-global PrismaClient bootstrapping, live governed request persistence, full runtime product surface, API routes,
+global PrismaClient bootstrapping, live governed request/approval persistence, full runtime product surface, API routes,
 workflow execution, authentication system,
 authorization middleware, RLS, production deployment, SaaS billing or public SDK
 exists yet.
 
-Static product surfaces, controlled read-only investigation selection and a
-controlled request creation preview exist, but mutable operational/runtime UI
-does not.
+Static product surfaces, controlled read-only investigation selection,
+controlled request creation preview and controlled approval decision preview
+exist, but mutable operational/runtime UI does not.
 
 Legacy MapIA code must remain under `legacy/` and must not be copied back
 without architecture review.

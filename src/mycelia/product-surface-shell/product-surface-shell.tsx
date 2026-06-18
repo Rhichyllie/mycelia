@@ -28,12 +28,16 @@ export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
     href: PRODUCT_SURFACE_INDEX_ITEMS[5].route,
   },
   {
-    label: "Investigation",
+    label: "Approval",
     href: PRODUCT_SURFACE_INDEX_ITEMS[6].route,
   },
   {
-    label: "Roadmap",
+    label: "Investigation",
     href: PRODUCT_SURFACE_INDEX_ITEMS[7].route,
+  },
+  {
+    label: "Roadmap",
+    href: PRODUCT_SURFACE_INDEX_ITEMS[8].route,
   },
 ] as const;
 
@@ -56,6 +60,7 @@ export type ProductSurfaceShellNavItem = {
     | "/mycelia/roadmap"
     | "/mycelia/walkthrough"
     | "/mycelia/request/new"
+    | "/mycelia/approval/decision"
     | "/mycelia/investigation"
     | "/mycelia/executive";
 };

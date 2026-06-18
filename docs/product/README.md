@@ -28,6 +28,7 @@ Current product decision artifacts:
 - [Minimal Investigation UI Surface](minimal-investigation-ui-surface.md): renders the persisted investigation read-model shape through a narrow live read-only loader without API, auth, replay, mutation or export behavior.
 - [Investigation Selection & Read-Only Boundary](investigation-selection-readonly-boundary.md): resolves controlled investigation targets before rendering without mutation, broad search, API, auth, replay or export behavior.
 - [Governed Request Creation Surface](governed-request-creation-surface.md): renders a controlled non-mutating request seed preview at `/mycelia/request/new` without persistence writes, API, auth, replay, export or workflow builder scope.
+- [Approval Decision UI Surface](approval-decision-ui-surface.md): renders a controlled non-mutating approval decision preview at `/mycelia/approval/decision` without persistence writes, API, auth, replay, export or broad approval inbox scope.
 
 Current truth:
 
@@ -53,4 +54,5 @@ Current truth:
 - minimal investigation UI surface exists with a narrow live read-only read-model loader;
 - investigation selection read-only boundary exists for controlled target resolution;
 - governed request creation surface exists as a controlled non-mutating draft preview;
-- runtime product execution, live request persistence, API routes, auth, global PrismaClient bootstrapping, broad approval UI, production dynamic investigation UI beyond controlled read-only selection, broad audit service and external integrations are not implemented yet.
+- approval decision UI surface exists as a controlled non-mutating decision preview;
+- runtime product execution, live request/approval persistence, API routes, auth, global PrismaClient bootstrapping, broad approval UI/inbox, production dynamic investigation UI beyond controlled read-only selection, broad audit service and external integrations are not implemented yet.

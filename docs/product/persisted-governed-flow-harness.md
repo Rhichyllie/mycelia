@@ -144,3 +144,6 @@ promote the harness into a runtime product surface.
 Phase 3H adds a controlled request creation preview for the demo path. It
 remains non-mutating and does not broaden this harness into live runtime
 execution or workflow builder scope.
+
+Phase 3I adds a controlled approval decision preview. It remains UI-only and
+does not turn persisted harness records into a live approval inbox.

@@ -64,6 +64,7 @@ search/listing or SaaS expansion.
 
 ## Next Phase
 
-The next phase should decide whether to introduce a narrow live request creation
-boundary. It should stay separate from workflow builder scope and should not
-activate broad SaaS behavior prematurely.
+Phase 3I adds a controlled approval decision UI surface so a required approval
+can be reviewed visually before any live approval action exists. It remains
+non-mutating and does not introduce API routes, auth/RBAC, broad approval inbox
+or workflow builder behavior.

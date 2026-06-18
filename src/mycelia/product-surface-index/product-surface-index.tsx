@@ -11,7 +11,9 @@ export const PRODUCT_SURFACE_INDEX_ROUTES = [
 ] as const;
 
 export type ProductSurfaceIndexRoute =
-  (typeof PRODUCT_SURFACE_INDEX_ROUTES)[number] | "/mycelia/request/new";
+  | (typeof PRODUCT_SURFACE_INDEX_ROUTES)[number]
+  | "/mycelia/request/new"
+  | "/mycelia/approval/decision";
 
 export type ProductSurfaceIndexStatus =
   | "Available now"
@@ -95,6 +97,16 @@ export const PRODUCT_SURFACE_INDEX_ITEMS = [
     audience: ["operators", "reviewers", "technical reviewers"],
     status: "Controlled preview",
     safety_note: "Request seed preview only with no DB writes, API, auth or workflow builder.",
+    available_now: true,
+  },
+  {
+    label: "Approval Decision",
+    route: "/mycelia/approval/decision",
+    description:
+      "A controlled, non-mutating approval decision preview for the governed review path.",
+    audience: ["approvers", "operators", "technical reviewers"],
+    status: "Controlled preview",
+    safety_note: "Approval preview only with no DB writes, API, auth, inbox or live decision action.",
     available_now: true,
   },
   {
