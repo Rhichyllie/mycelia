@@ -108,3 +108,6 @@ the investigation UI and does not make approvals live or mutating.
 Phase 3J uses the investigation route as the review step in deterministic demo
 scenario seeds. It does not add replay, export, mutation, broad dashboard scope
 or a new investigation route.
+
+Phase 3K renders those seeds in a guided pilot demo surface and links to this
+investigation surface as the read-only review step.

@@ -6,6 +6,7 @@ export const PRODUCT_SURFACE_INDEX_ROUTES = [
   "/mycelia/executive",
   "/mycelia/static-demo",
   "/mycelia/walkthrough",
+  "/mycelia/demo",
   "/mycelia/investigation",
   "/mycelia/roadmap",
 ] as const;
@@ -87,6 +88,16 @@ export const PRODUCT_SURFACE_INDEX_ITEMS = [
     audience: ["mentors", "reviewers", "product evaluators"],
     status: "Available now",
     safety_note: "Guided explanation only with no replay simulation.",
+    available_now: true,
+  },
+  {
+    label: "Pilot Demo",
+    route: "/mycelia/demo",
+    description:
+      "A controlled end-to-end pilot walkthrough connecting request, approval and investigation surfaces.",
+    audience: ["prospects", "operators", "technical reviewers"],
+    status: "Controlled preview",
+    safety_note: "Pilot walkthrough only with no runtime execution, DB writes, API, replay or export.",
     available_now: true,
   },
   {

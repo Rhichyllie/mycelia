@@ -262,6 +262,35 @@ function tableCount(dbPath: string, table: string): number {
   return result.count;
 }
 
+function createRepositoryClientThatFailsOnUse(
+  calls: (keyof RuntimeRepositoryClient)[],
+): RuntimeRepositoryClient {
+  const fail = (method: keyof RuntimeRepositoryClient) => () => {
+    calls.push(method);
+    throw new Error(`Repository method ${method} must not be called.`);
+  };
+
+  return {
+    createGovernedRun: fail("createGovernedRun"),
+    createRuntimeStateSnapshot: fail("createRuntimeStateSnapshot"),
+    createPolicyDecisionRecord: fail("createPolicyDecisionRecord"),
+    createAdmissionDecisionRecord: fail("createAdmissionDecisionRecord"),
+    createApprovalRequest: fail("createApprovalRequest"),
+    updateApprovalRequestDecision: fail("updateApprovalRequestDecision"),
+    createAuditRecord: fail("createAuditRecord"),
+    findGovernedRunByTenantAndCorrelation: fail(
+      "findGovernedRunByTenantAndCorrelation",
+    ),
+    listRuntimeStateSnapshotsByRun: fail("listRuntimeStateSnapshotsByRun"),
+    listPolicyDecisionRecordsByRun: fail("listPolicyDecisionRecordsByRun"),
+    listAdmissionDecisionRecordsByRun: fail(
+      "listAdmissionDecisionRecordsByRun",
+    ),
+    listApprovalRequestsByRun: fail("listApprovalRequestsByRun"),
+    listAuditRecordsByRun: fail("listAuditRecordsByRun"),
+  };
+}
+
 afterEach(() => {
   for (const root of tempRoots.splice(0)) {
     rmSync(root, { recursive: true, force: true });
@@ -448,31 +477,29 @@ describe("approval audit runtime slice", () => {
       "binary",
       "payload",
     ];
+    const repositoryCalls: (keyof RuntimeRepositoryClient)[] = [];
+    const repositoryClient =
+      createRepositoryClientThatFailsOnUse(repositoryCalls);
+    const slice = createApprovalAuditRuntimeSlice({ repositoryClient });
 
-    for (const [index, field] of rawFields.entries()) {
-      const { dbPath } = tempDatabase();
-      const runId = `run_sensitive_${index + 1}`;
+    if (!slice.ok) {
+      throw new Error("Approval audit runtime slice setup denied.");
+    }
 
-      applyMigration(dbPath);
-
-      const repositoryClient = await createPendingApproval(
-        dbPath,
-        runId,
-      );
-      const slice = createApprovalAuditRuntimeSlice({ repositoryClient });
-
-      if (!slice.ok) {
-        throw new Error("Approval audit runtime slice setup denied.");
-      }
-
+    for (const field of rawFields) {
       const result = await slice.value.decideApprovalRequest({
-        ...decisionScenario(runId, "APPROVE"),
+        ...decisionScenario("run_sensitive", "APPROVE"),
         [field]: "unsafe",
       });
 
       expect(result.ok).toBe(false);
+      expect(result).toMatchObject({
+        ok: false,
+        error: { code: "APPROVAL_AUDIT_INPUT_INVALID" },
+      });
+      expect(repositoryCalls).toEqual([]);
     }
-  }, integrationTimeout);
+  });
 
   it("sanitizes injected client errors", async () => {
     const client: RuntimeRepositoryClient = {

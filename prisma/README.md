@@ -79,3 +79,7 @@ Phase 3J adds deterministic demo scenario seeds that connect the controlled
 surfaces. It does not modify the schema, run Prisma generate, run production
 migrations, create `dev.db`, instantiate PrismaClient globally or write seed
 records.
+
+Phase 3K renders those seeds as a controlled walkthrough at `/mycelia/demo`.
+It does not modify the schema, run Prisma generate, run production migrations,
+create `dev.db`, instantiate PrismaClient globally or write demo records.

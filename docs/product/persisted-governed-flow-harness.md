@@ -151,3 +151,6 @@ does not turn persisted harness records into a live approval inbox.
 Phase 3J adds deterministic demo scenario seeds that reference the persisted
 flow concepts as expectations. It does not promote the harness into product
 runtime execution or write new persisted records.
+
+Phase 3K renders those expectations in a controlled pilot walkthrough. It does
+not execute the persisted harness or create product runtime writes.

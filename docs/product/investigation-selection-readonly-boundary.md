@@ -74,3 +74,7 @@ step. It does not execute approval decisions or add broad inbox behavior.
 Phase 3J adds a deterministic demo scenario seed package that references this
 read-only investigation path as the final review surface. It does not add broad
 search/listing, mutation, API routes or replay execution.
+
+Phase 3K renders the seeded path as a pilot walkthrough and links to the
+investigation route for review. It does not change target selection or add
+mutation.

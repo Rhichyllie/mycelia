@@ -100,7 +100,6 @@ store, audit sealing, export/PDF/download behavior or SaaS expansion.
 
 ## Next Phase
 
-The next phase can use these deterministic seeds to create a narrow demo
-navigation/walkthrough surface. That phase should still avoid mutation,
-runtime execution, replay, export, broad search/listing and SaaS expansion
-unless explicitly planned.
+Phase 3K uses these deterministic seeds to render a narrow pilot demo
+walkthrough at `/mycelia/demo`. It still avoids mutation, runtime execution,
+replay, export, broad search/listing and SaaS expansion.

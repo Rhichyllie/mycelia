@@ -72,3 +72,7 @@ Phase 3J connects request creation, approval preview and investigation review
 into a deterministic demo scenario seed package. It is still non-executing and
 does not add live mutation, auth/RBAC expansion, broad inbox scope or workflow
 builder behavior.
+
+Phase 3K renders those seeds in a controlled end-to-end pilot walkthrough. It
+links to this approval preview but does not submit approval decisions or persist
+approval outcomes.

@@ -145,3 +145,6 @@ repository writes, new repository methods or live approval persistence.
 Phase 3J adds deterministic demo scenario seeds above the UI surfaces. It does
 not add repository methods, repository writes, API routes or database client
 ownership.
+
+Phase 3K renders those seeds as a pilot walkthrough and still does not add
+repository methods, writes, API routes or database client ownership.
