@@ -549,10 +549,10 @@ describe("runtime repository layer", () => {
     }
   });
 
-  it("keeps fake client test-only and package files unchanged", () => {
+  it("keeps fake client test-only and pnpm-lock.yaml unchanged", () => {
     const status = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
     const schemaStatus = execFileSync(

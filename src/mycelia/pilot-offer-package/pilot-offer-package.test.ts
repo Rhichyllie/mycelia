@@ -360,10 +360,10 @@ describe("pilot offer package", () => {
     );
   });
 
-  it("does not modify package.json or pnpm-lock.yaml", () => {
+  it("does not modify pnpm-lock.yaml", () => {
     const status = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
 

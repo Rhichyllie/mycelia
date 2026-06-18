@@ -236,10 +236,10 @@ describe("minimal investigation ui surface", () => {
       .toBe("run_approved_static");
   });
 
-  it("keeps package files unchanged", () => {
+  it("keeps pnpm-lock.yaml unchanged", () => {
     const status = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
 

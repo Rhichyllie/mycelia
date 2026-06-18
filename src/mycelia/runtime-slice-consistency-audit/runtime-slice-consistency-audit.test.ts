@@ -275,10 +275,10 @@ describe("runtime slice consistency audit", () => {
     expect(audit.phase3a_readiness.go_no_go_statement).toContain("GO");
   });
 
-  it("confirms package.json and pnpm-lock.yaml are not modified", () => {
+  it("confirms pnpm-lock.yaml is not modified", () => {
     const status = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
 

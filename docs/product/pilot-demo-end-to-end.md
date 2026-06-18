@@ -1,6 +1,8 @@
 # Pilot Demo End-to-End
 
 Phase 3K adds a controlled pilot demo walkthrough at `/mycelia/demo`.
+Phase 3L hardens that surface into a more customer-facing guided pilot
+walkthrough while keeping it non-executing.
 
 It follows Phase 3J because the demo scenario seed package now defines safe,
 deterministic pilot scenarios. Phase 3K renders those seeds as a guided journey
@@ -15,6 +17,15 @@ The walkthrough connects:
 - approval decision preview;
 - audit expectation;
 - investigation review.
+
+The visible route now emphasizes:
+
+- a buyer-facing hero thesis;
+- controlled scenario cards;
+- an end-to-end operational timeline;
+- business value translation;
+- presenter mode;
+- explicit safety boundaries.
 
 The default visible demo uses the medium-risk approval-required scenario because
 it shows request creation, policy/admission, human approval, audit expectation
@@ -89,6 +100,15 @@ search/listing or expand into SaaS scope.
 The walkthrough uses safe references and safe summaries only. Raw document
 content, raw payloads, binary blobs, SQL details, stack traces, secrets and
 external service responses are outside the contract.
+
+## Phase 3L Local Preview
+
+Phase 3L adds `pnpm demo:local` so the Phase 3K route can be inspected in a
+browser on `127.0.0.1` without unguarding the broad `pnpm dev` command.
+
+The preview path is local-only and does not add live mutation, API/auth
+expansion, replay execution, export behavior, broad workflow builder scope,
+broad dashboard/list/search or SaaS expansion.
 
 ## Next Phase
 

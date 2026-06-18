@@ -31,6 +31,7 @@ Current product decision artifacts:
 - [Approval Decision UI Surface](approval-decision-ui-surface.md): renders a controlled non-mutating approval decision preview at `/mycelia/approval/decision` without persistence writes, API, auth, replay, export or broad approval inbox scope.
 - [Demo Scenario Seed Package](demo-scenario-seed-package.md): connects request creation, approval decision and investigation surfaces into deterministic non-executing pilot demo seeds without runtime execution, persistence writes, API, auth, replay or export behavior.
 - [Pilot Demo End-to-End](pilot-demo-end-to-end.md): renders the Phase 3J seeds as a controlled walkthrough at `/mycelia/demo` without runtime execution, persistence writes, API, auth, replay, export or SaaS scope.
+- [Demo Hardening Local Preview](demo-hardening-local-preview.md): adds a narrow `pnpm demo:local` path for local browser inspection and hardens `/mycelia/demo` into a guided pilot walkthrough without weakening guarded broad product commands.
 
 Current truth:
 
@@ -59,4 +60,5 @@ Current truth:
 - approval decision UI surface exists as a controlled non-mutating decision preview;
 - demo scenario seed package exists as deterministic non-executing pilot narrative data;
 - pilot demo end-to-end surface exists as a controlled walkthrough over deterministic seeds;
+- local demo preview command and contract exist for route-scoped browser inspection on `127.0.0.1`;
 - runtime product execution, live request/approval persistence, executable demo seed data, API routes, auth, global PrismaClient bootstrapping, broad approval UI/inbox, production dynamic investigation UI beyond controlled read-only selection, broad audit service and external integrations are not implemented yet.

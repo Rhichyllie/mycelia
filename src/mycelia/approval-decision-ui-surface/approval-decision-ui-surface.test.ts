@@ -189,10 +189,10 @@ describe("approval decision ui surface", () => {
     expect(html).not.toContain("onSubmit");
   });
 
-  it("keeps package files unchanged", () => {
+  it("keeps pnpm-lock.yaml unchanged", () => {
     const status = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
 

@@ -103,3 +103,6 @@ store, audit sealing, export/PDF/download behavior or SaaS expansion.
 Phase 3K uses these deterministic seeds to render a narrow pilot demo
 walkthrough at `/mycelia/demo`. It still avoids mutation, runtime execution,
 replay, export, broad search/listing and SaaS expansion.
+
+Phase 3L then makes that controlled walkthrough locally inspectable through
+`pnpm demo:local` while keeping the broad `pnpm dev` product command guarded.

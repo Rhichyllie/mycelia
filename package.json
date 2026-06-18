@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/phase0-guard.mjs dev",
+    "demo:local": "node scripts/mycelia-demo-local.mjs",
     "build": "node scripts/phase0-guard.mjs build",
     "start": "node scripts/phase0-guard.mjs start",
     "lint": "eslint .",

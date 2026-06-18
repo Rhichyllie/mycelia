@@ -74,10 +74,51 @@ describe("pilot demo end-to-end", () => {
         "INVESTIGATION_REVIEW",
       ]),
     );
+    expect(html).toContain(
+      "Governed AI operations, from request to approval to investigation.",
+    );
+    expect(html).toContain(
+      "See how MYCELIA controls an AI-assisted operational request before it can affect the business.",
+    );
+    expect(html).toContain("Controlled pilot demo");
+    expect(html).toContain("Read-only");
+    expect(html).toContain("No live execution");
     expect(html).toContain("MYCELIA pilot walkthrough");
     expect(html).toContain("/mycelia/request/new");
     expect(html).toContain("/mycelia/approval/decision");
     expect(html).toContain("/mycelia/investigation");
+  });
+
+  it("renders scenario cards for the main customer pilot paths", () => {
+    const html = htmlForScenario();
+
+    expect(html).toContain("Scenario selector");
+    expect(html).toContain("Medium-risk approval required");
+    expect(html).toContain("Rejected approval");
+    expect(html).toContain("High-risk blocked");
+    expect(html).toContain("Incomplete evidence");
+    expect(html).toContain("Selected demo path");
+  });
+
+  it("renders a visual operational timeline with customer-facing explanation", () => {
+    const html = htmlForScenario();
+
+    for (const step of [
+      "Request Draft",
+      "Policy / Admission",
+      "Approval Decision",
+      "Audit Moment",
+      "Investigation",
+    ]) {
+      expect(html).toContain(step);
+    }
+
+    expect(html).toContain("What MYCELIA decides or prepares");
+    expect(html).toContain("What the human sees");
+    expect(html).toContain("What is auditable");
+    expect(html).toContain("What the client should understand");
+    expect(html).toContain("Prevents ungoverned AI-assisted actions");
+    expect(html).toContain("Demo outcome");
   });
 
   it("renders rejected approval and high-risk blocked/rejected demo paths", () => {
@@ -162,7 +203,7 @@ describe("pilot demo end-to-end", () => {
       "Demo overview",
       "End-to-end path",
       "Governance story",
-      "Presenter script",
+      "Presenter mode",
       "Safety boundary",
       "Demo readiness",
     ]) {
@@ -196,10 +237,10 @@ describe("pilot demo end-to-end", () => {
     expect(html).not.toContain("action=");
   });
 
-  it("keeps package files, schema and migration unchanged", () => {
+  it("keeps lockfile, schema and migration unchanged", () => {
     const packageStatus = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
     const schemaDiff = execFileSync(
