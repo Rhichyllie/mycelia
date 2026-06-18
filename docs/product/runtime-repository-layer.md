@@ -135,3 +135,6 @@ Phase 3G uses a controlled read-only selection boundary to feed the Phase 3E
 read model and map it into the UI contract. It does not add repository writes,
 new repository methods, API routes, auth, broad search or route-local database
 client ownership.
+
+Phase 3H renders a controlled request draft preview and still does not add
+repository writes, new repository methods or live request persistence.

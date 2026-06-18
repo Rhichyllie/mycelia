@@ -126,3 +126,7 @@ investigation selection boundary, read-only loader and mapper. The route no
 longer depends exclusively on UI fixtures, but it still does not create API
 routes, auth, mutation, replay, exports, broad search or broad database
 ownership.
+
+Phase 3H adds a controlled request creation preview so the intake seed shape can
+be inspected before any future live request creation boundary. It remains
+non-mutating and does not write repository records.

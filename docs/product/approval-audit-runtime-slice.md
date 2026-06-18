@@ -107,3 +107,7 @@ or export behavior.
 Phase 3G keeps the UI read-only and connects it to the persisted investigation
 read model through a controlled selection boundary. Approval decisions remain
 out of scope for the UI.
+
+Phase 3H adds a separate controlled request creation preview. It does not add
+approval UI, API routes, auth, replay execution, export behavior or case
+management.

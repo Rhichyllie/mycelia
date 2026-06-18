@@ -140,3 +140,7 @@ runtime surface.
 Phase 3G connects the investigation route to the persisted investigation read
 model through a controlled read-only selection boundary. It still does not
 promote the harness into a runtime product surface.
+
+Phase 3H adds a controlled request creation preview for the demo path. It
+remains non-mutating and does not broaden this harness into live runtime
+execution or workflow builder scope.

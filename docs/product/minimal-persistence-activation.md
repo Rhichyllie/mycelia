@@ -117,3 +117,6 @@ does not change the schema or migration and does not introduce live DB reads.
 Phase 3G connects the surface to a controlled read-only investigation selection
 boundary without changing the schema or migration and without introducing
 route-local database client ownership.
+
+Phase 3H adds a controlled governed request creation preview without changing
+the schema or migration and without writing request records.

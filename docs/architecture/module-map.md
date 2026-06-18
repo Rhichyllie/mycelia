@@ -60,6 +60,7 @@ SaaS readiness.
 | `src/mycelia/persisted-investigation-read-model/` | IMPLEMENTED_PERSISTED_READ_MODEL | Phase 3E persisted investigation read model over repository-backed records. | No investigation UI, API route, auth, replay execution, export behavior or broad database access. |
 | `src/mycelia/minimal-investigation-ui-surface/` | IMPLEMENTED_LIVE_READ_ONLY_SURFACE | Phase 3F minimal investigation UI surface with read-model loader. | No mutation, API route, auth, replay execution, export behavior or case management. |
 | `src/mycelia/investigation-selection-readonly-boundary/` | IMPLEMENTED_READ_ONLY_SELECTION_BOUNDARY | Phase 3G controlled investigation target selection before UI rendering. | No mutation, API route, auth, broad search/listing, replay execution or export behavior. |
+| `src/mycelia/governed-request-creation-surface/` | IMPLEMENTED_CONTROLLED_REQUEST_PREVIEW | Phase 3H controlled governed request seed preview. | No persistence write, API route, auth, workflow builder, replay execution, export behavior or SaaS expansion. |
 
 ## Implemented App Router Surfaces
 
@@ -70,6 +71,7 @@ SaaS readiness.
 | `/mycelia/executive` | IMPLEMENTED_STATIC_READ_ONLY | Executive narrative. |
 | `/mycelia/static-demo` | IMPLEMENTED_STATIC_READ_ONLY | Static demo surface. |
 | `/mycelia/walkthrough` | IMPLEMENTED_STATIC_READ_ONLY | Guided walkthrough. |
+| `/mycelia/request/new` | IMPLEMENTED_CONTROLLED_REQUEST_PREVIEW | Controlled non-mutating governed request seed preview. |
 | `/mycelia/roadmap` | IMPLEMENTED_STATIC_READ_ONLY | Product roadmap. |
 | `/mycelia/investigation` | IMPLEMENTED_READ_ONLY_SELECTION_SURFACE | Minimal investigation UI surface over a controlled read-only selected target. |
 
@@ -82,6 +84,7 @@ SaaS readiness.
 | `state-persistence` | SCHEMA_REPOSITORY_HARNESS_APPROVAL_AUDIT_AND_READ_MODEL_ACTIVE | Runtime persistence model scaffold, Prisma schema/migration contract, injected-client repository boundary, Prisma-like adapter, persisted harness, approval/audit slice and persisted investigation read model exist; no product runtime surface, global PrismaClient bootstrap or broad application DB integration exists yet. |
 | `governance-policy-runtime` | PURE_V1_AND_NARROW_APPROVAL_DECISION_SLICE | Deterministic policy/admission v1 and approval gate v1 exist; Phase 3D persists pending approval decisions. No real policy engine, approval queue, approval UI, RBAC or notifications exist yet. |
 | `audit-commit-boundary` | PURE_BOUNDARY_WITH_MINIMAL_APPROVAL_AUDIT_RECORD | Audit requirement classification exists and Phase 3D writes minimal `APPROVAL_DECIDED` AuditRecord entries; no broad durable audit writer, append log, sealing or export exists yet. |
+| `request-creation-surface` | CONTROLLED_PREVIEW_ONLY | Phase 3H renders a safe governed request seed preview; no live persistence write or workflow builder exists yet. |
 | `investigation-view` | PERSISTED_READ_MODEL_SELECTION_AND_LIVE_READ_ONLY_UI_ACTIVE | Investigation view model v1 exists in memory, Phase 3E reconstructs persisted run history through the repository boundary and Phase 3G resolves controlled targets before read-only UI rendering; no production repository client, case management or mutation surface exists yet. |
 | `replay-runtime` | PURE_DESCRIPTOR_ONLY | Replay dry-run descriptor v1 exists in memory only; no replay execution, replay UI or simulation exists yet. |
 | `external-api` | NOT_IMPLEMENTED | No API endpoints exist yet. |

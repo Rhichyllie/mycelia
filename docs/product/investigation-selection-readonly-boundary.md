@@ -63,6 +63,7 @@ It does not:
 
 ## Next Phase
 
-The next phase can replace the controlled reference source with a production
-read-only repository client or explicit target source while preserving the same
-selection result and UI descriptor contract.
+Phase 3H adds a controlled governed request creation surface so operators can
+inspect the safe request seed shape before policy/admission, approval and
+investigation. It remains non-mutating and does not introduce API/auth scope,
+replay execution, export behavior or broad dashboard/list/search.

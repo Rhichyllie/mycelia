@@ -64,3 +64,8 @@ Phase 3G connects that UI to the Phase 3E read model through a controlled
 read-only investigation selection boundary. It still does not modify the
 schema, run Prisma generate, run production migrations, create `dev.db` or
 instantiate PrismaClient globally.
+
+Phase 3H adds a controlled governed request creation preview at
+`/mycelia/request/new`. It is non-mutating UI only and does not modify the
+schema, run Prisma generate, run production migrations, create `dev.db`,
+instantiate PrismaClient globally or write request records.
