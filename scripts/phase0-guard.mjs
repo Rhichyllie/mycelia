@@ -13,6 +13,9 @@ function printPhase0Message() {
   );
   console.error(`Use "pnpm validate:phase0" for the current safe baseline.`);
   console.error(
+    `Use "pnpm demo:local" only for local MYCELIA demo preview inspection.`,
+  );
+  console.error(
     `Future app/runtime work must follow docs/mycelia/19-codex-operational-alignment-and-engineering-constitution.md.`,
   );
 }

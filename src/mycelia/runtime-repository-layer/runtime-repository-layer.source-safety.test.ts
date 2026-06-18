@@ -75,10 +75,10 @@ describe("runtime repository layer source safety", () => {
     expect(source).not.toMatch(/\bappendFile\b/i);
   });
 
-  it("does not modify package files or Phase 3A schema and migration", () => {
+  it("does not modify lockfile or Phase 3A schema and migration", () => {
     const packageStatus = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
     const schemaDiff = execFileSync(

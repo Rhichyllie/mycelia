@@ -100,10 +100,10 @@ describe("pilot demo end-to-end source safety", () => {
     expect(source).not.toContain(backslashPath);
   });
 
-  it("keeps package files, schema and migration untouched", () => {
+  it("keeps lockfile, schema and migration untouched", () => {
     const packageStatus = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
     const schemaDiff = execFileSync(

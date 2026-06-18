@@ -83,3 +83,9 @@ records.
 Phase 3K renders those seeds as a controlled walkthrough at `/mycelia/demo`.
 It does not modify the schema, run Prisma generate, run production migrations,
 create `dev.db`, instantiate PrismaClient globally or write demo records.
+
+Phase 3L adds `pnpm demo:local` for local browser inspection of controlled
+MYCELIA demo surfaces and hardens `/mycelia/demo` as a guided pilot walkthrough.
+It does not modify the schema, run Prisma generate, run production migrations,
+create `dev.db`, instantiate PrismaClient globally, call Prisma or write demo
+records.

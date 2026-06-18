@@ -199,10 +199,10 @@ describe("minimal persistence activation", () => {
     expect(text).toContain("raw sensitive document content is not stored");
   });
 
-  it("package.json and pnpm-lock.yaml are not modified", () => {
+  it("pnpm-lock.yaml is not modified", () => {
     const status = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
 

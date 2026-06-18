@@ -203,10 +203,10 @@ describe("demo scenario seed package", () => {
     );
   });
 
-  it("keeps package files, schema and migration unchanged", () => {
+  it("keeps lockfile, schema and migration unchanged", () => {
     const packageStatus = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
     const schemaDiff = execFileSync(

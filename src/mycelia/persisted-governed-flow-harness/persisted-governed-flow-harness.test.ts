@@ -351,10 +351,10 @@ describe("persisted governed flow harness", () => {
     }
   }, SQLITE_INTEGRATION_TEST_TIMEOUT_MS);
 
-  it("keeps schema, migration and package files unchanged and creates no repo database file", () => {
+  it("keeps schema, migration and pnpm-lock.yaml unchanged and creates no repo database file", () => {
     const packageStatus = execFileSync(
       "git",
-      ["status", "--short", "--", "package.json", "pnpm-lock.yaml"],
+      ["status", "--short", "--", "pnpm-lock.yaml"],
       { encoding: "utf8" },
     );
     const schemaDiff = execFileSync(

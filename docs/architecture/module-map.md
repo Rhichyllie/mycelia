@@ -63,7 +63,8 @@ SaaS readiness.
 | `src/mycelia/governed-request-creation-surface/` | IMPLEMENTED_CONTROLLED_REQUEST_PREVIEW | Phase 3H controlled governed request seed preview. | No persistence write, API route, auth, workflow builder, replay execution, export behavior or SaaS expansion. |
 | `src/mycelia/approval-decision-ui-surface/` | IMPLEMENTED_CONTROLLED_APPROVAL_PREVIEW | Phase 3I controlled approval decision preview. | No persistence write, API route, auth, RBAC, broad approval inbox, replay execution, export behavior or SaaS expansion. |
 | `src/mycelia/demo-scenario-seed-package/` | IMPLEMENTED_CONTROLLED_DEMO_SEEDS | Phase 3J deterministic seed package connecting request, approval and investigation surfaces. | No runtime execution, persistence write, API route, auth, replay execution, export behavior, workflow builder or SaaS expansion. |
-| `src/mycelia/pilot-demo-end-to-end/` | IMPLEMENTED_CONTROLLED_DEMO_WALKTHROUGH | Phase 3K controlled end-to-end pilot demo walkthrough over Phase 3J seeds. | No runtime execution, persistence write, API route, auth, replay execution, export behavior, workflow builder, broad dashboard/list/search or SaaS expansion. |
+| `src/mycelia/pilot-demo-end-to-end/` | IMPLEMENTED_CONTROLLED_DEMO_WALKTHROUGH | Phase 3K controlled end-to-end pilot demo walkthrough over Phase 3J seeds, hardened in Phase 3L as a guided customer pilot route. | No runtime execution, persistence write, API route, auth, replay execution, export behavior, workflow builder, broad dashboard/list/search or SaaS expansion. |
+| `src/mycelia/demo-local-preview/` | IMPLEMENTED_LOCAL_PREVIEW_CONTRACT | Phase 3L descriptive local preview contract for controlled demo inspection. | No server start, runtime execution, persistence write, API route, auth, replay execution, export behavior or external integration. |
 
 ## Implemented App Router Surfaces
 
@@ -93,6 +94,7 @@ SaaS readiness.
 | `approval-decision-surface` | CONTROLLED_PREVIEW_ONLY | Phase 3I renders a safe approval decision preview; no live approval persistence, approval inbox or RBAC exists yet. |
 | `demo-scenario-seed-package` | CONTROLLED_SEEDS_ONLY | Phase 3J connects request, approval, audit and investigation expectations into deterministic demo seeds; no runtime execution or persistence writes exist. |
 | `pilot-demo-end-to-end` | CONTROLLED_WALKTHROUGH_ONLY | Phase 3K renders the deterministic seeds as a guided pilot demo; no runtime execution, API, replay, export or broad dashboard exists. |
+| `demo-local-preview` | LOCAL_PREVIEW_ONLY | Phase 3L adds `pnpm demo:local` and a descriptive contract for browser inspection on `127.0.0.1`; no production runtime activation exists. |
 | `investigation-view` | PERSISTED_READ_MODEL_SELECTION_AND_LIVE_READ_ONLY_UI_ACTIVE | Investigation view model v1 exists in memory, Phase 3E reconstructs persisted run history through the repository boundary and Phase 3G resolves controlled targets before read-only UI rendering; no production repository client, case management or mutation surface exists yet. |
 | `replay-runtime` | PURE_DESCRIPTOR_ONLY | Replay dry-run descriptor v1 exists in memory only; no replay execution, replay UI or simulation exists yet. |
 | `external-api` | NOT_IMPLEMENTED | No API endpoints exist yet. |

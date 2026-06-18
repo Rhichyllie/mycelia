@@ -1,9 +1,9 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import { DEMO_SCENARIO_SEED_FIXTURES } from "../demo-scenario-seed-package";
 import type {
   PilotDemoEndToEndModel,
   PilotDemoEndToEndStatus,
-  PilotDemoPresenterScriptItem,
   PilotDemoRouteLink,
   PilotDemoStepCard,
 } from "./pilot-demo-end-to-end-contract";
@@ -14,6 +14,22 @@ export type PilotDemoEndToEndSurfaceProps = {
 };
 
 type PilotDemoTone = "neutral" | "success" | "info" | "warning" | "critical";
+
+type ScenarioCard = {
+  readonly label: string;
+  readonly scenarioId: string;
+  readonly summary: string;
+  readonly buyerSignal: string;
+  readonly status: PilotDemoEndToEndStatus;
+  readonly selected: boolean;
+};
+
+type TimelineDetails = {
+  readonly label: string;
+  readonly myceliaAction: string;
+  readonly humanView: string;
+  readonly auditable: string;
+};
 
 const toneStyles = {
   neutral: {
@@ -41,138 +57,298 @@ const toneStyles = {
     background: "#fff2f2",
     color: "#743131",
   },
-} satisfies Record<PilotDemoTone, {
-  readonly border: string;
-  readonly background: string;
-  readonly color: string;
-}>;
+} satisfies Record<
+  PilotDemoTone,
+  {
+    readonly border: string;
+    readonly background: string;
+    readonly color: string;
+  }
+>;
+
+const timelineDetailsByStepKind: Record<string, TimelineDetails> = {
+  REQUEST_CREATION: {
+    label: "Request Draft",
+    myceliaAction:
+      "Frames the operational request as a governed draft before business impact.",
+    humanView:
+      "The operator sees purpose, risk hint and safe request references.",
+    auditable: "Request intent and safe metadata are ready for audit review.",
+  },
+  POLICY_ADMISSION: {
+    label: "Policy / Admission",
+    myceliaAction:
+      "Decides whether the request can proceed, pause for approval or stop.",
+    humanView:
+      "The reviewer sees why the request needs approval or is blocked.",
+    auditable: "Admission rationale and policy expectation are explainable.",
+  },
+  APPROVAL_DECISION: {
+    label: "Approval Decision",
+    myceliaAction:
+      "Prepares the human approval point without submitting a live decision.",
+    humanView:
+      "The approver sees the decision preview and expected lifecycle result.",
+    auditable: "Approval outcome is represented as a controlled audit moment.",
+  },
+  AUDIT_EXPECTATION: {
+    label: "Audit Moment",
+    myceliaAction:
+      "Marks the moments that should be explainable after the operation.",
+    humanView:
+      "The client sees which evidence should exist and which gaps matter.",
+    auditable: "Expected audit coverage is visible before claiming completion.",
+  },
+  INVESTIGATION_REVIEW: {
+    label: "Investigation",
+    myceliaAction:
+      "Assembles a safe read-only explanation of the governed path.",
+    humanView:
+      "The investigator sees state, decisions, findings and missing evidence.",
+    auditable: "The final review can be traced without replay execution.",
+  },
+};
+
+const businessValueItems = [
+  "Prevents ungoverned AI-assisted actions from moving straight into operations.",
+  "Creates human approval points when policy says the request needs review.",
+  "Makes audit expectations visible before the team claims completion.",
+  "Supports investigation when a request is rejected, incomplete or questioned.",
+  "Reduces invisible operational risk by turning decisions into reviewable checkpoints.",
+] as const;
+
+const presenterModePanels = [
+  {
+    title: "What to say in a client meeting",
+    items: [
+      "This is the pilot path for a governed AI-assisted operational request.",
+      "MYCELIA shows where policy, approval, audit and investigation fit together.",
+      "The demo is intentionally controlled so claims stay accurate.",
+    ],
+  },
+  {
+    title: "What not to claim yet",
+    items: [
+      "Do not claim live request submission or live approval action.",
+      "Do not claim production auth, RBAC, notifications or API access.",
+      "Do not claim replay execution, export packages or broad workflow building.",
+    ],
+  },
+  {
+    title: "What this pilot proves",
+    items: [
+      "The buyer can see the governance story end to end.",
+      "Risk and approval decisions become understandable checkpoints.",
+      "Investigation and audit expectations are visible from safe descriptors.",
+    ],
+  },
+  {
+    title: "What remains simulated",
+    items: [
+      "Runtime execution and live persistence remain future phases.",
+      "Approval actions are previews, not submitted decisions.",
+      "Replay, exports and external integrations are outside this demo.",
+    ],
+  },
+] as const;
 
 const styles = {
   page: {
     width: "min(1180px, calc(100% - 40px))",
     margin: "0 auto",
-    padding: "34px 0 48px",
+    padding: "34px 0 52px",
   },
   hero: {
-    border: "1px solid #cbd8ce",
+    border: "1px solid #c9d8cf",
     borderRadius: "8px",
-    background: "#ffffff",
-    padding: "28px",
+    background:
+      "linear-gradient(135deg, #ffffff 0%, #f4faf5 55%, #eef6f8 100%)",
+    padding: "30px",
   },
   eyebrow: {
     margin: 0,
     color: "#496257",
     fontSize: "0.78rem",
-    fontWeight: 800,
+    fontWeight: 850,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
   },
   title: {
     margin: "10px 0 0",
+    maxWidth: "900px",
     color: "#15231c",
-    fontSize: "clamp(1.55rem, 2.4vw, 2.35rem)",
-    lineHeight: 1.15,
+    fontSize: "clamp(2rem, 4vw, 3.35rem)",
+    lineHeight: 1.04,
     letterSpacing: 0,
   },
-  summary: {
-    margin: "12px 0 0",
-    maxWidth: "860px",
-    color: "#46594f",
-    fontSize: "0.98rem",
-    lineHeight: 1.65,
+  heroCopy: {
+    margin: "14px 0 0",
+    maxWidth: "790px",
+    color: "#34483d",
+    fontSize: "1.06rem",
+    lineHeight: 1.58,
   },
   statusRow: {
     display: "flex",
     flexWrap: "wrap",
     gap: "8px",
-    marginTop: "18px",
+    marginTop: "20px",
   },
   badge: {
     border: "1px solid #c1cec5",
     borderRadius: "999px",
-    background: "#f9fbf8",
+    background: "#ffffff",
     color: "#263d30",
     padding: "6px 10px",
-    fontSize: "0.78rem",
-    fontWeight: 800,
+    fontSize: "0.76rem",
+    fontWeight: 850,
   },
-  grid: {
+  heroOutcomeGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
-    gap: "18px",
-    marginTop: "20px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 210px), 1fr))",
+    gap: "12px",
+    marginTop: "24px",
+  },
+  outcomeTile: {
+    border: "1px solid #d3ded6",
+    borderRadius: "8px",
+    background: "rgba(255,255,255,0.76)",
+    padding: "14px",
+  },
+  outcomeLabel: {
+    margin: 0,
+    color: "#5a6b62",
+    fontSize: "0.74rem",
+    fontWeight: 850,
+    textTransform: "uppercase",
+  },
+  outcomeText: {
+    margin: "6px 0 0",
+    color: "#1d3327",
+    fontSize: "0.9rem",
+    fontWeight: 750,
+    lineHeight: 1.42,
   },
   section: {
     border: "1px solid #d7e1d8",
     borderRadius: "8px",
     background: "#ffffff",
-    padding: "20px",
+    padding: "22px",
+    marginTop: "20px",
   },
-  wideSection: {
-    gridColumn: "1 / -1",
+  sectionHeader: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
   sectionTitle: {
     margin: 0,
     color: "#1c3025",
-    fontSize: "1.02rem",
+    fontSize: "1.08rem",
     lineHeight: 1.35,
     letterSpacing: 0,
   },
   sectionText: {
     margin: "8px 0 0",
     color: "#53665b",
-    fontSize: "0.88rem",
+    fontSize: "0.89rem",
     lineHeight: 1.55,
   },
-  stepGrid: {
+  scenarioGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 230px), 1fr))",
     gap: "14px",
     marginTop: "16px",
   },
-  stepCard: {
+  scenarioCard: {
     border: "1px solid #dce5dd",
     borderRadius: "8px",
     background: "#fbfcfa",
     padding: "16px",
   },
-  stepTitle: {
+  selectedScenarioCard: {
+    borderColor: "#54745f",
+    background: "#f2f8f3",
+    boxShadow: "inset 0 0 0 1px #54745f",
+  },
+  cardTitle: {
     margin: 0,
     color: "#203629",
-    fontSize: "0.95rem",
+    fontSize: "0.98rem",
     lineHeight: 1.35,
   },
-  stepMeta: {
+  cardMeta: {
     margin: "8px 0 0",
     color: "#5a6b62",
-    fontSize: "0.78rem",
-    fontWeight: 800,
+    fontSize: "0.76rem",
+    fontWeight: 850,
     lineHeight: 1.45,
+    textTransform: "uppercase",
   },
-  list: {
-    margin: "14px 0 0",
-    paddingLeft: "20px",
-    color: "#2e4637",
-    fontSize: "0.9rem",
-    lineHeight: 1.55,
-  },
-  linkList: {
-    listStyle: "none",
-    margin: "14px 0 0",
-    padding: 0,
+  timeline: {
     display: "grid",
-    gap: "10px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
+    gap: "14px",
+    marginTop: "16px",
+  },
+  timelineCard: {
+    position: "relative",
+    border: "1px solid #dce5dd",
+    borderRadius: "8px",
+    background: "#fbfcfa",
+    padding: "16px",
+  },
+  timelineNumber: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "28px",
+    height: "28px",
+    border: "1px solid #355642",
+    borderRadius: "999px",
+    background: "#263f30",
+    color: "#ffffff",
+    fontSize: "0.8rem",
+    fontWeight: 850,
+  },
+  timelineTitle: {
+    margin: "12px 0 0",
+    color: "#203629",
+    fontSize: "0.98rem",
+    lineHeight: 1.35,
   },
   link: {
     display: "inline-flex",
+    marginTop: "10px",
     border: "1px solid #355642",
     borderRadius: "6px",
     background: "#263f30",
     color: "#ffffff",
-    padding: "9px 12px",
-    fontSize: "0.86rem",
-    fontWeight: 800,
+    padding: "8px 10px",
+    fontSize: "0.82rem",
+    fontWeight: 850,
     textDecoration: "none",
+  },
+  twoColumn: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+    gap: "18px",
+    marginTop: "20px",
+  },
+  panel: {
+    border: "1px solid #dce5dd",
+    borderRadius: "8px",
+    background: "#fbfcfa",
+    padding: "16px",
+  },
+  list: {
+    margin: "12px 0 0",
+    paddingLeft: "20px",
+    color: "#2e4637",
+    fontSize: "0.89rem",
+    lineHeight: 1.55,
   },
   warningList: {
     listStyle: "none",
@@ -230,6 +406,52 @@ function renderBadge(text: string, tone: PilotDemoTone): ReactElement {
   );
 }
 
+function scenarioCards(defaultModel: PilotDemoEndToEndModel): ScenarioCard[] {
+  const selectedScenarioId = defaultModel.selectedScenarioId;
+  const scenarios = [
+    {
+      label: "Medium-risk approval required",
+      seed: DEMO_SCENARIO_SEED_FIXTURES.mediumRiskApprovalRequired,
+      buyerSignal: "Shows the normal pilot path with a human checkpoint.",
+    },
+    {
+      label: "Rejected approval",
+      seed: DEMO_SCENARIO_SEED_FIXTURES.mediumRiskRejectedDecision,
+      buyerSignal: "Shows that rejection is a governed outcome, not a failure.",
+    },
+    {
+      label: "High-risk blocked",
+      seed: DEMO_SCENARIO_SEED_FIXTURES.highRiskBlockedRejectedPath,
+      buyerSignal: "Shows policy stopping a risky operation before it proceeds.",
+    },
+    {
+      label: "Incomplete evidence",
+      seed: DEMO_SCENARIO_SEED_FIXTURES.incompleteEvidencePath,
+      buyerSignal: "Shows how missing audit evidence becomes visible.",
+    },
+  ] as const;
+
+  return scenarios.map((item) => {
+    const model = presentPilotDemoEndToEnd(item.seed);
+
+    return {
+      label: item.label,
+      scenarioId: model.selectedScenarioId,
+      summary: model.scenarioSummary,
+      buyerSignal: item.buyerSignal,
+      status: model.status,
+      selected: model.selectedScenarioId === selectedScenarioId,
+    };
+  });
+}
+
+function routeForStep(
+  card: PilotDemoStepCard,
+  links: readonly PilotDemoRouteLink[],
+): PilotDemoRouteLink | undefined {
+  return links.find((link) => link.routePath === card.routePath);
+}
+
 function renderPlainList(items: readonly string[]): ReactElement {
   return (
     <ul style={styles.list}>
@@ -240,55 +462,78 @@ function renderPlainList(items: readonly string[]): ReactElement {
   );
 }
 
-function renderStepCards(cards: readonly PilotDemoStepCard[]): ReactElement {
+function renderScenarioCards(cards: readonly ScenarioCard[]): ReactElement {
   return (
-    <div style={styles.stepGrid}>
-      {cards.map((card) => (
-        <article key={`${card.stepKind}-${card.routePath}`} style={styles.stepCard}>
-          <h3 style={styles.stepTitle}>{card.title}</h3>
-          <p style={styles.stepMeta}>
-            {card.stepKind} · {card.status}
-          </p>
-          <p style={styles.sectionText}>{card.safeSummary}</p>
-          <p style={styles.stepMeta}>Expected outcome</p>
-          <p style={styles.sectionText}>{card.expectedOutcome}</p>
-          <p style={styles.stepMeta}>What to say</p>
-          <p style={styles.sectionText}>{card.whatToSay}</p>
-          <p style={styles.stepMeta}>What not to claim</p>
-          <p style={styles.sectionText}>{card.whatNotToClaim}</p>
-        </article>
-      ))}
+    <div style={styles.scenarioGrid}>
+      {cards.map((card) => {
+        const tone = toneForStatus(card.status);
+        const selectedStyle = card.selected ? styles.selectedScenarioCard : {};
+
+        return (
+          <article
+            key={card.scenarioId}
+            aria-label={card.label}
+            style={{ ...styles.scenarioCard, ...selectedStyle }}
+          >
+            <div style={styles.statusRow}>
+              {renderBadge(card.selected ? "Selected demo path" : "Scenario option", "info")}
+              {renderBadge(card.status, tone)}
+            </div>
+            <h3 style={styles.cardTitle}>{card.label}</h3>
+            <p style={styles.sectionText}>{card.summary}</p>
+            <p style={styles.cardMeta}>Buyer signal</p>
+            <p style={styles.sectionText}>{card.buyerSignal}</p>
+          </article>
+        );
+      })}
     </div>
   );
 }
 
-function renderRouteLinks(links: readonly PilotDemoRouteLink[]): ReactElement {
+function renderTimeline(model: PilotDemoEndToEndModel): ReactElement {
   return (
-    <ul aria-label="Controlled demo route links" style={styles.linkList}>
-      {links.map((link) => (
-        <li key={link.routePath}>
-          <a href={link.routePath} style={styles.link}>
-            {link.routePath}
-          </a>
-          <p style={styles.sectionText}>{link.safeSummary}</p>
-        </li>
-      ))}
-    </ul>
+    <div aria-label="Request Draft to Investigation timeline" style={styles.timeline}>
+      {model.stepCards.map((card, index) => {
+        const detail = timelineDetailsByStepKind[card.stepKind] ?? {
+          label: card.title,
+          myceliaAction: card.expectedOutcome,
+          humanView: card.whatToSay,
+          auditable: card.safeSummary,
+        };
+        const route = routeForStep(card, model.routeLinks);
+
+        return (
+          <article key={`${card.stepKind}-${index}`} style={styles.timelineCard}>
+            <span style={styles.timelineNumber}>{index + 1}</span>
+            <h3 style={styles.timelineTitle}>{detail.label}</h3>
+            <div style={styles.statusRow}>
+              {renderBadge(card.status, toneForStatus(card.status))}
+            </div>
+            <p style={styles.cardMeta}>What MYCELIA decides or prepares</p>
+            <p style={styles.sectionText}>{detail.myceliaAction}</p>
+            <p style={styles.cardMeta}>What the human sees</p>
+            <p style={styles.sectionText}>{detail.humanView}</p>
+            <p style={styles.cardMeta}>What is auditable</p>
+            <p style={styles.sectionText}>{detail.auditable}</p>
+            {route ? (
+              <a href={route.routePath} style={styles.link}>
+                Open {route.routePath}
+              </a>
+            ) : null}
+          </article>
+        );
+      })}
+    </div>
   );
 }
 
-function renderPresenterScript(
-  script: readonly PilotDemoPresenterScriptItem[],
-): ReactElement {
+function renderPresenterMode(): ReactElement {
   return (
-    <div style={styles.stepGrid}>
-      {script.map((item) => (
-        <article key={item.stepKind} style={styles.stepCard}>
-          <h3 style={styles.stepTitle}>{item.stepKind}</h3>
-          <p style={styles.stepMeta}>What to say</p>
-          <p style={styles.sectionText}>{item.whatToSay}</p>
-          <p style={styles.stepMeta}>What not to claim</p>
-          <p style={styles.sectionText}>{item.whatNotToClaim}</p>
+    <div style={styles.twoColumn}>
+      {presenterModePanels.map((panel) => (
+        <article key={panel.title} style={styles.panel}>
+          <h3 style={styles.cardTitle}>{panel.title}</h3>
+          {renderPlainList(panel.items)}
         </article>
       ))}
     </div>
@@ -303,11 +548,12 @@ function renderReadiness(model: PilotDemoEndToEndModel): ReactElement {
   return (
     <ul style={styles.warningList}>
       {model.demoReadiness.warnings.map((item) => {
-        const tone = item.severity === "BLOCKER"
-          ? "critical"
-          : item.severity === "WARNING"
-            ? "warning"
-            : "info";
+        const tone =
+          item.severity === "BLOCKER"
+            ? "critical"
+            : item.severity === "WARNING"
+              ? "warning"
+              : "info";
         const colors = toneStyles[tone];
 
         return (
@@ -333,94 +579,147 @@ export function PilotDemoEndToEndSurface({
   scenario,
 }: PilotDemoEndToEndSurfaceProps): ReactElement {
   const model = presentPilotDemoEndToEnd(scenario);
-  const statusTone = toneForStatus(model.status);
+  const cards = scenarioCards(model);
 
   return (
     <main aria-labelledby="pilot-demo-title" style={styles.page}>
-      <section aria-label="Pilot demo overview" style={styles.hero}>
-        <p style={styles.eyebrow}>Phase 3K controlled pilot walkthrough</p>
+      <section aria-label="Pilot demo hero" style={styles.hero}>
+        <p style={styles.eyebrow}>MYCELIA pilot walkthrough</p>
         <h1 id="pilot-demo-title" style={styles.title}>
-          {model.demoTitle}
+          Governed AI operations, from request to approval to investigation.
         </h1>
-        <p style={styles.summary}>{model.demoThesis}</p>
-        <div aria-label="Pilot demo boundary" style={styles.statusRow}>
-          {renderBadge(model.status, statusTone)}
-          {renderBadge("Guided demo only", "info")}
-          {renderBadge("No runtime execution", "warning")}
-          {renderBadge("No live DB write", "warning")}
+        <p style={styles.heroCopy}>
+          See how MYCELIA controls an AI-assisted operational request before it
+          can affect the business.
+        </p>
+        <div aria-label="Pilot demo status" style={styles.statusRow}>
+          {renderBadge("Controlled pilot demo", "info")}
+          {renderBadge("Read-only", "success")}
+          {renderBadge("No live execution", "warning")}
+          {renderBadge(model.status, toneForStatus(model.status))}
+        </div>
+        <div style={styles.heroOutcomeGrid}>
+          <article style={styles.outcomeTile}>
+            <p style={styles.outcomeLabel}>Default scenario</p>
+            <p style={styles.outcomeText}>{model.selectedScenarioId}</p>
+          </article>
+          <article style={styles.outcomeTile}>
+            <p style={styles.outcomeLabel}>Demo outcome</p>
+            <p style={styles.outcomeText}>
+              Request, policy, approval, audit and investigation are visible in
+              one controlled path.
+            </p>
+          </article>
+          <article style={styles.outcomeTile}>
+            <p style={styles.outcomeLabel}>Boundary</p>
+            <p style={styles.outcomeText}>
+              Customer-safe simulation with no runtime mutation.
+            </p>
+          </article>
         </div>
       </section>
 
-      <div style={styles.grid}>
-        <section aria-labelledby="demo-overview-heading" style={styles.section}>
-          <h2 id="demo-overview-heading" style={styles.sectionTitle}>
-            Demo overview
-          </h2>
-          <p style={styles.sectionText}>Selected scenario: {model.selectedScenarioId}</p>
-          <p style={styles.sectionText}>Target audience: {model.targetAudience}</p>
-          <p style={styles.sectionText}>Scenario summary: {model.scenarioSummary}</p>
-        </section>
+      <section aria-labelledby="demo-overview-heading" style={styles.section}>
+        <div style={styles.sectionHeader}>
+          <div>
+            <h2 id="demo-overview-heading" style={styles.sectionTitle}>
+              Demo overview
+            </h2>
+            <p style={styles.sectionText}>{model.demoTitle}</p>
+          </div>
+          {renderBadge(model.demoReadiness.status, toneForStatus(model.status))}
+        </div>
+        <p style={styles.sectionText}>{model.scenarioSummary}</p>
+        <p style={styles.sectionText}>Target audience: {model.targetAudience}</p>
+      </section>
 
-        <section
-          aria-labelledby="end-to-end-path-heading"
-          style={{ ...styles.section, ...styles.wideSection }}
-        >
-          <h2 id="end-to-end-path-heading" style={styles.sectionTitle}>
-            End-to-end path
-          </h2>
-          <p style={styles.sectionText}>
-            Step cards connect the existing controlled MYCELIA surfaces without
-            executing the scenario.
-          </p>
-          {renderStepCards(model.stepCards)}
-          {renderRouteLinks(model.routeLinks)}
-        </section>
+      <section aria-labelledby="scenario-selector-heading" style={styles.section}>
+        <h2 id="scenario-selector-heading" style={styles.sectionTitle}>
+          Scenario selector
+        </h2>
+        <p style={styles.sectionText}>
+          Four pilot paths communicate how MYCELIA handles normal approval,
+          rejection, high-risk blocking and incomplete evidence. This selector is
+          static in Phase 3L; the default scenario is visually selected.
+        </p>
+        {renderScenarioCards(cards)}
+      </section>
 
+      <section aria-labelledby="end-to-end-path-heading" style={styles.section}>
+        <h2 id="end-to-end-path-heading" style={styles.sectionTitle}>
+          End-to-end path
+        </h2>
+        <p style={styles.sectionText}>
+          Request Draft to Policy / Admission to Approval Decision to Audit
+          Moment to Investigation.
+        </p>
+        {renderTimeline(model)}
+      </section>
+
+      <div style={styles.twoColumn}>
         <section
-          aria-labelledby="governance-story-heading"
+          aria-labelledby="client-understanding-heading"
           style={styles.section}
         >
-          <h2 id="governance-story-heading" style={styles.sectionTitle}>
-            Governance story
+          <h2 id="client-understanding-heading" style={styles.sectionTitle}>
+            What the client should understand
           </h2>
-          {renderPlainList(model.expectedGovernancePath)}
+          {renderPlainList(businessValueItems)}
         </section>
 
-        <section
-          aria-labelledby="presenter-script-heading"
-          style={{ ...styles.section, ...styles.wideSection }}
-        >
-          <h2 id="presenter-script-heading" style={styles.sectionTitle}>
-            Presenter script
+        <section aria-labelledby="demo-outcome-heading" style={styles.section}>
+          <h2 id="demo-outcome-heading" style={styles.sectionTitle}>
+            Demo outcome
           </h2>
           <p style={styles.sectionText}>
-            Use these talking points to keep the demo accurate and avoid
-            unsupported live-product claims.
+            The buyer sees that MYCELIA can turn a risky AI-assisted operation
+            into a governed sequence of reviewable checkpoints.
           </p>
-          {renderPresenterScript(model.presenterScript)}
+          <p style={styles.sectionText}>
+            The pilot proves the shape of governance before production runtime
+            activation exists.
+          </p>
         </section>
+      </div>
 
-        <section
-          aria-labelledby="safety-boundary-heading"
-          style={styles.section}
-        >
+      <section aria-labelledby="governance-story-heading" style={styles.section}>
+        <h2 id="governance-story-heading" style={styles.sectionTitle}>
+          Governance story
+        </h2>
+        {renderPlainList(model.expectedGovernancePath)}
+      </section>
+
+      <section aria-labelledby="presenter-script-heading" style={styles.section}>
+        <h2 id="presenter-script-heading" style={styles.sectionTitle}>
+          Presenter mode
+        </h2>
+        <p style={styles.sectionText}>
+          A concise client-meeting script keeps the walkthrough commercially
+          useful without overstating live product readiness.
+        </p>
+        {renderPresenterMode()}
+      </section>
+
+      <div style={styles.twoColumn}>
+        <section aria-labelledby="safety-boundary-heading" style={styles.section}>
           <h2 id="safety-boundary-heading" style={styles.sectionTitle}>
             Safety boundary
           </h2>
           {renderPlainList(model.safetyBoundary)}
         </section>
 
-        <section
-          aria-labelledby="demo-readiness-heading"
-          style={styles.section}
-        >
+        <section aria-labelledby="demo-readiness-heading" style={styles.section}>
           <h2 id="demo-readiness-heading" style={styles.sectionTitle}>
             Demo readiness
           </h2>
-          <p style={styles.sectionText}>Readiness status: {model.demoReadiness.status}</p>
-          {model.demoReadiness.missingPieces.length > 0
-            ? renderPlainList(model.demoReadiness.missingPieces)
-            : <p style={styles.sectionText}>No missing demo pieces were detected.</p>}
+          <p style={styles.sectionText}>
+            Readiness status: {model.demoReadiness.status}
+          </p>
+          {model.demoReadiness.missingPieces.length > 0 ? (
+            renderPlainList(model.demoReadiness.missingPieces)
+          ) : (
+            <p style={styles.sectionText}>No missing demo pieces were detected.</p>
+          )}
           {renderReadiness(model)}
           {renderPlainList(model.nextActions)}
         </section>
