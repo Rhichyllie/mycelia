@@ -65,9 +65,36 @@ const APPLICATION_SOURCE_PATTERNS = [
   /\bMapIA\b/,
 ] as const;
 
+const LIVE_1_DATABASE_SOURCE_ALLOWLIST = new Set([
+  repoPath("src", "mycelia", "runtime", "db", "client.ts"),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-audit.repository.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-governed-run.repository.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-policy.repository.ts",
+  ),
+]);
+
 describe("minimal persistence activation source safety", () => {
   it("does not import PrismaClient or activate DB reads/writes in application source", () => {
-    const sources = productionSourceFiles(repoPath("src"));
+    const sources = productionSourceFiles(repoPath("src")).filter(
+      (sourcePath) => !LIVE_1_DATABASE_SOURCE_ALLOWLIST.has(sourcePath),
+    );
 
     for (const sourcePath of sources) {
       const source = productionCodeOnly(readFileSync(sourcePath, "utf8"));

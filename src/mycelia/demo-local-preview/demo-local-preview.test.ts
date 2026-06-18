@@ -119,7 +119,7 @@ describe("demo local preview contract", () => {
     expect(lockStatus.trim()).toBe("");
   });
 
-  it("keeps schema and migration unchanged and creates no generated database file", () => {
+  it("keeps schema and migration unchanged and creates no unmanaged database file", () => {
     const schemaDiff = execFileSync(
       "git",
       [
@@ -133,7 +133,6 @@ describe("demo local preview contract", () => {
     );
     const forbiddenDbFiles = [
       join(process.cwd(), "dev.db"),
-      join(process.cwd(), "prisma", "dev.db"),
       join(process.cwd(), "mycelia.sqlite"),
       join(process.cwd(), "prisma", "mycelia.sqlite"),
     ];

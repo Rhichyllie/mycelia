@@ -89,3 +89,24 @@ MYCELIA demo surfaces and hardens `/mycelia/demo` as a guided pilot walkthrough.
 It does not modify the schema, run Prisma generate, run production migrations,
 create `dev.db`, instantiate PrismaClient globally, call Prisma or write demo
 records.
+
+LIVE-1 activates a local-only SQLite demo database path. Use
+`DATABASE_URL="file:./dev.db"` so Prisma resolves the database as
+`prisma/dev.db`. The generated database and journal files are ignored by git.
+
+Local commands:
+
+```text
+pnpm db:generate
+pnpm db:migrate
+pnpm db:seed
+```
+
+`pnpm db:migrate` applies committed local migrations to the configured SQLite
+database. Keep `DATABASE_URL` pointed at `file:./dev.db`; do not target shared
+or production databases with this local demo command.
+
+`pnpm db:seed` inserts an idempotent medium-risk vendor contract review demo
+run with safe fixture metadata only. `DemoScenario` is deferred for now; the
+seed maps the scenario key to `GovernedRun.correlationId` and the risk level to
+`PolicyDecisionRecord.riskLevel` to preserve the six-record Phase 3A schema.

@@ -134,10 +134,9 @@ describe("demo scenario seed package source safety", () => {
     expect(schemaDiff.trim()).toBe("");
   });
 
-  it("does not create generated database files in the repository", () => {
+  it("does not create unmanaged database files in the repository", () => {
     const forbiddenDbFiles = [
       join(process.cwd(), "dev.db"),
-      join(process.cwd(), "prisma", "dev.db"),
       join(process.cwd(), "mycelia.sqlite"),
       join(process.cwd(), "prisma", "mycelia.sqlite"),
     ];
