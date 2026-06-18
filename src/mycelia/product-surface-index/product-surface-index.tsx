@@ -11,12 +11,13 @@ export const PRODUCT_SURFACE_INDEX_ROUTES = [
 ] as const;
 
 export type ProductSurfaceIndexRoute =
-  (typeof PRODUCT_SURFACE_INDEX_ROUTES)[number];
+  (typeof PRODUCT_SURFACE_INDEX_ROUTES)[number] | "/mycelia/request/new";
 
 export type ProductSurfaceIndexStatus =
   | "Available now"
   | "Static preview"
   | "Live read-only"
+  | "Controlled preview"
   | "Descriptor-level";
 
 export type ProductSurfaceIndexItem = {
@@ -84,6 +85,16 @@ export const PRODUCT_SURFACE_INDEX_ITEMS = [
     audience: ["mentors", "reviewers", "product evaluators"],
     status: "Available now",
     safety_note: "Guided explanation only with no replay simulation.",
+    available_now: true,
+  },
+  {
+    label: "Request Draft",
+    route: "/mycelia/request/new",
+    description:
+      "A controlled, non-mutating governed request seed preview for the demo path.",
+    audience: ["operators", "reviewers", "technical reviewers"],
+    status: "Controlled preview",
+    safety_note: "Request seed preview only with no DB writes, API, auth or workflow builder.",
     available_now: true,
   },
   {

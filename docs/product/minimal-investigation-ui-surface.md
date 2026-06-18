@@ -97,7 +97,7 @@ behavior.
 
 ## Next Phase
 
-The next phase can replace the controlled reference source with a narrowly
-scoped production read-only repository client. That future phase should still
-avoid auth/RBAC expansion, replay execution, exports, broad audit services and
-SaaS dashboard scope unless explicitly planned.
+Phase 3H adds a separate controlled request creation preview so the request
+seed shape can be inspected before future live creation work. It should still
+avoid auth/RBAC expansion, replay execution, exports, broad audit services,
+workflow builder scope and SaaS dashboard scope unless explicitly planned.
