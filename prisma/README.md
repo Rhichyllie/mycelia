@@ -74,3 +74,8 @@ Phase 3I adds a controlled approval decision preview at
 `/mycelia/approval/decision`. It is non-mutating UI only and does not modify the
 schema, run Prisma generate, run production migrations, create `dev.db`,
 instantiate PrismaClient globally or write approval decision records.
+
+Phase 3J adds deterministic demo scenario seeds that connect the controlled
+surfaces. It does not modify the schema, run Prisma generate, run production
+migrations, create `dev.db`, instantiate PrismaClient globally or write seed
+records.

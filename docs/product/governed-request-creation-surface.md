@@ -68,3 +68,7 @@ Phase 3I adds a controlled approval decision UI surface so a required approval
 can be reviewed visually before any live approval action exists. It remains
 non-mutating and does not introduce API routes, auth/RBAC, broad approval inbox
 or workflow builder behavior.
+
+Phase 3J connects this request seed preview with approval and investigation
+previews through deterministic demo scenario seeds. It does not persist request
+records or create a live request workflow.

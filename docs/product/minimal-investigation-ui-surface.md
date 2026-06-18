@@ -104,3 +104,7 @@ workflow builder scope and SaaS dashboard scope unless explicitly planned.
 
 Phase 3I adds a controlled approval decision preview. It remains separate from
 the investigation UI and does not make approvals live or mutating.
+
+Phase 3J uses the investigation route as the review step in deterministic demo
+scenario seeds. It does not add replay, export, mutation, broad dashboard scope
+or a new investigation route.

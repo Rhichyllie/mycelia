@@ -68,7 +68,7 @@ store, audit sealing, broad dashboard search/listing or SaaS expansion.
 
 ## Next Phase
 
-The next phase should decide whether to connect request creation and approval
-previews into a narrow end-to-end demo navigation path. It should still avoid
-live mutation, auth/RBAC expansion, broad inbox scope and workflow builder
-behavior unless explicitly planned.
+Phase 3J connects request creation, approval preview and investigation review
+into a deterministic demo scenario seed package. It is still non-executing and
+does not add live mutation, auth/RBAC expansion, broad inbox scope or workflow
+builder behavior.

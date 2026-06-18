@@ -133,3 +133,7 @@ non-mutating and does not write repository records.
 
 Phase 3I adds a controlled approval decision preview for the UI path. It does
 not execute Phase 3D approval runtime behavior or persist decisions.
+
+Phase 3J defines deterministic demo scenario seeds that describe expected
+investigation outcomes for the pilot path. It does not write persisted records
+or alter the read-model reconstruction logic.

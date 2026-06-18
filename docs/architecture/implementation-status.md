@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 3I.
+This status page captures repository truth after Phase 3J.
 
 ## Implemented Now
 
@@ -37,6 +37,7 @@ This status page captures repository truth after Phase 3I.
 - Investigation selection read-only boundary resolving controlled targets before rendering the investigation UI.
 - Governed request creation surface rendering a controlled, non-mutating request seed preview at `/mycelia/request/new`.
 - Approval decision UI surface rendering a controlled, non-mutating approval decision preview at `/mycelia/approval/decision`.
+- Demo scenario seed package connecting request creation, approval decision and investigation surfaces into deterministic non-executing pilot seeds.
 
 ## Static/Demo-Only Now
 
@@ -47,6 +48,7 @@ This status page captures repository truth after Phase 3I.
 - Walkthrough `/mycelia/walkthrough`.
 - Request creation `/mycelia/request/new` with controlled non-mutating governed request seed preview.
 - Approval decision `/mycelia/approval/decision` with controlled non-mutating approval decision preview.
+- Demo scenario seed package as source-only deterministic pilot narrative data.
 - Roadmap `/mycelia/roadmap`.
 - Investigation `/mycelia/investigation` with controlled read-only target selection and read-model loading.
 - Product surface index.
@@ -78,6 +80,7 @@ commitments.
 - Real approval queue, approval UI and broad approval storage.
 - Broad approval product, approval UI, RBAC and notification runtime.
 - Broad audit writer, append log, audit sealing and export.
+- Executable demo seed data and live walkthrough execution.
 - Production investigation UI backed by a production read-only repository client and dynamic target source.
 - Real replay execution.
 - Real replay UI and replay runtime.
@@ -107,7 +110,8 @@ investigation selection boundary so the route resolves a target before
 rendering. Phase 3H adds a controlled request creation surface so the request
 seed shape is visible before future live creation work. Phase 3I adds a
 controlled approval decision preview so approval outcomes can be reviewed
-visually before live decision actions exist. The next phase can move toward a
-narrow connected demo path, but should not add broad API routes, auth, broad
-policy engine, replay execution, broad approval inbox, workflow builder scope or
-external integrations.
+visually before live decision actions exist. Phase 3J connects those surfaces
+into deterministic, non-executing demo scenario seeds. The next phase can move
+toward a narrow demo navigation surface, but should not add broad API routes,
+auth, broad policy engine, replay execution, broad approval inbox, workflow
+builder scope or external integrations.
