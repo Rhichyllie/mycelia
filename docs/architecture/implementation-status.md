@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 3H.
+This status page captures repository truth after Phase 3I.
 
 ## Implemented Now
 
@@ -36,6 +36,7 @@ This status page captures repository truth after Phase 3H.
 - Minimal investigation UI surface rendering the persisted investigation read-model shape at `/mycelia/investigation` through a narrow live read-only loader.
 - Investigation selection read-only boundary resolving controlled targets before rendering the investigation UI.
 - Governed request creation surface rendering a controlled, non-mutating request seed preview at `/mycelia/request/new`.
+- Approval decision UI surface rendering a controlled, non-mutating approval decision preview at `/mycelia/approval/decision`.
 
 ## Static/Demo-Only Now
 
@@ -45,6 +46,7 @@ This status page captures repository truth after Phase 3H.
 - Static demo `/mycelia/static-demo`.
 - Walkthrough `/mycelia/walkthrough`.
 - Request creation `/mycelia/request/new` with controlled non-mutating governed request seed preview.
+- Approval decision `/mycelia/approval/decision` with controlled non-mutating approval decision preview.
 - Roadmap `/mycelia/roadmap`.
 - Investigation `/mycelia/investigation` with controlled read-only target selection and read-model loading.
 - Product surface index.
@@ -70,6 +72,7 @@ commitments.
 - Runtime execution.
 - Workflow execution.
 - Live governed request persistence and mutable runtime request creation.
+- Live approval decision persistence and broad approval inbox/task management.
 - Global PrismaClient bootstrapping in application source.
 - Real policy engine beyond deterministic policy/admission v1.
 - Real approval queue, approval UI and broad approval storage.
@@ -102,7 +105,9 @@ repository-backed run history into an investigation-ready read model. Phase 3F
 renders that shape in a read-only UI surface. Phase 3G adds a controlled
 investigation selection boundary so the route resolves a target before
 rendering. Phase 3H adds a controlled request creation surface so the request
-seed shape is visible before future live creation work. The next phase can move
-toward a narrow live request creation boundary, but should not add broad API
-routes, auth, broad policy engine, replay execution, approval UI, workflow
-builder scope or external integrations.
+seed shape is visible before future live creation work. Phase 3I adds a
+controlled approval decision preview so approval outcomes can be reviewed
+visually before live decision actions exist. The next phase can move toward a
+narrow connected demo path, but should not add broad API routes, auth, broad
+policy engine, replay execution, broad approval inbox, workflow builder scope or
+external integrations.

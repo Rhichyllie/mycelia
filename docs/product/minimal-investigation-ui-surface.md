@@ -101,3 +101,6 @@ Phase 3H adds a separate controlled request creation preview so the request
 seed shape can be inspected before future live creation work. It should still
 avoid auth/RBAC expansion, replay execution, exports, broad audit services,
 workflow builder scope and SaaS dashboard scope unless explicitly planned.
+
+Phase 3I adds a controlled approval decision preview. It remains separate from
+the investigation UI and does not make approvals live or mutating.

@@ -69,3 +69,8 @@ Phase 3H adds a controlled governed request creation preview at
 `/mycelia/request/new`. It is non-mutating UI only and does not modify the
 schema, run Prisma generate, run production migrations, create `dev.db`,
 instantiate PrismaClient globally or write request records.
+
+Phase 3I adds a controlled approval decision preview at
+`/mycelia/approval/decision`. It is non-mutating UI only and does not modify the
+schema, run Prisma generate, run production migrations, create `dev.db`,
+instantiate PrismaClient globally or write approval decision records.

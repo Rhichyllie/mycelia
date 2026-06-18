@@ -138,3 +138,6 @@ client ownership.
 
 Phase 3H renders a controlled request draft preview and still does not add
 repository writes, new repository methods or live request persistence.
+
+Phase 3I renders a controlled approval decision preview and still does not add
+repository writes, new repository methods or live approval persistence.

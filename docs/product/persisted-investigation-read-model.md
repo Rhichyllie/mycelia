@@ -130,3 +130,6 @@ ownership.
 Phase 3H adds a controlled request creation preview so the intake seed shape can
 be inspected before any future live request creation boundary. It remains
 non-mutating and does not write repository records.
+
+Phase 3I adds a controlled approval decision preview for the UI path. It does
+not execute Phase 3D approval runtime behavior or persist decisions.

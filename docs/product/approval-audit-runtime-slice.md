@@ -111,3 +111,7 @@ out of scope for the UI.
 Phase 3H adds a separate controlled request creation preview. It does not add
 approval UI, API routes, auth, replay execution, export behavior or case
 management.
+
+Phase 3I adds a controlled approval decision UI preview. It references the
+approval decision vocabulary visually but does not call this runtime slice,
+persist approval decisions, create API routes or create auth/RBAC.
