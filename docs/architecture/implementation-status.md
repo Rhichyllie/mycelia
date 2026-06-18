@@ -1,6 +1,6 @@
 # MYCELIA Implementation Status
 
-This status page captures repository truth after Phase 3J.
+This status page captures repository truth after Phase 3K.
 
 ## Implemented Now
 
@@ -38,6 +38,7 @@ This status page captures repository truth after Phase 3J.
 - Governed request creation surface rendering a controlled, non-mutating request seed preview at `/mycelia/request/new`.
 - Approval decision UI surface rendering a controlled, non-mutating approval decision preview at `/mycelia/approval/decision`.
 - Demo scenario seed package connecting request creation, approval decision and investigation surfaces into deterministic non-executing pilot seeds.
+- Pilot demo end-to-end surface rendering the seed package as a controlled walkthrough at `/mycelia/demo`.
 
 ## Static/Demo-Only Now
 
@@ -49,6 +50,7 @@ This status page captures repository truth after Phase 3J.
 - Request creation `/mycelia/request/new` with controlled non-mutating governed request seed preview.
 - Approval decision `/mycelia/approval/decision` with controlled non-mutating approval decision preview.
 - Demo scenario seed package as source-only deterministic pilot narrative data.
+- Pilot demo `/mycelia/demo` with controlled non-executing end-to-end walkthrough.
 - Roadmap `/mycelia/roadmap`.
 - Investigation `/mycelia/investigation` with controlled read-only target selection and read-model loading.
 - Product surface index.
@@ -111,7 +113,8 @@ rendering. Phase 3H adds a controlled request creation surface so the request
 seed shape is visible before future live creation work. Phase 3I adds a
 controlled approval decision preview so approval outcomes can be reviewed
 visually before live decision actions exist. Phase 3J connects those surfaces
-into deterministic, non-executing demo scenario seeds. The next phase can move
-toward a narrow demo navigation surface, but should not add broad API routes,
-auth, broad policy engine, replay execution, broad approval inbox, workflow
-builder scope or external integrations.
+into deterministic, non-executing demo scenario seeds. Phase 3K renders those
+seeds as a controlled pilot walkthrough at `/mycelia/demo`. The next phase can
+move toward a narrow demo selector or operator handoff, but should not add broad
+API routes, auth, broad policy engine, replay execution, broad approval inbox,
+workflow builder scope or external integrations.

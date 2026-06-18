@@ -18,6 +18,7 @@ const ALLOWED_INTERNAL_ROUTES = new Set<string>([
   "/mycelia/static-demo",
   "/mycelia/roadmap",
   "/mycelia/walkthrough",
+  "/mycelia/demo",
   "/mycelia/investigation",
   "/mycelia/executive",
 ]);
@@ -55,13 +56,14 @@ describe("static demo walkthrough surface", () => {
     expect(getStaticDemoWalkthroughSurfaceModel().title).toBe("MYCELIA");
   });
 
-  it("includes all seven product routes", () => {
+  it("includes all eight product routes", () => {
     expect(getStaticDemoWalkthroughSurfaceModel().routes).toEqual([
       "/",
       "/mycelia",
       "/mycelia/executive",
       "/mycelia/static-demo",
       "/mycelia/walkthrough",
+      "/mycelia/demo",
       "/mycelia/investigation",
       "/mycelia/roadmap",
     ]);

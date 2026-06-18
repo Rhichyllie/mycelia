@@ -119,3 +119,6 @@ persist approval decisions, create API routes or create auth/RBAC.
 Phase 3J adds demo scenario seeds that include approval and audit expectations.
 Those seeds describe the pilot narrative only and do not call this runtime
 slice, write audit records or emit events.
+
+Phase 3K renders the seeded audit and approval expectations in a pilot
+walkthrough. It still does not call this runtime slice or write audit records.

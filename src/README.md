@@ -59,6 +59,7 @@ Active MYCELIA source begins here.
 - `src/mycelia/governed-request-creation-surface/`: Phase 3H controlled non-mutating governed request seed preview surface.
 - `src/mycelia/approval-decision-ui-surface/`: Phase 3I controlled non-mutating approval decision preview surface.
 - `src/mycelia/demo-scenario-seed-package/`: Phase 3J deterministic non-executing demo scenario seed package connecting request, approval and investigation surfaces.
+- `src/mycelia/pilot-demo-end-to-end/`: Phase 3K controlled non-executing pilot demo walkthrough over deterministic scenario seeds.
 
 ## Not Implemented Yet
 
@@ -87,8 +88,8 @@ exists yet.
 
 Static product surfaces, controlled read-only investigation selection,
 controlled request creation preview, controlled approval decision preview and
-deterministic demo scenario seeds exist, but mutable operational/runtime UI does
-not.
+deterministic demo scenario seeds and a controlled pilot walkthrough exist, but
+mutable operational/runtime UI does not.
 
 Legacy MapIA code must remain under `legacy/` and must not be copied back
 without architecture review.

@@ -63,6 +63,7 @@ SaaS readiness.
 | `src/mycelia/governed-request-creation-surface/` | IMPLEMENTED_CONTROLLED_REQUEST_PREVIEW | Phase 3H controlled governed request seed preview. | No persistence write, API route, auth, workflow builder, replay execution, export behavior or SaaS expansion. |
 | `src/mycelia/approval-decision-ui-surface/` | IMPLEMENTED_CONTROLLED_APPROVAL_PREVIEW | Phase 3I controlled approval decision preview. | No persistence write, API route, auth, RBAC, broad approval inbox, replay execution, export behavior or SaaS expansion. |
 | `src/mycelia/demo-scenario-seed-package/` | IMPLEMENTED_CONTROLLED_DEMO_SEEDS | Phase 3J deterministic seed package connecting request, approval and investigation surfaces. | No runtime execution, persistence write, API route, auth, replay execution, export behavior, workflow builder or SaaS expansion. |
+| `src/mycelia/pilot-demo-end-to-end/` | IMPLEMENTED_CONTROLLED_DEMO_WALKTHROUGH | Phase 3K controlled end-to-end pilot demo walkthrough over Phase 3J seeds. | No runtime execution, persistence write, API route, auth, replay execution, export behavior, workflow builder, broad dashboard/list/search or SaaS expansion. |
 
 ## Implemented App Router Surfaces
 
@@ -73,6 +74,7 @@ SaaS readiness.
 | `/mycelia/executive` | IMPLEMENTED_STATIC_READ_ONLY | Executive narrative. |
 | `/mycelia/static-demo` | IMPLEMENTED_STATIC_READ_ONLY | Static demo surface. |
 | `/mycelia/walkthrough` | IMPLEMENTED_STATIC_READ_ONLY | Guided walkthrough. |
+| `/mycelia/demo` | IMPLEMENTED_CONTROLLED_DEMO_WALKTHROUGH | Controlled end-to-end pilot demo over deterministic scenario seeds. |
 | `/mycelia/request/new` | IMPLEMENTED_CONTROLLED_REQUEST_PREVIEW | Controlled non-mutating governed request seed preview. |
 | `/mycelia/approval/decision` | IMPLEMENTED_CONTROLLED_APPROVAL_PREVIEW | Controlled non-mutating approval decision preview. |
 | `/mycelia/roadmap` | IMPLEMENTED_STATIC_READ_ONLY | Product roadmap. |
@@ -90,6 +92,7 @@ SaaS readiness.
 | `request-creation-surface` | CONTROLLED_PREVIEW_ONLY | Phase 3H renders a safe governed request seed preview; no live persistence write or workflow builder exists yet. |
 | `approval-decision-surface` | CONTROLLED_PREVIEW_ONLY | Phase 3I renders a safe approval decision preview; no live approval persistence, approval inbox or RBAC exists yet. |
 | `demo-scenario-seed-package` | CONTROLLED_SEEDS_ONLY | Phase 3J connects request, approval, audit and investigation expectations into deterministic demo seeds; no runtime execution or persistence writes exist. |
+| `pilot-demo-end-to-end` | CONTROLLED_WALKTHROUGH_ONLY | Phase 3K renders the deterministic seeds as a guided pilot demo; no runtime execution, API, replay, export or broad dashboard exists. |
 | `investigation-view` | PERSISTED_READ_MODEL_SELECTION_AND_LIVE_READ_ONLY_UI_ACTIVE | Investigation view model v1 exists in memory, Phase 3E reconstructs persisted run history through the repository boundary and Phase 3G resolves controlled targets before read-only UI rendering; no production repository client, case management or mutation surface exists yet. |
 | `replay-runtime` | PURE_DESCRIPTOR_ONLY | Replay dry-run descriptor v1 exists in memory only; no replay execution, replay UI or simulation exists yet. |
 | `external-api` | NOT_IMPLEMENTED | No API endpoints exist yet. |

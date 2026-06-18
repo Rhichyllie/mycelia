@@ -41,7 +41,7 @@ describe("product surface index", () => {
     expect(model.items).toEqual(PRODUCT_SURFACE_INDEX_ITEMS);
   });
 
-  it("includes all nine product routes", () => {
+  it("includes all ten product routes", () => {
     const routes = getProductSurfaceIndexModel().items.map(
       (item) => item.route,
     );
@@ -52,6 +52,7 @@ describe("product surface index", () => {
       "/mycelia/executive",
       "/mycelia/static-demo",
       "/mycelia/walkthrough",
+      "/mycelia/demo",
       "/mycelia/request/new",
       "/mycelia/approval/decision",
       "/mycelia/investigation",

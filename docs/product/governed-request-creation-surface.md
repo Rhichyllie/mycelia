@@ -72,3 +72,6 @@ or workflow builder behavior.
 Phase 3J connects this request seed preview with approval and investigation
 previews through deterministic demo scenario seeds. It does not persist request
 records or create a live request workflow.
+
+Phase 3K renders those seeds as a pilot walkthrough at `/mycelia/demo`. It links
+back to this request surface without creating live request persistence.

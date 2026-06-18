@@ -137,3 +137,6 @@ not execute Phase 3D approval runtime behavior or persist decisions.
 Phase 3J defines deterministic demo scenario seeds that describe expected
 investigation outcomes for the pilot path. It does not write persisted records
 or alter the read-model reconstruction logic.
+
+Phase 3K renders those expectations as a controlled walkthrough. It does not
+change repository-backed reconstruction or add replay/export behavior.

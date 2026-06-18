@@ -126,3 +126,7 @@ schema or migration and without writing approval decision records.
 
 Phase 3J adds deterministic demo scenario seeds without changing the schema or
 migration, running Prisma generate, creating `dev.db` or writing seed records.
+
+Phase 3K renders those seeds in a controlled pilot walkthrough without changing
+the schema or migration, running Prisma generate, creating `dev.db` or writing
+demo records.

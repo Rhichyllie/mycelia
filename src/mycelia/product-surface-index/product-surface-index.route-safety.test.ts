@@ -96,6 +96,7 @@ describe("product surface index source safety", () => {
     expect(indexSource).toContain('route: "/mycelia/executive"');
     expect(indexSource).toContain('route: "/mycelia/static-demo"');
     expect(indexSource).toContain('route: "/mycelia/walkthrough"');
+    expect(indexSource).toContain('route: "/mycelia/demo"');
     expect(indexSource).toContain('route: "/mycelia/request/new"');
     expect(indexSource).toContain('route: "/mycelia/approval/decision"');
     expect(indexSource).toContain('route: "/mycelia/investigation"');
