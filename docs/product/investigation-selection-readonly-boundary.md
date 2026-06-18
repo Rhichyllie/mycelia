@@ -70,3 +70,7 @@ replay execution, export behavior or broad dashboard/list/search.
 
 Phase 3I adds a separate controlled approval decision preview for the approval
 step. It does not execute approval decisions or add broad inbox behavior.
+
+Phase 3J adds a deterministic demo scenario seed package that references this
+read-only investigation path as the final review surface. It does not add broad
+search/listing, mutation, API routes or replay execution.

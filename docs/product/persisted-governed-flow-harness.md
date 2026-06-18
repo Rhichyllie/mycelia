@@ -147,3 +147,7 @@ execution or workflow builder scope.
 
 Phase 3I adds a controlled approval decision preview. It remains UI-only and
 does not turn persisted harness records into a live approval inbox.
+
+Phase 3J adds deterministic demo scenario seeds that reference the persisted
+flow concepts as expectations. It does not promote the harness into product
+runtime execution or write new persisted records.

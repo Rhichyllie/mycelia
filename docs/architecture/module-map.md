@@ -62,6 +62,7 @@ SaaS readiness.
 | `src/mycelia/investigation-selection-readonly-boundary/` | IMPLEMENTED_READ_ONLY_SELECTION_BOUNDARY | Phase 3G controlled investigation target selection before UI rendering. | No mutation, API route, auth, broad search/listing, replay execution or export behavior. |
 | `src/mycelia/governed-request-creation-surface/` | IMPLEMENTED_CONTROLLED_REQUEST_PREVIEW | Phase 3H controlled governed request seed preview. | No persistence write, API route, auth, workflow builder, replay execution, export behavior or SaaS expansion. |
 | `src/mycelia/approval-decision-ui-surface/` | IMPLEMENTED_CONTROLLED_APPROVAL_PREVIEW | Phase 3I controlled approval decision preview. | No persistence write, API route, auth, RBAC, broad approval inbox, replay execution, export behavior or SaaS expansion. |
+| `src/mycelia/demo-scenario-seed-package/` | IMPLEMENTED_CONTROLLED_DEMO_SEEDS | Phase 3J deterministic seed package connecting request, approval and investigation surfaces. | No runtime execution, persistence write, API route, auth, replay execution, export behavior, workflow builder or SaaS expansion. |
 
 ## Implemented App Router Surfaces
 
@@ -88,6 +89,7 @@ SaaS readiness.
 | `audit-commit-boundary` | PURE_BOUNDARY_WITH_MINIMAL_APPROVAL_AUDIT_RECORD | Audit requirement classification exists and Phase 3D writes minimal `APPROVAL_DECIDED` AuditRecord entries; no broad durable audit writer, append log, sealing or export exists yet. |
 | `request-creation-surface` | CONTROLLED_PREVIEW_ONLY | Phase 3H renders a safe governed request seed preview; no live persistence write or workflow builder exists yet. |
 | `approval-decision-surface` | CONTROLLED_PREVIEW_ONLY | Phase 3I renders a safe approval decision preview; no live approval persistence, approval inbox or RBAC exists yet. |
+| `demo-scenario-seed-package` | CONTROLLED_SEEDS_ONLY | Phase 3J connects request, approval, audit and investigation expectations into deterministic demo seeds; no runtime execution or persistence writes exist. |
 | `investigation-view` | PERSISTED_READ_MODEL_SELECTION_AND_LIVE_READ_ONLY_UI_ACTIVE | Investigation view model v1 exists in memory, Phase 3E reconstructs persisted run history through the repository boundary and Phase 3G resolves controlled targets before read-only UI rendering; no production repository client, case management or mutation surface exists yet. |
 | `replay-runtime` | PURE_DESCRIPTOR_ONLY | Replay dry-run descriptor v1 exists in memory only; no replay execution, replay UI or simulation exists yet. |
 | `external-api` | NOT_IMPLEMENTED | No API endpoints exist yet. |

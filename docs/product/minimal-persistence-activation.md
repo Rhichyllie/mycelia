@@ -123,3 +123,6 @@ the schema or migration and without writing request records.
 
 Phase 3I adds a controlled approval decision UI preview without changing the
 schema or migration and without writing approval decision records.
+
+Phase 3J adds deterministic demo scenario seeds without changing the schema or
+migration, running Prisma generate, creating `dev.db` or writing seed records.

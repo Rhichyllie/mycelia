@@ -115,3 +115,7 @@ management.
 Phase 3I adds a controlled approval decision UI preview. It references the
 approval decision vocabulary visually but does not call this runtime slice,
 persist approval decisions, create API routes or create auth/RBAC.
+
+Phase 3J adds demo scenario seeds that include approval and audit expectations.
+Those seeds describe the pilot narrative only and do not call this runtime
+slice, write audit records or emit events.
