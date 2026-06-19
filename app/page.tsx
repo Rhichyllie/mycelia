@@ -1,4 +1,4 @@
-import { HomeEntrySurface } from "@/mycelia/home-entry-surface";
+import { HomeEntrySurface } from "@/mycelia/ui-surfaces/home-entry-surface";
 
 export default function HomePage() {
   return <HomeEntrySurface />;

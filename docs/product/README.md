@@ -8,30 +8,30 @@ These documents do not execute runtime work, persist data, call APIs, call tools
 
 Current product decision artifacts:
 
-- [Initial Use Case Freeze](initial-use-case-freeze.md): freezes the first buyer-oriented wedge, `Governed compliance/document review flow`.
-- [Pilot Offer and Discovery Package](pilot-offer-package.md): defines the internal `Governed Operations Assessment` and `Governed Compliance Flow Pilot` planning package.
-- [Runtime Slice Technical Plan](runtime-slice-technical-plan.md): defines the smallest planned runtime slice for the frozen use case without implementing runtime or persistence.
-- [Minimal Persistent Model Scaffold](minimal-persistent-model-scaffold.md): defines the first six persistence record shapes without database access, migrations or active persistence.
-- [Minimal Governed Run Lifecycle](minimal-governed-run-lifecycle.md): defines pure in-memory lifecycle transition logic without runtime execution, persistence, events or audit writing.
-- [Policy/Admission v1](policy-admission-v1.md): defines deterministic in-memory policy/admission decisions without runtime execution, persistence, approval queues or audit writing.
-- [Audit Commit Boundary](audit-commit-boundary.md): defines in-memory audit requirement classification without audit writing, event emission, persistence or export.
-- [Approval Gate v1](approval-gate-v1.md): defines deterministic in-memory approval decision handling without approval UI, persistence, audit writing or event emission.
-- [Investigation View Model v1](investigation-view-model-v1.md): defines deterministic in-memory investigation view assembly without UI, database reads, persistence, audit writing or event emission.
-- [Replay Dry-Run Descriptor v1](replay-dry-run-descriptor-v1.md): defines deterministic in-memory replay dry-run descriptors without replay execution, tools, external calls, persistence or event emission.
-- [Internal Runtime Orchestrator v1](internal-runtime-orchestrator-v1.md): composes the pure runtime-slice layers into one deterministic in-memory descriptor flow without runtime execution, persistence, APIs or external calls.
-- [Runtime Slice Consistency Audit](runtime-slice-consistency-audit.md): audits the 2R-2Y runtime slice and recommends narrow Phase 3A persistence activation without runtime execution.
-- [Minimal Persistence Activation](minimal-persistence-activation.md): activates the Prisma schema and migration contract for the six first-slice records without application DB reads/writes.
-- [Runtime Repository Layer](runtime-repository-layer.md): defines an injected-client repository boundary for the six first-slice records without PrismaClient instantiation, API routes or runtime execution.
-- [Persisted Governed Flow Harness](persisted-governed-flow-harness.md): exercises the schema, repository boundary and deterministic governed flow paths against disposable SQLite persistence without API, UI, auth or SaaS scope.
-- [Approval + Audit Runtime Slice](approval-audit-runtime-slice.md): decides persisted pending approval requests, records lifecycle snapshots and writes minimal `APPROVAL_DECIDED` audit records without API, UI, auth, replay execution or event emission.
-- [Persisted Investigation Read Model](persisted-investigation-read-model.md): reconstructs persisted run history into an investigation-ready descriptor without UI, API, auth, replay execution or export behavior.
-- [Minimal Investigation UI Surface](minimal-investigation-ui-surface.md): renders the persisted investigation read-model shape through a narrow live read-only loader without API, auth, replay, mutation or export behavior.
-- [Investigation Selection & Read-Only Boundary](investigation-selection-readonly-boundary.md): resolves controlled investigation targets before rendering without mutation, broad search, API, auth, replay or export behavior.
-- [Governed Request Creation Surface](governed-request-creation-surface.md): renders a controlled non-mutating request seed preview at `/mycelia/request/new` without persistence writes, API, auth, replay, export or workflow builder scope.
-- [Approval Decision UI Surface](approval-decision-ui-surface.md): renders a controlled non-mutating approval decision preview at `/mycelia/approval/decision` without persistence writes, API, auth, replay, export or broad approval inbox scope.
-- [Demo Scenario Seed Package](demo-scenario-seed-package.md): connects request creation, approval decision and investigation surfaces into deterministic non-executing pilot demo seeds without runtime execution, persistence writes, API, auth, replay or export behavior.
-- [Pilot Demo End-to-End](pilot-demo-end-to-end.md): renders the Phase 3J seeds as a controlled walkthrough at `/mycelia/demo` without runtime execution, persistence writes, API, auth, replay, export or SaaS scope.
-- [Demo Hardening Local Preview](demo-hardening-local-preview.md): adds a narrow `pnpm demo:local` path for local browser inspection and hardens `/mycelia/demo` into a guided pilot walkthrough without weakening guarded broad product commands.
+- [Initial Use Case Freeze](planning/initial-use-case-freeze.md): freezes the first buyer-oriented wedge, `Governed compliance/document review flow`.
+- [Pilot Offer and Discovery Package](planning/pilot-offer-package.md): defines the internal `Governed Operations Assessment` and `Governed Compliance Flow Pilot` planning package.
+- [Runtime Slice Technical Plan](planning/runtime-slice-technical-plan.md): defines the smallest planned runtime slice for the frozen use case without implementing runtime or persistence.
+- [Minimal Persistent Model Scaffold](persistence/minimal-persistent-model-scaffold.md): defines the first six persistence record shapes without database access, migrations or active persistence.
+- [Minimal Governed Run Lifecycle](runtime-logic/minimal-governed-run-lifecycle.md): defines pure in-memory lifecycle transition logic without runtime execution, persistence, events or audit writing.
+- [Policy/Admission v1](runtime-logic/policy-admission-v1.md): defines deterministic in-memory policy/admission decisions without runtime execution, persistence, approval queues or audit writing.
+- [Audit Commit Boundary](runtime-logic/audit-commit-boundary.md): defines in-memory audit requirement classification without audit writing, event emission, persistence or export.
+- [Approval Gate v1](runtime-logic/approval-gate-v1.md): defines deterministic in-memory approval decision handling without approval UI, persistence, audit writing or event emission.
+- [Investigation View Model v1](runtime-logic/investigation-view-model-v1.md): defines deterministic in-memory investigation view assembly without UI, database reads, persistence, audit writing or event emission.
+- [Replay Dry-Run Descriptor v1](runtime-logic/replay-dry-run-descriptor-v1.md): defines deterministic in-memory replay dry-run descriptors without replay execution, tools, external calls, persistence or event emission.
+- [Internal Runtime Orchestrator v1](runtime-logic/internal-runtime-orchestrator-v1.md): composes the pure runtime-slice layers into one deterministic in-memory descriptor flow without runtime execution, persistence, APIs or external calls.
+- [Runtime Slice Consistency Audit](runtime-logic/runtime-slice-consistency-audit.md): audits the 2R-2Y runtime slice and recommends narrow Phase 3A persistence activation without runtime execution.
+- [Minimal Persistence Activation](persistence/minimal-persistence-activation.md): activates the Prisma schema and migration contract for the six first-slice records without application DB reads/writes.
+- [Runtime Repository Layer](persistence/runtime-repository-layer.md): defines an injected-client repository boundary for the six first-slice records without PrismaClient instantiation, API routes or runtime execution.
+- [Persisted Governed Flow Harness](persistence/persisted-governed-flow-harness.md): exercises the schema, repository boundary and deterministic governed flow paths against disposable SQLite persistence without API, UI, auth or SaaS scope.
+- [Approval + Audit Runtime Slice](persistence/approval-audit-runtime-slice.md): decides persisted pending approval requests, records lifecycle snapshots and writes minimal `APPROVAL_DECIDED` audit records without API, UI, auth, replay execution or event emission.
+- [Persisted Investigation Read Model](persistence/persisted-investigation-read-model.md): reconstructs persisted run history into an investigation-ready descriptor without UI, API, auth, replay execution or export behavior.
+- [Minimal Investigation UI Surface](ui-surfaces/minimal-investigation-ui-surface.md): renders the persisted investigation read-model shape through a narrow live read-only loader without API, auth, replay, mutation or export behavior.
+- [Investigation Selection & Read-Only Boundary](ui-surfaces/investigation-selection-readonly-boundary.md): resolves controlled investigation targets before rendering without mutation, broad search, API, auth, replay or export behavior.
+- [Governed Request Creation Surface](ui-surfaces/governed-request-creation-surface.md): renders a controlled non-mutating request seed preview at `/mycelia/request/new` without persistence writes, API, auth, replay, export or workflow builder scope.
+- [Approval Decision UI Surface](ui-surfaces/approval-decision-ui-surface.md): renders a controlled non-mutating approval decision preview at `/mycelia/approval/decision` without persistence writes, API, auth, replay, export or broad approval inbox scope.
+- [Demo Scenario Seed Package](demo/demo-scenario-seed-package.md): connects request creation, approval decision and investigation surfaces into deterministic non-executing pilot demo seeds without runtime execution, persistence writes, API, auth, replay or export behavior.
+- [Pilot Demo End-to-End](demo/pilot-demo-end-to-end.md): renders the Phase 3J seeds as a controlled walkthrough at `/mycelia/demo` without runtime execution, persistence writes, API, auth, replay, export or SaaS scope.
+- [Demo Hardening Local Preview](demo/demo-hardening-local-preview.md): adds a narrow `pnpm demo:local` path for local browser inspection and hardens `/mycelia/demo` into a guided pilot walkthrough without weakening guarded broad product commands.
 
 Current truth:
 

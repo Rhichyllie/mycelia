@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-import { ProductSurfaceShell } from "@/mycelia/product-surface-shell";
+import { ProductSurfaceShell } from "@/mycelia/ui-surfaces/product-surface-shell";
 
 export const metadata: Metadata = {
   title: "MYCELIA",
