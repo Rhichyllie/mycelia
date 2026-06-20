@@ -60,6 +60,26 @@ export function createPrismaDemoReadRepository(
     };
   }
 
+  async function findLatestRunByState(input: {
+    readonly tenantId: string;
+    readonly states: readonly string[];
+  }): Promise<DemoPersistedRunSummary | null> {
+    const run = await client.governedRun.findFirst({
+      where: {
+        tenantId: input.tenantId,
+        currentState: { in: [...input.states] },
+        status: { in: [...input.states] },
+      },
+      orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+    });
+
+    if (run === null) {
+      return null;
+    }
+
+    return summarizeRun(input.tenantId, run);
+  }
+
   return {
     async findLatestRun(input: {
       readonly tenantId: string;
@@ -86,6 +106,22 @@ export function createPrismaDemoReadRepository(
       }
 
       return summarizeRun(input.tenantId, run);
+    },
+    findLatestWaitingApprovalRun(input: {
+      readonly tenantId: string;
+    }): Promise<DemoPersistedRunSummary | null> {
+      return findLatestRunByState({
+        tenantId: input.tenantId,
+        states: ["WAITING_APPROVAL"],
+      });
+    },
+    findLatestDecidedApprovalRun(input: {
+      readonly tenantId: string;
+    }): Promise<DemoPersistedRunSummary | null> {
+      return findLatestRunByState({
+        tenantId: input.tenantId,
+        states: ["APPROVED", "REJECTED"],
+      });
     },
   };
 }

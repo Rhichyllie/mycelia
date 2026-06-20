@@ -185,7 +185,7 @@ describe("product surface shell route safety", () => {
     expect(shellSource).not.toContain("rel=");
   });
 
-  it("keeps forms limited to the LIVE-2 governed request action", () => {
+  it("keeps forms limited to the LIVE-2 and LIVE-3 governed demo actions", () => {
     const staticRouteSource = [
       source(layoutPath),
       source(homeRoutePath),
@@ -194,12 +194,12 @@ describe("product surface shell route safety", () => {
       source(roadmapRoutePath),
       source(walkthroughRoutePath),
       source(requestCreationRoutePath),
-      source(approvalDecisionRoutePath),
       source(investigationRoutePath),
       source(executiveRoutePath),
       source(shellPath),
     ].join("\n");
     const pilotSource = source(pilotDemoRoutePath);
+    const approvalSource = source(approvalDecisionRoutePath);
 
     expect(staticRouteSource).not.toContain("<form");
     expect(staticRouteSource).not.toContain("<button");
@@ -209,8 +209,13 @@ describe("product surface shell route safety", () => {
     expect(pilotSource).not.toContain("fetch(");
     expect(pilotSource).not.toContain("Response.json");
     expect(pilotSource).not.toMatch(/Approve request|Reject request/i);
+    expect(approvalSource).toContain("<form action={approveGovernedRequest}");
+    expect(approvalSource).toContain("<form action={rejectGovernedRequest}");
+    expect(approvalSource).toContain("Approve");
+    expect(approvalSource).toContain("Reject");
+    expect(approvalSource).not.toContain("fetch(");
+    expect(approvalSource).not.toContain("Response.json");
   });
-
   it("does not modify pnpm-lock.yaml", () => {
     const status = execFileSync(
       "git",
