@@ -45,7 +45,16 @@ are the current implementation authority for Phase 0 work.
 
 ## Future Documents
 
-Documents 20-25 are future or adjacent architecture documents unless present in
-this folder. Document 20 is present in the working tree and should be treated as
-UX architecture context when approved for the active task. Documents 21-25 are
-not active implementation artifacts in Phase 0C.
+Documents 20-26 are now present in this folder as forward-looking architecture
+context. They are not active implementation authority for Phase 0 work:
+Documents 00-19 remain the current implementation authority. Document 20
+(Operational UX & Runtime Visualization System) and Document 22
+(Investigation Mode, Replay & Runtime Diff UX) describe domains where narrow,
+read-only slices already exist in `src/mycelia/ui-surfaces/` and
+`src/mycelia/persistence/persisted-investigation-read-model/`; the documents
+describe the target system, not the current narrow slice. Documents 21
+(Workflow Builder), 23 (Evaluation/Benchmark), and 24 (Enterprise Scaling)
+describe domains with no implementation yet. Document 25 indexes
+architectural decision records under `docs/adrs/`. Document 26 specifies the
+visual identity and product design system; no design tokens or components
+from it are wired into `app/` yet.

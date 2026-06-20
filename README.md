@@ -87,10 +87,10 @@ The repository does not yet implement:
 
 Product decision artifacts live under `docs/product/`:
 
-- `initial-use-case-freeze.md`
-- `pilot-offer-package.md`
-- `runtime-slice-technical-plan.md`
-- `minimal-persistent-model-scaffold.md`
+- `planning/initial-use-case-freeze.md`
+- `planning/pilot-offer-package.md`
+- `planning/runtime-slice-technical-plan.md`
+- `persistence/minimal-persistent-model-scaffold.md`
 
 Architecture alignment scaffolding lives under `docs/architecture/`.
 Canonical architecture lives under `docs/mycelia/`.

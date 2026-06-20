@@ -1,4 +1,4 @@
-import { PilotDemoEndToEndSurface } from "@/mycelia/pilot-demo-end-to-end";
+import { PilotDemoEndToEndSurface } from "@/mycelia/demo/pilot-demo-end-to-end";
 
 export default function MyceliaPilotDemoPage() {
   return <PilotDemoEndToEndSurface />;

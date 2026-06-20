@@ -1,9 +1,9 @@
 import {
   resolveInvestigationSelectionTarget,
-} from "@/mycelia/investigation-selection-readonly-boundary";
+} from "@/mycelia/ui-surfaces/investigation-selection-readonly-boundary";
 import {
   MinimalInvestigationUiSurface,
-} from "@/mycelia/minimal-investigation-ui-surface";
+} from "@/mycelia/ui-surfaces/minimal-investigation-ui-surface";
 
 export default async function MyceliaInvestigationPage() {
   const investigation = await resolveInvestigationSelectionTarget();
