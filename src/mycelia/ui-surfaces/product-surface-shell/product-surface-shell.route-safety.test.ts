@@ -185,25 +185,30 @@ describe("product surface shell route safety", () => {
     expect(shellSource).not.toContain("rel=");
   });
 
-  it("does not add forms or action buttons", () => {
-    const combinedSource = [
+  it("keeps forms limited to the LIVE-2 governed request action", () => {
+    const staticRouteSource = [
       source(layoutPath),
       source(homeRoutePath),
       source(productHubRoutePath),
       source(staticDemoRoutePath),
       source(roadmapRoutePath),
       source(walkthroughRoutePath),
-      source(pilotDemoRoutePath),
       source(requestCreationRoutePath),
       source(approvalDecisionRoutePath),
       source(investigationRoutePath),
       source(executiveRoutePath),
       source(shellPath),
     ].join("\n");
+    const pilotSource = source(pilotDemoRoutePath);
 
-    expect(combinedSource).not.toContain("<form");
-    expect(combinedSource).not.toContain("<button");
-    expect(combinedSource).not.toContain("action=");
+    expect(staticRouteSource).not.toContain("<form");
+    expect(staticRouteSource).not.toContain("<button");
+    expect(staticRouteSource).not.toContain("action=");
+    expect(pilotSource).toContain("<form action={createGovernedRequest}");
+    expect(pilotSource).toContain("Start governed request");
+    expect(pilotSource).not.toContain("fetch(");
+    expect(pilotSource).not.toContain("Response.json");
+    expect(pilotSource).not.toMatch(/Approve request|Reject request/i);
   });
 
   it("does not modify pnpm-lock.yaml", () => {

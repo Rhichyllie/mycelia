@@ -51,5 +51,16 @@ export function createPrismaAuditRepository(
         orderBy: { createdAt: "asc" },
       });
     },
+    countForRun(input: {
+      readonly tenantId: string;
+      readonly governedRunId: string;
+    }): Promise<number> {
+      return client.auditRecord.count({
+        where: {
+          tenantId: input.tenantId,
+          governedRunId: input.governedRunId,
+        },
+      });
+    },
   };
 }

@@ -28,6 +28,13 @@ export type TenantScopedCorrelationInput = {
   readonly correlationId: string;
 };
 
+export type UpdateGovernedRunStateInput = {
+  readonly tenantId: string;
+  readonly id: string;
+  readonly currentState: string;
+  readonly status: string;
+};
+
 export function createPrismaGovernedRunRepository(
   client: PrismaGovernedRunRepositoryClient = prisma,
 ) {
@@ -63,6 +70,35 @@ export function createPrismaGovernedRunRepository(
           correlationId: input.correlationId,
         },
       });
+    },
+    async updateState(input: UpdateGovernedRunStateInput): Promise<GovernedRun> {
+      const update = await client.governedRun.updateMany({
+        where: {
+          id: input.id,
+          tenantId: input.tenantId,
+        },
+        data: {
+          currentState: input.currentState,
+          status: input.status,
+        },
+      });
+
+      if (update.count !== 1) {
+        throw new Error("Governed run state update failed closed.");
+      }
+
+      const record = await client.governedRun.findFirst({
+        where: {
+          id: input.id,
+          tenantId: input.tenantId,
+        },
+      });
+
+      if (record === null) {
+        throw new Error("Governed run state update did not return a record.");
+      }
+
+      return record;
     },
     listRecent(input: {
       readonly tenantId: string;

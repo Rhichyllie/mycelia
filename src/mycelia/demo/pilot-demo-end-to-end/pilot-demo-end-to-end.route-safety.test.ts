@@ -9,21 +9,36 @@ import { DemoScenarioSeedAllowedRoutes } from "../../demo/demo-scenario-seed-pac
 import { PilotDemoEndToEndSurface } from ".";
 
 const routePath = join(process.cwd(), "app", "mycelia", "demo", "page.tsx");
+const actionPath = join(process.cwd(), "app", "mycelia", "demo", "actions.ts");
 
 describe("pilot demo route safety", () => {
   it("creates the route at app/mycelia/demo/page.tsx", () => {
     expect(existsSync(routePath)).toBe(true);
   });
 
-  it("keeps the route thin, static and non-mutating", () => {
+  it("keeps the route scoped to the LIVE-2 governed request action", () => {
     const source = readFileSync(routePath, "utf8");
 
     expect(source).toContain("PilotDemoEndToEndSurface");
+    expect(source).toContain("createGovernedRequest");
+    expect(source).toContain("<form action={createGovernedRequest}");
+    expect(source).toContain("Start governed request");
     expect(source).not.toMatch(/route\.ts|NextRequest|Response\.json/i);
     expect(source).not.toMatch(/fetch\s*\(/i);
     expect(source).not.toMatch(/PrismaClient|@prisma\/client/i);
     expect(source).not.toMatch(/cookies\s*\(|headers\s*\(|auth\s*\(/i);
-    expect(source).not.toMatch(/POST|PUT|PATCH|DELETE|onSubmit|<form/i);
+    expect(source).not.toMatch(/Approve request|Reject request|download|pdf/i);
+  });
+
+  it("keeps the server action file free of route handler and external behavior", () => {
+    const source = readFileSync(actionPath, "utf8");
+
+    expect(source).toContain('"use server"');
+    expect(source).toContain("createGovernedRequest");
+    expect(source).not.toMatch(/route\.ts|NextRequest|Response\.json/i);
+    expect(source).not.toMatch(/fetch\s*\(/i);
+    expect(source).not.toMatch(/cookies\s*\(|headers\s*\(|auth\s*\(/i);
+    expect(source).not.toMatch(/Approve request|Reject request|download|pdf/i);
   });
 
   it("renders route links only to known controlled MYCELIA routes", () => {
@@ -36,7 +51,7 @@ describe("pilot demo route safety", () => {
     expect(new Set(hrefs)).toEqual(new Set(DemoScenarioSeedAllowedRoutes));
   });
 
-  it("does not render fake mutating controls or export affordances", () => {
+  it("keeps the presenter surface free of fake mutating controls or export affordances", () => {
     const html = renderToStaticMarkup(createElement(PilotDemoEndToEndSurface));
 
     expect(html).not.toMatch(/<form\b/i);
