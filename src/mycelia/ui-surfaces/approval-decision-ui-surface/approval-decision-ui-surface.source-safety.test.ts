@@ -45,7 +45,7 @@ const productionFiles = [
     "approval-decision-ui-surface",
     "index.ts",
   ),
-  join(process.cwd(), "app", "mycelia", "approval", "decision", "page.tsx"),
+
 ] as const;
 
 function productionCodeOnly(source: string): string {
