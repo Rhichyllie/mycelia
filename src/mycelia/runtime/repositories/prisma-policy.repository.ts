@@ -21,19 +21,38 @@ export type CreatePolicyDecisionRecordInput = {
 export function createPrismaPolicyRepository(
   client: PrismaPolicyRepositoryClient = prisma,
 ) {
+  function createDecision(
+    input: CreatePolicyDecisionRecordInput,
+  ): Promise<PolicyDecisionRecord> {
+    return client.policyDecisionRecord.create({
+      data: {
+        id: input.id,
+        tenantId: input.tenantId,
+        governedRunId: input.governedRunId,
+        riskLevel: input.riskLevel,
+        outcome: input.outcome,
+        reasonCode: input.reasonCode,
+        safeSummary: input.safeSummary,
+        policyRef: input.policyRef,
+      },
+    });
+  }
+
   return {
     create(input: CreatePolicyDecisionRecordInput): Promise<PolicyDecisionRecord> {
-      return client.policyDecisionRecord.create({
-        data: {
-          id: input.id,
+      return createDecision(input);
+    },
+    createDecision,
+    findLatestForRun(input: {
+      readonly tenantId: string;
+      readonly governedRunId: string;
+    }): Promise<PolicyDecisionRecord | null> {
+      return client.policyDecisionRecord.findFirst({
+        where: {
           tenantId: input.tenantId,
           governedRunId: input.governedRunId,
-          riskLevel: input.riskLevel,
-          outcome: input.outcome,
-          reasonCode: input.reasonCode,
-          safeSummary: input.safeSummary,
-          policyRef: input.policyRef,
         },
+        orderBy: { createdAt: "desc" },
       });
     },
     listForRun(input: {

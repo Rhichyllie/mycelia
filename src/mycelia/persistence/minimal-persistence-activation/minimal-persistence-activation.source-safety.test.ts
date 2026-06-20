@@ -88,7 +88,34 @@ const LIVE_1_DATABASE_SOURCE_ALLOWLIST = new Set([
     "repositories",
     "prisma-policy.repository.ts",
   ),
-]);
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "governed-request",
+    "create-governed-request.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-admission.repository.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-demo-read.repository.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-runtime-state.repository.ts",
+  ),]);
 
 describe("minimal persistence activation source safety", () => {
   it("does not import PrismaClient or activate DB reads/writes in application source", () => {
