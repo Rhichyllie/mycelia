@@ -13,7 +13,7 @@
     "db:reset": "prisma migrate reset --force --skip-seed && pnpm db:seed",
     "db:studio": "prisma studio",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "prisma generate && tsc --noEmit",
     "test": "vitest run",
     "docs:check": "node scripts/phase0-docs-check.mjs",
     "validate:phase0": "pnpm lint && pnpm typecheck && pnpm test && pnpm docs:check",
