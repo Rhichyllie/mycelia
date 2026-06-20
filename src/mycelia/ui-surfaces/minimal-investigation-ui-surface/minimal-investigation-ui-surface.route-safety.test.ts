@@ -23,13 +23,13 @@ function routeSource(): string {
 }
 
 describe("minimal investigation ui route safety", () => {
-  it("creates the static investigation page route", () => {
+  it("creates the live read-only investigation page route", () => {
     const source = routeSource();
 
     expect(existsSync(routePath)).toBe(true);
     expect(source).toContain("export default async function MyceliaInvestigationPage");
-    expect(source).toContain("resolveInvestigationSelectionTarget");
-    expect(source).toContain("sourceSummary={sourceSummary}");
+    expect(source).toContain("loadInvestigationTimeline");
+    expect(source).toContain('export const dynamic = "force-dynamic"');
   });
 
   it("does not create a route handler or API behavior", () => {
@@ -43,19 +43,28 @@ describe("minimal investigation ui route safety", () => {
     expect(source).not.toContain("POST(");
   });
 
-  it("keeps the page static and read-only", () => {
+  it("keeps the page live read-only without descriptor-layer wiring", () => {
     const source = routeSource();
 
-    expect(source).toContain("MinimalInvestigationUiSurface");
-    expect(source).toContain("resolveInvestigationSelectionTarget");
-    expect(source).not.toContain("loadMinimalInvestigationUiDescriptor");
-    expect(source).not.toContain("DEFAULT_MINIMAL_INVESTIGATION_UI_DESCRIPTOR");
-    expect(source).not.toContain("MINIMAL_INVESTIGATION_UI_FIXTURES");
+    expect(source).toContain("Controlled Demo Environment");
+    expect(source).toContain("Chronological history");
+    expect(source).toContain("What MYCELIA controlled");
+    expect(source).not.toContain("MinimalInvestigationUiSurface");
+    expect(source).not.toContain("resolveInvestigationSelectionTarget");
+    expect(source).not.toContain("persisted-investigation-read-model");
+    expect(source).not.toContain("investigation-view-model-v1");
+    expect(source).not.toContain("runtime-repository-layer");
+    expect(source).not.toContain("prisma-runtime-repository-adapter");
     expect(source).not.toContain("\"use client\"");
     expect(source).not.toContain("'use client'");
+    expect(source).not.toContain("\"use server\"");
+    expect(source).not.toContain("'use server'");
     expect(source).not.toContain("<form");
     expect(source).not.toContain("<button");
     expect(source).not.toContain("fetch(");
     expect(source).not.toContain("PrismaClient");
+    expect(source).not.toContain("@prisma/client");
+    expect(source).not.toMatch(/cookies\s*\(|headers\s*\(|auth\s*\(/i);
+    expect(source).not.toMatch(/writeFile|download|pdf/i);
   });
 });
