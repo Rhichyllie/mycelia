@@ -16,13 +16,16 @@ describe("pilot demo route safety", () => {
     expect(existsSync(routePath)).toBe(true);
   });
 
-  it("keeps the route scoped to the LIVE-2 governed request action", () => {
+  it("keeps the route scoped to the LIVE-2 governed request and LIVE-5 reset actions", () => {
     const source = readFileSync(routePath, "utf8");
 
     expect(source).toContain("PilotDemoEndToEndSurface");
     expect(source).toContain("createGovernedRequest");
     expect(source).toContain("<form action={createGovernedRequest}");
     expect(source).toContain("Start governed request");
+    expect(source).toContain("resetDemo");
+    expect(source).toContain("<form action={resetDemo}");
+    expect(source).toContain("Reset demo");
     expect(source).not.toMatch(/route\.ts|NextRequest|Response\.json/i);
     expect(source).not.toMatch(/fetch\s*\(/i);
     expect(source).not.toMatch(/PrismaClient|@prisma\/client/i);
@@ -35,6 +38,7 @@ describe("pilot demo route safety", () => {
 
     expect(source).toContain('"use server"');
     expect(source).toContain("createGovernedRequest");
+    expect(source).toContain("resetDemo");
     expect(source).not.toMatch(/route\.ts|NextRequest|Response\.json/i);
     expect(source).not.toMatch(/fetch\s*\(/i);
     expect(source).not.toMatch(/cookies\s*\(|headers\s*\(|auth\s*\(/i);
@@ -66,3 +70,4 @@ describe("pilot demo route safety", () => {
     expect(html).not.toContain("rel=");
   });
 });
+

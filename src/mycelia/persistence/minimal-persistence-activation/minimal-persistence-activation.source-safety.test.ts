@@ -136,7 +136,10 @@ const LIVE_1_DATABASE_SOURCE_ALLOWLIST = new Set([
     "runtime",
     "investigation",
     "load-investigation-timeline.ts",
-  ),]);
+  ),
+  repoPath("src", "mycelia", "runtime", "demo-seed-scenario.ts"),
+  repoPath("src", "mycelia", "runtime", "demo-reset.ts"),
+]);
 
 describe("minimal persistence activation source safety", () => {
   it("does not import PrismaClient or activate DB reads/writes in application source", () => {
@@ -189,3 +192,4 @@ describe("minimal persistence activation source safety", () => {
     expect(status.trim()).toBe("");
   });
 });
+
