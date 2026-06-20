@@ -138,7 +138,7 @@ describe("LIVE-1 local demo database activation", () => {
         tenantId,
         correlationId: "live_1_roundtrip",
         currentState: "WAITING_APPROVAL",
-        status: "DEMO_READY",
+        status: "WAITING_APPROVAL",
         resourceRef: "fixture://documents/vendor-contract-review",
         requesterRef: "demo://actor/requester",
         purpose:
@@ -151,7 +151,7 @@ describe("LIVE-1 local demo database activation", () => {
         id: governedRunId,
         tenantId,
         currentState: "WAITING_APPROVAL",
-        status: "DEMO_READY",
+        status: "WAITING_APPROVAL",
         resourceRef: "fixture://documents/vendor-contract-review",
         requesterRef: "demo://actor/requester",
         purpose:
@@ -184,3 +184,4 @@ describe("LIVE-1 local demo database activation", () => {
     }
   });
 });
+

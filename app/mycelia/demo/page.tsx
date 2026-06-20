@@ -8,7 +8,7 @@ import {
   createPrismaDemoReadRepository,
   type DemoPersistedRunSummary,
 } from "@/mycelia/runtime/repositories/prisma-demo-read.repository";
-import { createGovernedRequest } from "./actions";
+import { createGovernedRequest, resetDemo } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -107,6 +107,23 @@ const styles = {
     marginTop: "16px",
     padding: "11px 14px",
   },
+  resetButton: {
+    border: "1px solid #b8a36f",
+    borderRadius: "6px",
+    background: "#fff9e8",
+    color: "#604812",
+    cursor: "pointer",
+    fontSize: "0.88rem",
+    fontWeight: 850,
+    marginTop: "12px",
+    padding: "10px 13px",
+  },
+  resetCaption: {
+    margin: "7px 0 0",
+    color: "#6b5a2a",
+    fontSize: "0.82rem",
+    lineHeight: 1.45,
+  },
   hint: {
     border: "1px solid #d9c48d",
     borderRadius: "8px",
@@ -196,6 +213,7 @@ function renderPersistedRun(state: DemoLiveState): ReactElement {
 }
 
 export default async function MyceliaPilotDemoPage() {
+  const demoMode = getMyceliaDemoDatabaseConfig().demoMode;
   const liveState = await loadDemoLiveState();
 
   return (
@@ -215,6 +233,16 @@ export default async function MyceliaPilotDemoPage() {
                 Start governed request
               </button>
             </form>
+            {demoMode ? (
+              <form action={resetDemo}>
+                <button type="submit" style={styles.resetButton}>
+                  Reset demo
+                </button>
+                <p style={styles.resetCaption}>
+                  Resets local demo data only -- restores the seeded scenario.
+                </p>
+              </form>
+            ) : null}
             <div style={styles.hint}>
               Next: LIVE-3 will decide approval/rejection.
             </div>

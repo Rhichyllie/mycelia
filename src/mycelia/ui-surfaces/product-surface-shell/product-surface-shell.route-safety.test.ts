@@ -185,7 +185,7 @@ describe("product surface shell route safety", () => {
     expect(shellSource).not.toContain("rel=");
   });
 
-  it("keeps forms limited to the LIVE-2 and LIVE-3 governed demo actions", () => {
+  it("keeps forms limited to the LIVE-2, LIVE-3 and LIVE-5 governed demo actions", () => {
     const staticRouteSource = [
       source(layoutPath),
       source(homeRoutePath),
@@ -206,6 +206,8 @@ describe("product surface shell route safety", () => {
     expect(staticRouteSource).not.toContain("action=");
     expect(pilotSource).toContain("<form action={createGovernedRequest}");
     expect(pilotSource).toContain("Start governed request");
+    expect(pilotSource).toContain("<form action={resetDemo}");
+    expect(pilotSource).toContain("Reset demo");
     expect(pilotSource).not.toContain("fetch(");
     expect(pilotSource).not.toContain("Response.json");
     expect(pilotSource).not.toMatch(/Approve request|Reject request/i);
@@ -226,3 +228,4 @@ describe("product surface shell route safety", () => {
     expect(status.trim()).toBe("");
   });
 });
+
