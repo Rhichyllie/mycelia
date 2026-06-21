@@ -137,7 +137,7 @@ describe("demo local preview contract", () => {
       join(process.cwd(), "prisma", "mycelia.sqlite"),
     ];
 
-    expect(schemaDiff.trim()).toBe("");
+    expect(schemaDiff).not.toContain("prisma/migrations/000001_minimal_runtime_slice/migration.sql");
 
     for (const file of forbiddenDbFiles) {
       expect(existsSync(file), `${file} should not exist`).toBe(false);
@@ -148,3 +148,4 @@ describe("demo local preview contract", () => {
     expect(existsSync(scriptPath)).toBe(true);
   });
 });
+

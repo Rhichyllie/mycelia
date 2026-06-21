@@ -121,3 +121,37 @@ model AuditRecord {
   @@index([tenantId])
   @@index([governedRunId])
 }
+
+model AppUser {
+  id              String   @id @default(uuid())
+  email           String
+  emailNormalized String   @unique
+  displayName     String?
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  authIdentities AuthIdentity[]
+
+  @@index([emailNormalized])
+  @@map("app_users")
+}
+
+model AuthIdentity {
+  id           String   @id @default(uuid())
+  userId       String
+  providerType String
+  providerId   String
+  subject      String
+  emailAtLogin String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastSeenAt   DateTime?
+
+  user AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, subject])
+  @@index([userId])
+  @@map("auth_identities")
+}
+

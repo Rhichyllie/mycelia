@@ -19,6 +19,8 @@ const REQUIRED_MODELS = [
   "AuditRecord",
 ] as const;
 
+const AUTH_FOUNDATION_MODELS = ["AppUser", "AuthIdentity"] as const;
+
 const RUN_LINKED_MODELS = REQUIRED_MODELS.filter(
   (model) => model !== "GovernedRun",
 );
@@ -115,8 +117,11 @@ describe("minimal persistence activation", () => {
     ).toBe(true);
   });
 
-  it("defines exactly the six required Prisma models", () => {
-    expect(modelNames(schemaText())).toEqual(REQUIRED_MODELS);
+  it("keeps the six governance models and the auth foundation models", () => {
+    expect(modelNames(schemaText())).toEqual([
+      ...REQUIRED_MODELS,
+      ...AUTH_FOUNDATION_MODELS,
+    ]);
   });
 
   it("does not define forbidden extra models", () => {
@@ -209,3 +214,6 @@ describe("minimal persistence activation", () => {
     expect(status.trim()).toBe("");
   });
 });
+
+
+

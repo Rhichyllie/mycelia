@@ -139,6 +139,14 @@ const LIVE_1_DATABASE_SOURCE_ALLOWLIST = new Set([
   ),
   repoPath("src", "mycelia", "runtime", "demo-seed-scenario.ts"),
   repoPath("src", "mycelia", "runtime", "demo-reset.ts"),
+  repoPath("src", "mycelia", "runtime", "auth", "api-session.ts"),
+  repoPath("src", "mycelia", "runtime", "auth", "auth-callback-error.ts"),
+  repoPath("src", "mycelia", "runtime", "auth", "auth-runtime.ts"),
+  repoPath("src", "mycelia", "runtime", "auth", "auth-user-store.ts"),
+  repoPath("src", "mycelia", "runtime", "auth", "env.ts"),
+  repoPath("src", "mycelia", "runtime", "auth", "options.ts"),
+  repoPath("src", "mycelia", "runtime", "auth", "routes.ts"),
+  repoPath("src", "mycelia", "runtime", "auth", "session.ts"),
 ]);
 
 describe("minimal persistence activation source safety", () => {
@@ -192,4 +200,5 @@ describe("minimal persistence activation source safety", () => {
     expect(status.trim()).toBe("");
   });
 });
+
 
