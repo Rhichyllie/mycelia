@@ -15,6 +15,7 @@ function source(...segments: string[]): string {
 
 const tokenizedSurfaceFiles = [
   ["src", "mycelia", "ui-surfaces", "product-surface-shell", "product-surface-shell.tsx"],
+  ["src", "mycelia", "runtime", "ui", "risk-pill.tsx"],
   ["src", "mycelia", "runtime", "ui", "live-route-nav.tsx"],
   ["src", "mycelia", "runtime", "ui", "live-outcome-banner.tsx"],
   ["app", "mycelia", "page.tsx"],
@@ -56,6 +57,8 @@ describe("MYCELIA design token foundation", () => {
     expect(runWorkspaceSource).toContain("listRecent");
     expect(runWorkspaceSource).toContain("findRunById");
     expect(runWorkspaceSource).toContain("loadInvestigationTimeline");
+    expect(runWorkspaceSource).toContain("renderRiskPill");
+    expect(runWorkspaceSource).not.toContain("function riskTone");
     expect(runWorkspaceSource).toContain("runId");
     expect(runWorkspaceSource).toContain("Risk level");
     expect(runWorkspaceSource).toContain("Policy check");
@@ -63,6 +66,21 @@ describe("MYCELIA design token foundation", () => {
     expect(runWorkspaceSource).toContain("History and lineage");
     expect(runWorkspaceSource).toContain("/mycelia/investigations?runId=");
     expect(runWorkspaceSource).toContain("Open full investigation for this run");
+  });
+
+  it("keeps the Control Center wired to command-view feeds and actionable links", () => {
+    const controlCenterSource = source("app", "mycelia", "page.tsx");
+
+    expect(controlCenterSource).toContain("getControlCenterSummary");
+    expect(controlCenterSource).toContain("createPrismaGovernedRunRepository");
+    expect(controlCenterSource).toContain("createPrismaApprovalRequestRepository");
+    expect(controlCenterSource).toContain("createPrismaDemoReadRepository");
+    expect(controlCenterSource).toContain("listRecent");
+    expect(controlCenterSource).toContain("listPendingForTenant");
+    expect(controlCenterSource).toContain("renderRiskPill");
+    expect(controlCenterSource).toContain("/mycelia/runs?runId=");
+    expect(controlCenterSource).toContain("/mycelia/approvals?approvalId=");
+    expect(controlCenterSource).toContain("Needs your attention");
   });
 
   it("keeps the approval decision center wired to queue, detail and rationale capture", () => {
