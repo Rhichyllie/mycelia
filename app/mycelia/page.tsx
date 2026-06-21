@@ -4,74 +4,75 @@ import {
   getControlCenterSummary,
   type ControlCenterSummary,
 } from "@/mycelia/runtime/control-center/get-control-center-summary";
+import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
 
 export const dynamic = "force-dynamic";
 
 const styles = {
   page: {
-    width: "min(1180px, calc(100% - 40px))",
+    width: MYCELIA_TOKENS.layout.pageWidth,
     margin: "0 auto",
-    padding: "34px 0 48px",
+    padding: MYCELIA_TOKENS.layout.pagePadding,
   },
   banner: {
-    border: "1px solid #a8c6b1",
-    borderRadius: "8px",
-    background: "#f1f8f2",
-    color: "#21382a",
-    padding: "14px 16px",
+    border: `1px solid ${MYCELIA_TOKENS.color.tenant.boundary}`,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.text.primary,
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
     fontSize: "0.92rem",
     fontWeight: 850,
   },
   hero: {
-    border: "1px solid #d7e1d8",
-    borderRadius: "8px",
-    background: "#ffffff",
-    marginTop: "16px",
-    padding: "24px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.surface,
+    marginTop: MYCELIA_TOKENS.spacing[4],
+    padding: MYCELIA_TOKENS.spacing[6],
   },
   eyebrow: {
     margin: 0,
-    color: "#52685b",
-    fontSize: "0.76rem",
+    color: MYCELIA_TOKENS.color.brand.sage,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
   },
   title: {
     margin: "8px 0 0",
-    color: "#17281f",
-    fontSize: "clamp(1.7rem, 2.8vw, 2.6rem)",
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.heading1,
     lineHeight: 1.12,
     letterSpacing: 0,
   },
   text: {
     margin: "10px 0 0",
-    color: "#4e6156",
-    fontSize: "0.94rem",
+    color: MYCELIA_TOKENS.color.text.secondary,
+    fontSize: MYCELIA_TOKENS.type.body,
     lineHeight: 1.6,
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 230px), 1fr))",
-    gap: "14px",
-    marginTop: "18px",
+    gap: MYCELIA_TOKENS.spacing[4],
+    marginTop: MYCELIA_TOKENS.spacing[5],
   },
   card: {
-    border: "1px solid #e0e8e1",
-    borderRadius: "8px",
-    background: "#fbfcfa",
-    padding: "16px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    padding: MYCELIA_TOKENS.spacing[4],
   },
   label: {
     margin: 0,
-    color: "#637468",
-    fontSize: "0.72rem",
+    color: MYCELIA_TOKENS.color.text.tertiary,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     textTransform: "uppercase",
   },
   value: {
     margin: "7px 0 0",
-    color: "#1d3327",
+    color: MYCELIA_TOKENS.color.text.primary,
     fontSize: "1.75rem",
     fontWeight: 850,
     lineHeight: 1.1,
@@ -79,15 +80,15 @@ const styles = {
   linkRow: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "10px",
-    marginTop: "18px",
+    gap: MYCELIA_TOKENS.spacing[3],
+    marginTop: MYCELIA_TOKENS.spacing[5],
   },
   link: {
-    border: "1px solid #355642",
-    borderRadius: "6px",
-    background: "#263f30",
-    color: "#ffffff",
-    padding: "10px 13px",
+    border: MYCELIA_TOKENS.border.strong,
+    borderRadius: MYCELIA_TOKENS.radius.md,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.brand.sage,
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
     fontSize: "0.9rem",
     fontWeight: 800,
     textDecoration: "none",
@@ -118,7 +119,7 @@ export default async function MyceliaControlCenterPage() {
   return (
     <main aria-labelledby="control-center-title" style={styles.page}>
       <div style={styles.banner}>
-        Live local product environment -- SQLite persistence, governed runtime, demo tenant
+        Live local product environment -- SQLite persistence, controlled run workspace, demo tenant
       </div>
       <section style={styles.hero}>
         <p style={styles.eyebrow}>Control Center</p>
@@ -127,7 +128,7 @@ export default async function MyceliaControlCenterPage() {
         </h1>
         <p style={styles.text}>
           This page reads persisted local state on every render. It summarizes
-          governed runs, approval demand, audit events and workspace graph data.
+          governed runs, approval demand, evidence records and workspace graph data.
         </p>
         {hasActivity(summary) ? null : (
           <p style={styles.text}>No governed activity yet -- create a run to get started.</p>
@@ -139,7 +140,7 @@ export default async function MyceliaControlCenterPage() {
           {renderMetric("Rejected", summary.runsByState.rejected)}
           {renderMetric("Completed", summary.runsByState.completed)}
           {renderMetric("Pending approvals", summary.pendingApprovals)}
-          {renderMetric("Audit events", summary.auditEvents)}
+          {renderMetric("Evidence records", summary.auditEvents)}
           {renderMetric("Workspaces", summary.workspaces)}
         </div>
         <nav aria-label="Control Center actions" style={styles.linkRow}>

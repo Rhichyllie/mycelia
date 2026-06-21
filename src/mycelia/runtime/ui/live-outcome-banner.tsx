@@ -5,15 +5,16 @@ import {
   formatLiveReasonLabel,
   type LiveOutcome,
 } from "./format-live-label";
+import { MYCELIA_TOKENS } from "./design-tokens";
 
 const styles = {
   banner: {
-    border: "1px solid #d9c48d",
-    borderRadius: "8px",
-    background: "#fff9e8",
-    color: "#604812",
-    marginTop: "14px",
-    padding: "12px 14px",
+    border: `1px solid ${MYCELIA_TOKENS.color.state.warning}`,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.intent.warningBg,
+    color: MYCELIA_TOKENS.color.text.primary,
+    marginTop: MYCELIA_TOKENS.spacing[4],
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
   },
   title: {
     margin: 0,

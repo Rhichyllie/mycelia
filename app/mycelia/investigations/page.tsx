@@ -5,9 +5,10 @@ import {
   type InvestigationTimelineEntry,
   type InvestigationTimelineReadyResult,
 } from "@/mycelia/runtime/investigation/load-investigation-timeline";
+import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
+import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
 import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
 import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
-import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
 
 export const dynamic = "force-dynamic";
 
@@ -15,118 +16,119 @@ type LivePageSearchParams = Promise<Record<string, string | string[] | undefined
 
 const styles = {
   page: {
-    width: "min(1180px, calc(100% - 40px))",
+    width: MYCELIA_TOKENS.layout.pageWidth,
     margin: "0 auto",
-    padding: "34px 0 48px",
+    padding: MYCELIA_TOKENS.layout.pagePadding,
   },
   banner: {
-    border: "1px solid #a8c6b1",
-    borderRadius: "8px",
-    background: "#f1f8f2",
-    color: "#21382a",
-    padding: "14px 16px",
+    border: `1px solid ${MYCELIA_TOKENS.color.tenant.boundary}`,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.text.primary,
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
     fontSize: "0.92rem",
     fontWeight: 850,
   },
   section: {
-    border: "1px solid #d7e1d8",
-    borderRadius: "8px",
-    background: "#ffffff",
-    marginTop: "16px",
-    padding: "24px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.surface,
+    marginTop: MYCELIA_TOKENS.spacing[4],
+    padding: MYCELIA_TOKENS.spacing[6],
   },
   eyebrow: {
     margin: 0,
-    color: "#52685b",
-    fontSize: "0.76rem",
+    color: MYCELIA_TOKENS.color.brand.sage,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
   },
   title: {
-    margin: "8px 0 0",
-    color: "#17281f",
-    fontSize: "clamp(1.55rem, 2.4vw, 2.35rem)",
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.heading1,
     lineHeight: 1.15,
     letterSpacing: 0,
   },
   text: {
-    margin: "10px 0 0",
-    color: "#4e6156",
-    fontSize: "0.94rem",
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.secondary,
+    fontSize: MYCELIA_TOKENS.type.body,
     lineHeight: 1.6,
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))",
-    gap: "12px",
-    marginTop: "18px",
+    gap: MYCELIA_TOKENS.spacing[3],
+    marginTop: MYCELIA_TOKENS.spacing[5],
   },
   detail: {
-    border: "1px solid #e0e8e1",
-    borderRadius: "8px",
-    background: "#fbfcfa",
-    padding: "12px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    padding: MYCELIA_TOKENS.spacing[3],
   },
   label: {
     margin: 0,
-    color: "#637468",
-    fontSize: "0.72rem",
+    color: MYCELIA_TOKENS.color.text.tertiary,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     textTransform: "uppercase",
   },
   value: {
-    margin: "5px 0 0",
-    color: "#1d3327",
-    fontSize: "0.9rem",
+    margin: `${MYCELIA_TOKENS.spacing[1]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.data,
     fontWeight: 780,
     overflowWrap: "anywhere",
   },
   timeline: {
     listStyle: "none",
-    margin: "18px 0 0",
+    margin: `${MYCELIA_TOKENS.spacing[5]} 0 0`,
     padding: 0,
     display: "grid",
-    gap: "12px",
+    gap: MYCELIA_TOKENS.spacing[3],
   },
   timelineItem: {
-    border: "1px solid #dbe3dc",
-    borderRadius: "8px",
-    background: "#fbfcfa",
-    padding: "14px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderLeft: `2px solid ${MYCELIA_TOKENS.color.evidence.sealed}`,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    padding: MYCELIA_TOKENS.spacing[4],
   },
   timelineHeader: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "8px",
+    gap: MYCELIA_TOKENS.spacing[2],
     alignItems: "center",
   },
   badge: {
-    border: "1px solid #b9c8bd",
-    borderRadius: "999px",
-    background: "#f4f8f4",
-    color: "#274132",
-    padding: "5px 9px",
-    fontSize: "0.74rem",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.full,
+    background: MYCELIA_TOKENS.color.intent.neutralBg,
+    color: MYCELIA_TOKENS.color.text.secondary,
+    padding: `${MYCELIA_TOKENS.spacing[1]} ${MYCELIA_TOKENS.spacing[2]}`,
+    fontSize: MYCELIA_TOKENS.type.badge,
     fontWeight: 850,
   },
   timelineTitle: {
-    margin: 0,
-    color: "#203329",
+    margin: `${MYCELIA_TOKENS.spacing[3]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.primary,
     fontSize: "0.98rem",
     fontWeight: 850,
   },
   link: {
-    color: "#245b37",
+    color: MYCELIA_TOKENS.color.brand.sage,
     fontWeight: 850,
   },
   hint: {
-    border: "1px solid #d9c48d",
-    borderRadius: "8px",
-    background: "#fff9e8",
-    color: "#604812",
-    marginTop: "18px",
-    padding: "12px",
+    border: `1px solid ${MYCELIA_TOKENS.color.evidence.sealed}`,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.text.primary,
+    marginTop: MYCELIA_TOKENS.spacing[5],
+    padding: MYCELIA_TOKENS.spacing[3],
     fontSize: "0.88rem",
     fontWeight: 760,
     lineHeight: 1.45,
@@ -141,13 +143,34 @@ function formatDate(value: Date): string {
   return value.toISOString();
 }
 
-function renderDetail(label: string, value: string | number | null): ReactElement {
+function renderDetail(
+  label: string,
+  value: string | number | null,
+  key?: string,
+): ReactElement {
   return (
-    <div style={styles.detail}>
+    <div key={key} style={styles.detail}>
       <p style={styles.label}>{label}</p>
       <p style={styles.value}>{value ?? "Not recorded"}</p>
     </div>
   );
+}
+
+function timelineKindLabel(entry: InvestigationTimelineEntry): string {
+  switch (entry.kind) {
+    case "RuntimeStateSnapshot":
+      return "State step";
+    case "PolicyDecisionRecord":
+      return "Policy check";
+    case "AdmissionDecisionRecord":
+      return "Readiness check";
+    case "AuditRecord":
+      return "Evidence record";
+    case "ApprovalRequestCreated":
+      return "Approval opened";
+    case "ApprovalRequestDecided":
+      return "Approval result";
+  }
 }
 
 function renderEmptyState(): ReactElement {
@@ -157,11 +180,11 @@ function renderEmptyState(): ReactElement {
       <h1 style={styles.title}>No governed run has been created yet</h1>
       <p style={styles.text}>
         Create a governed request from the controlled demo scenario first. The
-        investigation view only renders persisted SQLite history.
+        investigation view only renders persisted SQLite history and lineage.
       </p>
       <p style={styles.text}>
         <a href="/mycelia/runs" style={styles.link}>
-          Return to the demo request flow
+          Return to Runs
         </a>
       </p>
     </section>
@@ -173,19 +196,19 @@ function renderRunOverview(result: InvestigationTimelineReadyResult): ReactEleme
 
   return (
     <section aria-labelledby="investigation-title" style={styles.section}>
-      <p style={styles.eyebrow}>Persisted governed run</p>
+      <p style={styles.eyebrow}>Persisted run</p>
       <h1 id="investigation-title" style={styles.title}>
-        Investigation timeline
+        History and lineage
       </h1>
       <p style={styles.text}>
         This page reads the latest governed run directly from local SQLite and
-        assembles its state, policy, admission, approval and audit history.
+        assembles its state, policy check, readiness check, approval and evidence history.
       </p>
       <div style={styles.grid}>
         {renderDetail("Run", shortId(run.id))}
         {renderDetail("Current state", run.currentState)}
         {renderDetail("Status", run.status)}
-        {renderDetail("Resource", run.resourceRef)}
+        {renderDetail("Run scope", run.resourceRef)}
         {renderDetail("Requester", run.requesterRef)}
         {renderDetail("Purpose", run.purpose)}
         {renderDetail("Created", formatDate(run.createdAt))}
@@ -199,7 +222,7 @@ function renderTimelineEntry(entry: InvestigationTimelineEntry): ReactElement {
   return (
     <li key={entry.id} style={styles.timelineItem}>
       <div style={styles.timelineHeader}>
-        <span style={styles.badge}>{entry.kind}</span>
+        <span style={styles.badge}>{timelineKindLabel(entry)}</span>
         <span style={styles.badge}>{formatDate(entry.occurredAt)}</span>
         {entry.reasonCode === null ? null : (
           <span style={styles.badge}>{entry.reasonCode}</span>
@@ -209,7 +232,7 @@ function renderTimelineEntry(entry: InvestigationTimelineEntry): ReactElement {
       <p style={styles.text}>{entry.safeSummary}</p>
       <div style={styles.grid}>
         {entry.details.map((detail) =>
-          renderDetail(detail.label, detail.value),
+          renderDetail(detail.label, detail.value, `${entry.id}:${detail.label}`),
         )}
       </div>
     </li>
@@ -221,15 +244,13 @@ function renderTimeline(result: InvestigationTimelineReadyResult): ReactElement 
     <section aria-labelledby="timeline-heading" style={styles.section}>
       <p style={styles.eyebrow}>Chronological history</p>
       <h2 id="timeline-heading" style={styles.title}>
-        Persisted lifecycle events
+        Persisted case events
       </h2>
       <p style={styles.text}>
-        Timeline entries are assembled from state snapshots, policy decisions,
-        admission decisions, approval requests and audit records.
+        Timeline entries are assembled from state snapshots, policy checks,
+        readiness checks, approval requests and evidence records.
       </p>
-      <ol style={styles.timeline}>
-        {result.timeline.map(renderTimelineEntry)}
-      </ol>
+      <ol style={styles.timeline}>{result.timeline.map(renderTimelineEntry)}</ol>
     </section>
   );
 }
@@ -244,24 +265,21 @@ function renderControlledSummary(
         Governed run summary
       </h2>
       <div style={styles.grid}>
-        {renderDetail("Audit records", result.summary.auditCount)}
+        {renderDetail("Evidence records", result.summary.auditCount)}
         {renderDetail("Final state", result.summary.finalState)}
         {renderDetail(
-          "Human decision required",
+          "Approval required",
           result.summary.humanDecisionRequired ? "yes" : "no",
         )}
-        {renderDetail(
-          "Human decision outcome",
-          result.summary.humanDecisionOutcome,
-        )}
+        {renderDetail("Approval outcome", result.summary.humanDecisionOutcome)}
         {renderDetail("State snapshots", result.snapshots.length)}
-        {renderDetail("Policy decisions", result.policies.length)}
-        {renderDetail("Admission decision", result.admission?.outcome ?? null)}
+        {renderDetail("Policy checks", result.policies.length)}
+        {renderDetail("Readiness check", result.admission?.outcome ?? null)}
         {renderDetail("Approval status", result.approvalRequest?.status ?? null)}
       </div>
       <div style={styles.hint}>
-        This is the full governed run lifecycle: created, classified, admitted,
-        decided, and audited.
+        This is the full governed run lifecycle: created, checked for risk,
+        confirmed for readiness, decided, and recorded.
       </div>
     </section>
   );

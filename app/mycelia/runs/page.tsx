@@ -3,274 +3,505 @@ import type { CSSProperties, ReactElement } from "react";
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import { LIVE_DEMO_SCENARIO } from "@/mycelia/runtime/demo-scenario";
-import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
-import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
-import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
+import {
+  loadInvestigationTimeline,
+  type InvestigationTimelineEntry,
+  type InvestigationTimelineReadyResult,
+} from "@/mycelia/runtime/investigation/load-investigation-timeline";
 import {
   createPrismaDemoReadRepository,
   type DemoPersistedRunSummary,
 } from "@/mycelia/runtime/repositories/prisma-demo-read.repository";
+import { createPrismaGovernedRunRepository } from "@/mycelia/runtime/repositories/prisma-governed-run.repository";
+import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
+import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
+import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
+import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
 import { createGovernedRequest, resetDemo } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 type LivePageSearchParams = Promise<Record<string, string | string[] | undefined>>;
 
-type DemoLiveState =
+type RunWorkspaceState =
   | {
       readonly status: "READY";
-      readonly latestRun: DemoPersistedRunSummary | null;
+      readonly runs: readonly DemoPersistedRunSummary[];
+      readonly selected: DemoPersistedRunSummary | null;
+      readonly timeline: InvestigationTimelineReadyResult | null;
     }
   | {
       readonly status: "UNAVAILABLE";
-      readonly latestRun: null;
+      readonly runs: readonly DemoPersistedRunSummary[];
+      readonly selected: null;
+      readonly timeline: null;
     };
 
+const RUN_LIST_LIMIT = 8;
+
 const styles = {
-  liveShell: {
-    width: "min(1180px, calc(100% - 40px))",
+  page: {
+    width: MYCELIA_TOKENS.layout.pageWidth,
     margin: "0 auto",
-    padding: "34px 0 0",
+    padding: MYCELIA_TOKENS.layout.pagePadding,
   },
   banner: {
-    border: "1px solid #a8c6b1",
-    borderRadius: "8px",
-    background: "#f1f8f2",
-    color: "#21382a",
-    padding: "14px 16px",
+    border: `1px solid ${MYCELIA_TOKENS.color.tenant.boundary}`,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.text.primary,
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
     fontSize: "0.92rem",
     fontWeight: 850,
   },
-  liveGrid: {
+  workspaceGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
-    gap: "16px",
-    marginTop: "16px",
+    gridTemplateColumns: "minmax(min(100%, 330px), 0.9fr) minmax(min(100%, 520px), 1.45fr)",
+    gap: MYCELIA_TOKENS.spacing[4],
+    marginTop: MYCELIA_TOKENS.spacing[4],
   },
   panel: {
-    border: "1px solid #d7e1d8",
-    borderRadius: "8px",
-    background: "#ffffff",
-    padding: "18px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.surface,
+    padding: MYCELIA_TOKENS.spacing[5],
+  },
+  raisedPanel: {
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    padding: MYCELIA_TOKENS.spacing[4],
   },
   eyebrow: {
     margin: 0,
-    color: "#52685b",
-    fontSize: "0.76rem",
+    color: MYCELIA_TOKENS.color.brand.sage,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
   },
   title: {
-    margin: "8px 0 0",
-    color: "#17281f",
-    fontSize: "1.28rem",
-    lineHeight: 1.3,
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.heading1,
+    lineHeight: 1.14,
+    letterSpacing: 0,
+  },
+  sectionTitle: {
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.heading2,
+    lineHeight: 1.2,
     letterSpacing: 0,
   },
   text: {
-    margin: "8px 0 0",
-    color: "#4e6156",
-    fontSize: "0.9rem",
-    lineHeight: 1.55,
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.secondary,
+    fontSize: MYCELIA_TOKENS.type.body,
+    lineHeight: 1.6,
+  },
+  smallText: {
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.tertiary,
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
+    lineHeight: 1.5,
+  },
+  formRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: MYCELIA_TOKENS.spacing[3],
+    marginTop: MYCELIA_TOKENS.spacing[4],
+  },
+  primaryButton: {
+    border: `1px solid ${MYCELIA_TOKENS.color.brand.sage}`,
+    borderRadius: MYCELIA_TOKENS.radius.md,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.brand.sage,
+    cursor: "pointer",
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
+    fontWeight: 850,
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
+  },
+  secondaryButton: {
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.md,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    color: MYCELIA_TOKENS.color.text.secondary,
+    cursor: "pointer",
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
+    fontWeight: 820,
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
+  },
+  runList: {
+    listStyle: "none",
+    margin: `${MYCELIA_TOKENS.spacing[4]} 0 0`,
+    padding: 0,
+    display: "grid",
+    gap: MYCELIA_TOKENS.spacing[3],
+  },
+  runRow: {
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    padding: MYCELIA_TOKENS.spacing[4],
+  },
+  activeRunRow: {
+    border: `1px solid ${MYCELIA_TOKENS.color.brand.sage}`,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
   },
   detailGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 170px), 1fr))",
-    gap: "10px",
-    marginTop: "14px",
-  },
-  detail: {
-    border: "1px solid #e0e8e1",
-    borderRadius: "8px",
-    background: "#fbfcfa",
-    padding: "10px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))",
+    gap: MYCELIA_TOKENS.spacing[3],
+    marginTop: MYCELIA_TOKENS.spacing[4],
   },
   label: {
     margin: 0,
-    color: "#637468",
-    fontSize: "0.72rem",
+    color: MYCELIA_TOKENS.color.text.tertiary,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     textTransform: "uppercase",
   },
   value: {
-    margin: "5px 0 0",
-    color: "#1d3327",
-    fontSize: "0.9rem",
-    fontWeight: 780,
+    margin: `${MYCELIA_TOKENS.spacing[1]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.data,
+    fontWeight: 760,
     overflowWrap: "anywhere",
   },
-  button: {
-    border: "1px solid #274835",
-    borderRadius: "6px",
-    background: "#1f3b2b",
-    color: "#ffffff",
-    cursor: "pointer",
-    fontSize: "0.92rem",
+  statusPill: {
+    borderRadius: MYCELIA_TOKENS.radius.full,
+    display: "inline-flex",
+    alignItems: "center",
+    marginTop: MYCELIA_TOKENS.spacing[2],
+    padding: `${MYCELIA_TOKENS.spacing[1]} ${MYCELIA_TOKENS.spacing[2]}`,
+    fontSize: MYCELIA_TOKENS.type.badge,
     fontWeight: 850,
-    marginTop: "16px",
-    padding: "11px 14px",
+    textTransform: "uppercase",
   },
-  resetButton: {
-    border: "1px solid #b8a36f",
-    borderRadius: "6px",
-    background: "#fff9e8",
-    color: "#604812",
-    cursor: "pointer",
-    fontSize: "0.88rem",
+  link: {
+    color: MYCELIA_TOKENS.color.brand.sage,
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
     fontWeight: 850,
-    marginTop: "12px",
-    padding: "10px 13px",
+    textDecoration: "none",
   },
-  resetCaption: {
-    margin: "7px 0 0",
-    color: "#6b5a2a",
-    fontSize: "0.82rem",
-    lineHeight: 1.45,
+  timelineList: {
+    listStyle: "none",
+    margin: `${MYCELIA_TOKENS.spacing[4]} 0 0`,
+    padding: 0,
+    display: "grid",
+    gap: MYCELIA_TOKENS.spacing[2],
   },
-  hint: {
-    border: "1px solid #d9c48d",
-    borderRadius: "8px",
-    background: "#fff9e8",
-    color: "#604812",
-    marginTop: "14px",
-    padding: "12px",
-    fontSize: "0.86rem",
-    fontWeight: 750,
-    lineHeight: 1.45,
+  timelineItem: {
+    borderLeft: `2px solid ${MYCELIA_TOKENS.color.policy.boundary}`,
+    paddingLeft: MYCELIA_TOKENS.spacing[3],
   },
 } satisfies Record<string, CSSProperties>;
 
-async function loadDemoLiveState(): Promise<DemoLiveState> {
-  try {
-    const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
-    const repository = createPrismaDemoReadRepository(prisma);
-    const latestRun = await repository.findLatestRun({ tenantId });
-
-    return { status: "READY", latestRun };
-  } catch {
-    return { status: "UNAVAILABLE", latestRun: null };
-  }
+function firstParam(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
 }
 
 function shortId(value: string): string {
   return value.length <= 12 ? value : `${value.slice(0, 8)}...${value.slice(-4)}`;
 }
 
-function renderPersistedRun(state: DemoLiveState): ReactElement {
-  if (state.status === "UNAVAILABLE") {
-    return (
-      <p style={styles.text}>
-        Local SQLite state is not available yet. Run the local database setup
-        before creating a governed request.
-      </p>
-    );
+function humanState(value: string): string {
+  return value.replaceAll("_", " ").toLowerCase();
+}
+
+function riskTone(riskLevel: string | null | undefined): CSSProperties {
+  if (riskLevel === "HIGH") {
+    return {
+      border: `1px solid ${MYCELIA_TOKENS.color.state.danger}`,
+      background: MYCELIA_TOKENS.color.intent.dangerBg,
+      color: MYCELIA_TOKENS.color.state.danger,
+    };
   }
 
-  if (state.latestRun === null) {
-    return (
-      <p style={styles.text}>
-        No governed request has been created in the local demo database yet.
-      </p>
-    );
+  if (riskLevel === "MEDIUM") {
+    return {
+      border: `1px solid ${MYCELIA_TOKENS.color.state.warning}`,
+      background: MYCELIA_TOKENS.color.intent.warningBg,
+      color: MYCELIA_TOKENS.color.state.warning,
+    };
   }
 
-  const { run, latestPolicy, latestAdmission, latestSnapshot, auditCount } =
-    state.latestRun;
+  return {
+    border: `1px solid ${MYCELIA_TOKENS.color.state.success}`,
+    background: MYCELIA_TOKENS.color.intent.successBg,
+    color: MYCELIA_TOKENS.color.state.success,
+  };
+}
 
+function stateTone(state: string): CSSProperties {
+  if (state === "REJECTED" || state === "FAILED") {
+    return {
+      border: `1px solid ${MYCELIA_TOKENS.color.runtime.failed}`,
+      background: MYCELIA_TOKENS.color.intent.dangerBg,
+      color: MYCELIA_TOKENS.color.runtime.failed,
+    };
+  }
+
+  if (state === "WAITING_APPROVAL") {
+    return {
+      border: `1px solid ${MYCELIA_TOKENS.color.runtime.suspended}`,
+      background: MYCELIA_TOKENS.color.intent.warningBg,
+      color: MYCELIA_TOKENS.color.runtime.suspended,
+    };
+  }
+
+  return {
+    border: `1px solid ${MYCELIA_TOKENS.color.runtime.active}`,
+    background: MYCELIA_TOKENS.color.intent.successBg,
+    color: MYCELIA_TOKENS.color.runtime.active,
+  };
+}
+
+async function loadRunWorkspaceState(
+  selectedRunId: string | undefined,
+): Promise<RunWorkspaceState> {
+  try {
+    const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
+    const runRepository = createPrismaGovernedRunRepository(prisma);
+    const readRepository = createPrismaDemoReadRepository(prisma);
+    const recentRuns = await runRepository.listRecent({
+      tenantId,
+      take: RUN_LIST_LIMIT,
+    });
+    const summaries = (
+      await Promise.all(
+        recentRuns.map((run) =>
+          readRepository.findRunById({ tenantId, runId: run.id }),
+        ),
+      )
+    ).filter((summary): summary is DemoPersistedRunSummary => summary !== null);
+    const selectedId = selectedRunId ?? summaries.at(0)?.run.id;
+    const selected =
+      selectedId === undefined
+        ? null
+        : summaries.find((summary) => summary.run.id === selectedId) ??
+          (await readRepository.findRunById({ tenantId, runId: selectedId }));
+    const timeline =
+      selected === null
+        ? null
+        : await loadInvestigationTimeline({ tenantId, runId: selected.run.id });
+
+    return {
+      status: "READY",
+      runs: summaries,
+      selected,
+      timeline: timeline?.status === "READY" ? timeline : null,
+    };
+  } catch {
+    return { status: "UNAVAILABLE", runs: [], selected: null, timeline: null };
+  }
+}
+
+function renderDetail(label: string, value: string | number | null): ReactElement {
   return (
-    <div style={styles.detailGrid}>
-      <div style={styles.detail}>
-        <p style={styles.label}>Run</p>
-        <p style={styles.value}>{shortId(run.id)}</p>
-      </div>
-      <div style={styles.detail}>
-        <p style={styles.label}>Current state</p>
-        <p style={styles.value}>{run.currentState}</p>
-      </div>
-      <div style={styles.detail}>
-        <p style={styles.label}>Risk</p>
-        <p style={styles.value}>{latestPolicy?.riskLevel ?? "Not evaluated"}</p>
-      </div>
-      <div style={styles.detail}>
-        <p style={styles.label}>Policy</p>
-        <p style={styles.value}>{latestPolicy?.safeSummary ?? "Pending"}</p>
-      </div>
-      <div style={styles.detail}>
-        <p style={styles.label}>Admission</p>
-        <p style={styles.value}>{latestAdmission?.safeSummary ?? "Pending"}</p>
-      </div>
-      <div style={styles.detail}>
-        <p style={styles.label}>Audit records</p>
-        <p style={styles.value}>{auditCount}</p>
-      </div>
-      <div style={styles.detail}>
-        <p style={styles.label}>Latest snapshot</p>
-        <p style={styles.value}>
-          {latestSnapshot === null
-            ? "No snapshot"
-            : `${latestSnapshot.sequence}: ${latestSnapshot.state}`}
-        </p>
-      </div>
+    <div style={styles.raisedPanel}>
+      <p style={styles.label}>{label}</p>
+      <p style={styles.value}>{value ?? "Not recorded"}</p>
     </div>
   );
 }
 
-export default async function MyceliaPilotDemoPage({
+function renderStatePill(state: string): ReactElement {
+  return (
+    <span style={{ ...styles.statusPill, ...stateTone(state) }}>
+      {humanState(state)}
+    </span>
+  );
+}
+
+function renderRiskPill(riskLevel: string | null | undefined): ReactElement {
+  const label = riskLevel === undefined || riskLevel === null ? "not checked" : riskLevel.toLowerCase();
+
+  return (
+    <span style={{ ...styles.statusPill, ...riskTone(riskLevel) }}>
+      {label}
+    </span>
+  );
+}
+
+function renderRunRow(
+  summary: DemoPersistedRunSummary,
+  selectedRun: DemoPersistedRunSummary["run"] | null,
+): ReactElement {
+  const isSelected = selectedRun?.id === summary.run.id;
+
+  return (
+    <li key={summary.run.id} style={isSelected ? { ...styles.runRow, ...styles.activeRunRow } : styles.runRow}>
+      <p style={styles.label}>Run case</p>
+      <p style={styles.value}>{shortId(summary.run.id)}</p>
+      {renderStatePill(summary.run.currentState)}
+      {renderRiskPill(summary.latestPolicy?.riskLevel)}
+      <p style={styles.smallText}>{summary.run.purpose}</p>
+      <a href={`/mycelia/runs?runId=${encodeURIComponent(summary.run.id)}`} style={styles.link}>
+        Open case file
+      </a>
+    </li>
+  );
+}
+
+function renderRunList(state: RunWorkspaceState): ReactElement {
+  if (state.status === "UNAVAILABLE") {
+    return (
+      <p style={styles.text}>
+        Local run data could not be loaded. Confirm the local SQLite database is migrated and seeded.
+      </p>
+    );
+  }
+
+  if (state.runs.length === 0) {
+    return (
+      <p style={styles.text}>
+        Runs will appear here once a governed request is created.
+      </p>
+    );
+  }
+
+  return (
+    <ol style={styles.runList}>
+      {state.runs.map((summary) => renderRunRow(summary, state.selected?.run ?? null))}
+    </ol>
+  );
+}
+
+function renderTimelineSummary(
+  timeline: InvestigationTimelineReadyResult | null,
+): ReactElement {
+  const entries = timeline?.timeline.slice(0, 5) ?? [];
+
+  if (entries.length === 0) {
+    return <p style={styles.text}>History will appear once the run records its first persisted step.</p>;
+  }
+
+  return (
+    <ol style={styles.timelineList}>
+      {entries.map((entry: InvestigationTimelineEntry) => (
+        <li key={entry.id} style={styles.timelineItem}>
+          <p style={styles.label}>{entry.title}</p>
+          <p style={styles.smallText}>{entry.safeSummary}</p>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function renderCaseFile(state: RunWorkspaceState): ReactElement {
+  if (state.selected === null) {
+    return (
+      <section style={styles.panel}>
+        <p style={styles.eyebrow}>Run Workspace</p>
+        <h1 style={styles.title}>No run selected</h1>
+        <p style={styles.text}>
+          Create a governed request or open a run from the list to inspect its case file.
+        </p>
+      </section>
+    );
+  }
+
+  const { run, latestPolicy, latestAdmission, latestSnapshot, auditCount } =
+    state.selected;
+  const approvalStatus =
+    state.timeline?.approvalRequest?.status ??
+    (run.currentState === "WAITING_APPROVAL" ? "Approval is required" : "Not requested");
+
+  return (
+    <section style={styles.panel}>
+      <p style={styles.eyebrow}>Run Workspace</p>
+      <h1 style={styles.title}>{LIVE_DEMO_SCENARIO.title}</h1>
+      <p style={styles.text}>{run.purpose}</p>
+      <div style={styles.detailGrid}>
+        {renderDetail("Request summary", LIVE_DEMO_SCENARIO.fixtureSummary)}
+        {renderDetail("Run scope", run.resourceRef)}
+        {renderDetail("Affected systems", "Fixture document workspace")}
+        {renderDetail("Requester", run.requesterRef)}
+        {renderDetail("Current state", humanState(run.currentState))}
+        {renderDetail("Risk level", latestPolicy?.riskLevel ?? null)}
+        {renderDetail("Policy check", latestPolicy?.safeSummary ?? null)}
+        {renderDetail("Readiness check", latestAdmission?.safeSummary ?? null)}
+        {renderDetail("Approval status", approvalStatus)}
+        {renderDetail("Evidence records", auditCount)}
+        {renderDetail(
+          "Latest step",
+          latestSnapshot === null
+            ? null
+            : `${latestSnapshot.sequence}: ${humanState(latestSnapshot.state)}`,
+        )}
+      </div>
+      <section style={{ ...styles.raisedPanel, marginTop: MYCELIA_TOKENS.spacing[4] }}>
+        <p style={styles.eyebrow}>History and lineage</p>
+        <h2 style={styles.sectionTitle}>Recent case timeline</h2>
+        {renderTimelineSummary(state.timeline)}
+        <p style={styles.text}>
+          <a href="/mycelia/investigations" style={styles.link}>
+            Open the full investigation trail
+          </a>
+        </p>
+      </section>
+    </section>
+  );
+}
+
+export default async function MyceliaRunsPage({
   searchParams,
 }: {
   readonly searchParams?: LivePageSearchParams;
 }) {
-  const outcome = parseLiveOutcomeSearchParams(
-    searchParams === undefined ? undefined : await searchParams,
-  );
+  const resolvedSearchParams =
+    searchParams === undefined ? undefined : await searchParams;
+  const outcome = parseLiveOutcomeSearchParams(resolvedSearchParams);
+  const selectedRunId = firstParam(resolvedSearchParams?.runId);
   const demoMode = getMyceliaDemoDatabaseConfig().demoMode;
-  const liveState = await loadDemoLiveState();
+  const workspace = await loadRunWorkspaceState(selectedRunId);
 
   return (
-    <section aria-label="Governed request creation" style={styles.liveShell}>
-        <div style={styles.banner}>
-          Controlled Demo Environment -- fixture data, no production auth
-        </div>
-        <LiveRouteNav currentStage="request" />
-        <LiveOutcomeBanner outcome={outcome} />
-        <div style={styles.liveGrid}>
-          <article style={styles.panel}>
-            <p style={styles.eyebrow}>Seeded scenario</p>
-            <h1 style={styles.title}>{LIVE_DEMO_SCENARIO.title}</h1>
-            <p style={styles.text}>{LIVE_DEMO_SCENARIO.purpose}</p>
-            <p style={styles.text}>{LIVE_DEMO_SCENARIO.fixtureSummary}</p>
-            <form action={createGovernedRequest}>
-              <button type="submit" style={styles.button}>
-                Start governed request
+    <main aria-labelledby="runs-title" style={styles.page}>
+      <div id="runs-title" style={styles.banner}>
+        Live local product environment -- fixture data, controlled run workspace, no production auth
+      </div>
+      <LiveRouteNav currentStage="request" />
+      <LiveOutcomeBanner outcome={outcome} />
+      <section style={{ ...styles.panel, marginTop: MYCELIA_TOKENS.spacing[4] }}>
+        <p style={styles.eyebrow}>New work</p>
+        <h1 style={styles.title}>Start a governed request</h1>
+        <p style={styles.text}>
+          Create a real local run from fixture metadata. Approval is required before this can proceed.
+        </p>
+        <div style={styles.formRow}>
+          <form action={createGovernedRequest}>
+            <button type="submit" style={styles.primaryButton}>
+              Start governed request
+            </button>
+          </form>
+          {demoMode ? (
+            <form action={resetDemo}>
+              <button type="submit" style={styles.secondaryButton}>
+                Reset demo
               </button>
             </form>
-            {demoMode ? (
-              <form action={resetDemo}>
-                <button type="submit" style={styles.resetButton}>
-                  Reset demo
-                </button>
-                <p style={styles.resetCaption}>
-                  Resets local demo data only -- restores the seeded scenario.
-                </p>
-              </form>
-            ) : null}
-            <div style={styles.hint}>
-              The approvals page can approve or reject the latest waiting run now; the investigations page reads the persisted trail after that decision.
-            </div>
-          </article>
-
-          <article style={styles.panel}>
-            <p style={styles.eyebrow}>Persisted local state</p>
-            <h2 style={styles.title}>SQLite-backed governed run</h2>
-            <p style={styles.text}>
-              This panel reads from the local database on render. Refreshing the
-              page shows persisted state, not an in-memory fixture.
-            </p>
-            {renderPersistedRun(liveState)}
-          </article>
+          ) : null}
         </div>
+        {demoMode ? (
+          <p style={styles.smallText}>
+            Reset restores local demo data only, including the seeded run and Studio workspace.
+          </p>
+        ) : null}
       </section>
+      <div style={styles.workspaceGrid}>
+        <section style={styles.panel}>
+          <p style={styles.eyebrow}>Runs</p>
+          <h2 style={styles.sectionTitle}>Recent governed work</h2>
+          <p style={styles.text}>
+            Most recent runs are listed first. Each row is read from local SQLite.
+          </p>
+          {renderRunList(workspace)}
+        </section>
+        {renderCaseFile(workspace)}
+      </div>
+    </main>
   );
 }
-

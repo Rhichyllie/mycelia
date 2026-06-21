@@ -68,6 +68,7 @@ export type InvestigationTimelineResult =
 export type LoadInvestigationTimelineInput = {
   readonly client?: PrismaClient;
   readonly tenantId?: string;
+  readonly runId?: string;
 };
 
 function createRepositories(client: PrismaClient) {
@@ -110,11 +111,11 @@ function policyEntry(policy: PolicyDecisionRecord): InvestigationTimelineEntry {
     kind: "PolicyDecisionRecord",
     id: policy.id,
     occurredAt: policy.createdAt,
-    title: `Policy decision: ${policy.riskLevel}`,
+    title: `Policy check: ${policy.riskLevel}`,
     reasonCode: policy.reasonCode,
     safeSummary: policy.safeSummary,
     details: [
-      { label: "Risk", value: policy.riskLevel },
+      { label: "Risk level", value: policy.riskLevel },
       { label: "Outcome", value: policy.outcome },
       { label: "Policy ref", value: policy.policyRef },
     ],
@@ -128,12 +129,12 @@ function admissionEntry(
     kind: "AdmissionDecisionRecord",
     id: admission.id,
     occurredAt: admission.createdAt,
-    title: `Admission decision: ${admission.outcome}`,
+    title: `Readiness check: ${admission.outcome}`,
     reasonCode: admission.reasonCode,
     safeSummary: admission.safeSummary,
     details: [
       { label: "Outcome", value: admission.outcome },
-      { label: "Lifecycle hint", value: admission.lifecycleIntentHint },
+      { label: "Next state", value: admission.lifecycleIntentHint },
       { label: "Reason", value: admission.reasonCode },
     ],
   };
@@ -144,12 +145,12 @@ function auditEntry(audit: AuditRecord): InvestigationTimelineEntry {
     kind: "AuditRecord",
     id: audit.id,
     occurredAt: audit.createdAt,
-    title: `Audit moment: ${audit.moment}`,
+    title: `Evidence record: ${audit.moment}`,
     reasonCode: audit.reasonCode,
     safeSummary: audit.safeSummary,
     details: [
       { label: "Moment", value: audit.moment },
-      { label: "Record kind", value: audit.recordKindHint },
+      { label: "Record type", value: audit.recordKindHint },
       { label: "Actor", value: audit.actorRef },
       { label: "Evidence", value: audit.evidenceRef },
     ],
@@ -250,9 +251,12 @@ export async function loadInvestigationTimeline(
   const client = input.client ?? prisma;
   const tenantId = input.tenantId ?? getMyceliaDemoDatabaseConfig().tenantId;
   const repositories = createRepositories(client);
-  const [run] = await repositories.runs.listRecent({ tenantId, take: 1 });
+  const run =
+    input.runId === undefined
+      ? (await repositories.runs.listRecent({ tenantId, take: 1 })).at(0) ?? null
+      : await repositories.runs.findById({ tenantId, id: input.runId });
 
-  if (run === undefined) {
+  if (run === null) {
     return { status: "EMPTY" };
   }
 
