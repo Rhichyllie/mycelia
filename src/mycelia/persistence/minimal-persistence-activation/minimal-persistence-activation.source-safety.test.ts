@@ -39,6 +39,11 @@ function productionSourceFiles(root: string): string[] {
   return files;
 }
 
+const FORBIDDEN_SOURCE_CODENAME_PATTERN = new RegExp(
+  "\\b" + ["ma", "pia"].join("") + "\\b",
+  "i",
+);
+
 const APPLICATION_SOURCE_PATTERNS = [
   /\bPrismaClient\b/,
   /@prisma\/client/i,
@@ -62,7 +67,7 @@ const APPLICATION_SOURCE_PATTERNS = [
   /\bexternal\s+call\b/i,
   /\bruntime\s+execution\b/i,
   /\breplay\s+execution\b/i,
-  /\bMapIA\b/,
+  FORBIDDEN_SOURCE_CODENAME_PATTERN,
 ] as const;
 
 const LIVE_1_DATABASE_SOURCE_ALLOWLIST = new Set([
@@ -139,6 +144,62 @@ const LIVE_1_DATABASE_SOURCE_ALLOWLIST = new Set([
   ),
   repoPath("src", "mycelia", "runtime", "demo-seed-scenario.ts"),
   repoPath("src", "mycelia", "runtime", "demo-reset.ts"),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-workspace.repository.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-project.repository.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-node.repository.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-edge.repository.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "repositories",
+    "prisma-external-ref.repository.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "graph",
+    "create-workspace-project.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "graph",
+    "persist-graph-snapshot.ts",
+  ),
+  repoPath(
+    "src",
+    "mycelia",
+    "runtime",
+    "graph",
+    "load-graph-snapshot.ts",
+  ),
   repoPath("src", "mycelia", "runtime", "auth", "api-session.ts"),
   repoPath("src", "mycelia", "runtime", "auth", "auth-callback-error.ts"),
   repoPath("src", "mycelia", "runtime", "auth", "auth-runtime.ts"),
@@ -187,7 +248,7 @@ describe("minimal persistence activation source safety", () => {
     expect(source).not.toMatch(/\bappendFile\b/i);
     expect(source).not.toMatch(/\bEventEmitter\b/);
     expect(source).not.toMatch(/\.emit\b/i);
-    expect(source).not.toMatch(/\bMapIA\b/);
+    expect(source).not.toMatch(FORBIDDEN_SOURCE_CODENAME_PATTERN);
   });
 
   it("does not modify pnpm-lock.yaml", () => {

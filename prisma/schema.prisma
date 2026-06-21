@@ -131,7 +131,8 @@ model AppUser {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  authIdentities AuthIdentity[]
+  authIdentities        AuthIdentity[]
+  workspaceMemberships WorkspaceMembership[]
 
   @@index([emailNormalized])
   @@map("app_users")
@@ -154,4 +155,118 @@ model AuthIdentity {
   @@index([userId])
   @@map("auth_identities")
 }
+model Workspace {
+  id            String   @id @default(uuid())
+  slug          String   @unique
+  name          String
+  ownerIdentity String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
+  memberships WorkspaceMembership[]
+  projects    Project[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMembership {
+  id          String   @id @default(uuid())
+  workspaceId String
+  userId      String
+  role        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user      AppUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([userId])
+  @@index([workspaceId, role])
+  @@map("workspace_memberships")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  workspaceId String
+  slug        String
+  name        String
+  description String?
+  template    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace    Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  nodes        Node[]
+  edges        Edge[]
+  externalRefs ExternalRef[]
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId])
+  @@map("projects")
+}
+
+model Node {
+  id        String   @id @default(uuid())
+  projectId String
+  kind      String
+  label     String
+  positionX Float
+  positionY Float
+  data      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  outgoing     Edge[]        @relation("EdgeSource")
+  incoming     Edge[]        @relation("EdgeTarget")
+  externalRefs ExternalRef[]
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("nodes")
+}
+
+model Edge {
+  id           String   @id @default(uuid())
+  projectId    String
+  sourceNodeId String
+  targetNodeId String
+  kind         String
+  label        String?
+  data         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sourceNode   Node          @relation("EdgeSource", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNode   Node          @relation("EdgeTarget", fields: [targetNodeId], references: [id], onDelete: Cascade)
+  externalRefs ExternalRef[]
+
+  @@index([projectId])
+  @@index([sourceNodeId])
+  @@index([targetNodeId])
+  @@map("edges")
+}
+
+model ExternalRef {
+  id         String   @id @default(uuid())
+  projectId  String
+  nodeId     String?
+  edgeId     String?
+  system     String
+  externalId String
+  locator    String
+  metadata   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  edge    Edge?   @relation(fields: [edgeId], references: [id], onDelete: Cascade)
+  node    Node?   @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, system, externalId, nodeId, edgeId])
+  @@index([projectId])
+  @@index([nodeId])
+  @@index([edgeId])
+  @@map("external_refs")
+}

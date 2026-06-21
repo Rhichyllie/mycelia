@@ -21,7 +21,7 @@ const AUTH_CALLBACK_ERROR_MESSAGE = {
   AuthIdentityConflict:
     "A identidade autenticada entrou em conflito com um usuario interno existente.",
   AuthAccessDenied:
-    "A autenticacao foi negada pelas regras ativas do MapIA.",
+    "A autenticacao foi negada pelas regras ativas do MYCELIA.",
   AuthSigninFailed:
     "O backend de autenticacao falhou antes de concluir o login.",
 } as const satisfies Record<AuthCallbackErrorCode, string>;

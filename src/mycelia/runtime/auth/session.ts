@@ -65,7 +65,7 @@ export function requireSessionUserId(session: Session): string {
 
   if (!userId || !sessionUserIdSchema.safeParse(userId).success) {
     throw buildSessionInvalidError(
-      "Sessao autenticada sem userId interno do MapIA.",
+      "Sessao autenticada sem userId interno do MYCELIA.",
       "AUTH_SESSION_USER_ID_MISSING",
     );
   }

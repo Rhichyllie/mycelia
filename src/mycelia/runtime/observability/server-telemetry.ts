@@ -8,7 +8,7 @@ import {
 } from "./telemetry-span";
 import { ensureServerOpenTelemetryRuntimeStarted } from "./otel-runtime";
 
-const SERVER_TRACER_NAME = "mapia.server";
+const SERVER_TRACER_NAME = "mycelia.server";
 const SERVER_TRACER_VERSION = "1.0.0";
 
 export function setServerTelemetryAttributes(

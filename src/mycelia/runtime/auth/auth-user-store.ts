@@ -110,7 +110,7 @@ async function updateExistingUserTx(input: {
 
   if (conflictingUser !== null) {
     throw new AppError(
-      "A identidade autenticada conflita com um usuario existente no MapIA.",
+      "A identidade autenticada conflita com um usuario existente no MYCELIA.",
       {
         code: "AUTH_EMAIL_CONFLICT",
         status: 409,
@@ -193,7 +193,7 @@ export async function syncAuthenticatedActor(input: {
 
   if (!email) {
     throw new AppError(
-      "O provedor autenticou o usuario sem um email utilizavel para o MapIA.",
+      "O provedor autenticou o usuario sem um email utilizavel para o MYCELIA.",
       {
         code: "AUTH_EMAIL_REQUIRED",
         status: 403,
@@ -203,7 +203,7 @@ export async function syncAuthenticatedActor(input: {
 
   if (!subject) {
     throw new AppError(
-      "O provedor autenticou o usuario sem um subject estavel para o MapIA.",
+      "O provedor autenticou o usuario sem um subject estavel para o MYCELIA.",
       {
         code: "AUTH_SUBJECT_REQUIRED",
         status: 403,
@@ -229,7 +229,7 @@ export async function syncAuthenticatedActor(input: {
 
     if (existingIdentity !== null) {
       if (!existingIdentity.user.active) {
-        throw new AppError("O usuario autenticado esta desativado no MapIA.", {
+        throw new AppError("O usuario autenticado esta desativado no MYCELIA.", {
           code: "AUTH_USER_DISABLED",
           status: 403,
         });
@@ -311,7 +311,7 @@ export async function syncAuthenticatedActor(input: {
 
     if (!resolvedUser || !resolvedUser.active) {
       throw new AppError(
-        "Nao foi possivel resolver o usuario autenticado do MapIA.",
+        "Nao foi possivel resolver o usuario autenticado do MYCELIA.",
         {
           code: "AUTH_USER_NOT_FOUND",
           status: 401,
