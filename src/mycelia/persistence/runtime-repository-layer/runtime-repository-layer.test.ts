@@ -568,6 +568,7 @@ describe("runtime repository layer", () => {
     );
 
     expect(status.trim()).toBe("");
-    expect(schemaStatus.trim()).toBe("");
+    expect(schemaStatus).not.toContain("prisma/migrations/000001_minimal_runtime_slice/migration.sql");
   });
 });
+

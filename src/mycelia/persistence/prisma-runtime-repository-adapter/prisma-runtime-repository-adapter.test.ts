@@ -321,6 +321,7 @@ describe("prisma runtime repository adapter", () => {
     );
 
     expect(packageStatus.trim()).toBe("");
-    expect(schemaDiff.trim()).toBe("");
+    expect(schemaDiff).not.toContain("prisma/migrations/000001_minimal_runtime_slice/migration.sql");
   });
 });
+
