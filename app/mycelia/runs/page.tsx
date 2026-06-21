@@ -17,6 +17,7 @@ import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
 import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
 import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
 import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
+import { renderRiskPill } from "@/mycelia/runtime/ui/risk-pill";
 import { createGovernedRequest, resetDemo } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -210,30 +211,6 @@ function humanState(value: string): string {
   return value.replaceAll("_", " ").toLowerCase();
 }
 
-function riskTone(riskLevel: string | null | undefined): CSSProperties {
-  if (riskLevel === "HIGH") {
-    return {
-      border: `1px solid ${MYCELIA_TOKENS.color.state.danger}`,
-      background: MYCELIA_TOKENS.color.intent.dangerBg,
-      color: MYCELIA_TOKENS.color.state.danger,
-    };
-  }
-
-  if (riskLevel === "MEDIUM") {
-    return {
-      border: `1px solid ${MYCELIA_TOKENS.color.state.warning}`,
-      background: MYCELIA_TOKENS.color.intent.warningBg,
-      color: MYCELIA_TOKENS.color.state.warning,
-    };
-  }
-
-  return {
-    border: `1px solid ${MYCELIA_TOKENS.color.state.success}`,
-    background: MYCELIA_TOKENS.color.intent.successBg,
-    color: MYCELIA_TOKENS.color.state.success,
-  };
-}
-
 function stateTone(state: string): CSSProperties {
   if (state === "REJECTED" || state === "FAILED") {
     return {
@@ -311,16 +288,6 @@ function renderStatePill(state: string): ReactElement {
   return (
     <span style={{ ...styles.statusPill, ...stateTone(state) }}>
       {humanState(state)}
-    </span>
-  );
-}
-
-function renderRiskPill(riskLevel: string | null | undefined): ReactElement {
-  const label = riskLevel === undefined || riskLevel === null ? "not checked" : riskLevel.toLowerCase();
-
-  return (
-    <span style={{ ...styles.statusPill, ...riskTone(riskLevel) }}>
-      {label}
     </span>
   );
 }
