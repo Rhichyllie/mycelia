@@ -2,11 +2,11 @@ import type { CSSProperties, ReactElement } from "react";
 
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
-import { LIVE_DEMO_SCENARIO } from "@/mycelia/runtime/demo-scenario";
-import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
-import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
-import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
-import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
+import {
+  loadInvestigationTimeline,
+  type InvestigationTimelineEntry,
+  type InvestigationTimelineReadyResult,
+} from "@/mycelia/runtime/investigation/load-investigation-timeline";
 import {
   createPrismaApprovalRequestRepository,
   type PrismaApprovalRequestRecord,
@@ -15,26 +15,38 @@ import {
   createPrismaDemoReadRepository,
   type DemoPersistedRunSummary,
 } from "@/mycelia/runtime/repositories/prisma-demo-read.repository";
+import { createPrismaGovernedRunRepository } from "@/mycelia/runtime/repositories/prisma-governed-run.repository";
+import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
+import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
+import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
+import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
 import { approveGovernedRequest, rejectGovernedRequest } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 type LivePageSearchParams = Promise<Record<string, string | string[] | undefined>>;
 
-type ApprovalDecisionLiveState =
+type ApprovalQueueItem = {
+  readonly approvalRequest: PrismaApprovalRequestRecord;
+  readonly summary: DemoPersistedRunSummary;
+};
+
+type ApprovalDecisionCenterState =
   | {
-      readonly status: "EMPTY";
+      readonly status: "READY";
+      readonly queue: readonly ApprovalQueueItem[];
+      readonly selected: ApprovalQueueItem | null;
+      readonly timeline: InvestigationTimelineReadyResult | null;
     }
   | {
-      readonly status: "PENDING";
-      readonly summary: DemoPersistedRunSummary;
-      readonly approvalRequest: PrismaApprovalRequestRecord;
-    }
-  | {
-      readonly status: "DECIDED";
-      readonly summary: DemoPersistedRunSummary;
-      readonly approvalRequest: PrismaApprovalRequestRecord;
+      readonly status: "UNAVAILABLE";
+      readonly queue: readonly ApprovalQueueItem[];
+      readonly selected: null;
+      readonly timeline: null;
     };
+
+const APPROVAL_QUEUE_LIMIT = 12;
+const WAITING_RUN_SCAN_LIMIT = 25;
 
 const styles = {
   page: {
@@ -51,12 +63,28 @@ const styles = {
     fontSize: "0.92rem",
     fontWeight: 850,
   },
-  hero: {
+  workspaceGrid: {
+    display: "grid",
+    gridTemplateColumns:
+      "minmax(min(100%, 340px), 0.9fr) minmax(min(100%, 560px), 1.45fr)",
+    gap: MYCELIA_TOKENS.spacing[4],
+    marginTop: MYCELIA_TOKENS.spacing[4],
+  },
+  panel: {
     border: MYCELIA_TOKENS.border.subtle,
     borderRadius: MYCELIA_TOKENS.radius.panel,
     background: MYCELIA_TOKENS.color.bg.surface,
-    marginTop: MYCELIA_TOKENS.spacing[4],
-    padding: MYCELIA_TOKENS.spacing[6],
+    padding: MYCELIA_TOKENS.spacing[5],
+  },
+  raisedPanel: {
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    padding: MYCELIA_TOKENS.spacing[4],
+  },
+  selectedPanel: {
+    border: `1px solid ${MYCELIA_TOKENS.color.brand.sage}`,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
   },
   eyebrow: {
     margin: 0,
@@ -67,29 +95,60 @@ const styles = {
     textTransform: "uppercase",
   },
   title: {
-    margin: "8px 0 0",
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
     color: MYCELIA_TOKENS.color.text.primary,
     fontSize: MYCELIA_TOKENS.type.heading1,
-    lineHeight: 1.15,
+    lineHeight: 1.14,
+    letterSpacing: 0,
+  },
+  sectionTitle: {
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.heading2,
+    lineHeight: 1.2,
     letterSpacing: 0,
   },
   text: {
-    margin: "10px 0 0",
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
     color: MYCELIA_TOKENS.color.text.secondary,
     fontSize: MYCELIA_TOKENS.type.body,
     lineHeight: 1.6,
   },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
-    gap: MYCELIA_TOKENS.spacing[4],
-    marginTop: MYCELIA_TOKENS.spacing[5],
+  smallText: {
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.tertiary,
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
+    lineHeight: 1.5,
   },
-  detail: {
-    border: MYCELIA_TOKENS.border.subtle,
-    borderRadius: MYCELIA_TOKENS.radius.panel,
-    background: MYCELIA_TOKENS.color.bg.panel,
-    padding: MYCELIA_TOKENS.spacing[3],
+  queueList: {
+    listStyle: "none",
+    margin: `${MYCELIA_TOKENS.spacing[4]} 0 0`,
+    padding: 0,
+    display: "grid",
+    gap: MYCELIA_TOKENS.spacing[3],
+  },
+  detailGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))",
+    gap: MYCELIA_TOKENS.spacing[3],
+    marginTop: MYCELIA_TOKENS.spacing[4],
+  },
+  actionGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+    gap: MYCELIA_TOKENS.spacing[3],
+    marginTop: MYCELIA_TOKENS.spacing[4],
+  },
+  evidenceList: {
+    listStyle: "none",
+    margin: `${MYCELIA_TOKENS.spacing[3]} 0 0`,
+    padding: 0,
+    display: "grid",
+    gap: MYCELIA_TOKENS.spacing[2],
+  },
+  evidenceItem: {
+    borderLeft: `2px solid ${MYCELIA_TOKENS.color.evidence.sealed}`,
+    paddingLeft: MYCELIA_TOKENS.spacing[3],
   },
   label: {
     margin: 0,
@@ -99,17 +158,42 @@ const styles = {
     textTransform: "uppercase",
   },
   value: {
-    margin: "5px 0 0",
+    margin: `${MYCELIA_TOKENS.spacing[1]} 0 0`,
     color: MYCELIA_TOKENS.color.text.primary,
     fontSize: MYCELIA_TOKENS.type.data,
-    fontWeight: 780,
+    fontWeight: 760,
     overflowWrap: "anywhere",
   },
-  actionRow: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: MYCELIA_TOKENS.spacing[3],
-    marginTop: MYCELIA_TOKENS.spacing[5],
+  statusPill: {
+    border: `1px solid ${MYCELIA_TOKENS.color.policy.requiresApproval}`,
+    borderRadius: MYCELIA_TOKENS.radius.full,
+    background: MYCELIA_TOKENS.color.intent.warningBg,
+    color: MYCELIA_TOKENS.color.policy.requiresApproval,
+    display: "inline-flex",
+    marginTop: MYCELIA_TOKENS.spacing[2],
+    padding: `${MYCELIA_TOKENS.spacing[1]} ${MYCELIA_TOKENS.spacing[2]}`,
+    fontSize: MYCELIA_TOKENS.type.badge,
+    fontWeight: 850,
+    textTransform: "uppercase",
+  },
+  link: {
+    color: MYCELIA_TOKENS.color.brand.sage,
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
+    fontWeight: 850,
+    textDecoration: "none",
+  },
+  textarea: {
+    width: "100%",
+    minHeight: "110px",
+    boxSizing: "border-box",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.md,
+    background: MYCELIA_TOKENS.color.bg.sunken,
+    color: MYCELIA_TOKENS.color.text.primary,
+    font: "inherit",
+    marginTop: MYCELIA_TOKENS.spacing[3],
+    padding: MYCELIA_TOKENS.spacing[3],
+    resize: "vertical",
   },
   approveButton: {
     border: `1px solid ${MYCELIA_TOKENS.color.state.success}`,
@@ -117,9 +201,10 @@ const styles = {
     background: MYCELIA_TOKENS.color.intent.successBg,
     color: MYCELIA_TOKENS.color.state.success,
     cursor: "pointer",
-    fontSize: "0.92rem",
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
     fontWeight: 850,
-    padding: "11px 16px",
+    marginTop: MYCELIA_TOKENS.spacing[3],
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
   },
   rejectButton: {
     border: `1px solid ${MYCELIA_TOKENS.color.state.danger}`,
@@ -127,167 +212,307 @@ const styles = {
     background: MYCELIA_TOKENS.color.intent.dangerBg,
     color: MYCELIA_TOKENS.color.state.danger,
     cursor: "pointer",
-    fontSize: "0.92rem",
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
     fontWeight: 850,
-    padding: "11px 16px",
-  },
-  link: {
-    color: MYCELIA_TOKENS.color.brand.sage,
-    fontWeight: 850,
-  },
-  hint: {
-    border: `1px solid ${MYCELIA_TOKENS.color.policy.requiresApproval}`,
-    borderRadius: MYCELIA_TOKENS.radius.panel,
-    background: MYCELIA_TOKENS.color.intent.warningBg,
-    color: MYCELIA_TOKENS.color.text.primary,
-    marginTop: MYCELIA_TOKENS.spacing[5],
-    padding: MYCELIA_TOKENS.spacing[3],
-    fontSize: "0.88rem",
-    fontWeight: 760,
-    lineHeight: 1.45,
+    marginTop: MYCELIA_TOKENS.spacing[3],
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
   },
 } satisfies Record<string, CSSProperties>;
 
-function isDecidedApproval(
-  approvalRequest: PrismaApprovalRequestRecord,
-): boolean {
-  return (
-    approvalRequest.status === "APPROVED" ||
-    approvalRequest.status === "REJECTED"
-  );
-}
-
-async function loadApprovalDecisionState(): Promise<ApprovalDecisionLiveState> {
-  try {
-    const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
-    const readRepository = createPrismaDemoReadRepository(prisma);
-    const approvalRepository = createPrismaApprovalRequestRepository(prisma);
-    const waitingRun = await readRepository.findLatestWaitingApprovalRun({
-      tenantId,
-    });
-
-    if (waitingRun !== null) {
-      const approvalRequest = await approvalRepository.findOrCreateForRun({
-        tenantId,
-        governedRunId: waitingRun.run.id,
-      });
-
-      if (approvalRequest === null) {
-        return { status: "EMPTY" };
-      }
-
-      if (approvalRequest.status === "PENDING") {
-        return { status: "PENDING", summary: waitingRun, approvalRequest };
-      }
-
-      return { status: "DECIDED", summary: waitingRun, approvalRequest };
-    }
-
-    const decidedRun = await readRepository.findLatestDecidedApprovalRun({
-      tenantId,
-    });
-
-    if (decidedRun === null) {
-      return { status: "EMPTY" };
-    }
-
-    const approvalRequest = await approvalRepository.findForRun({
-      tenantId,
-      governedRunId: decidedRun.run.id,
-    });
-
-    if (approvalRequest === null || !isDecidedApproval(approvalRequest)) {
-      return { status: "EMPTY" };
-    }
-
-    return { status: "DECIDED", summary: decidedRun, approvalRequest };
-  } catch {
-    return { status: "EMPTY" };
-  }
+function firstParam(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
 }
 
 function shortId(value: string): string {
   return value.length <= 12 ? value : `${value.slice(0, 8)}...${value.slice(-4)}`;
 }
 
-function formatDecisionTime(value: Date | null): string {
-  return value === null ? "Not decided" : value.toISOString();
+function humanState(value: string): string {
+  return value.replaceAll("_", " ").toLowerCase();
+}
+
+function formatWaitingTime(createdAt: Date, now: Date): string {
+  const minutes = Math.max(
+    0,
+    Math.floor((now.getTime() - createdAt.getTime()) / 60000),
+  );
+
+  if (minutes < 60) {
+    return `${minutes} min`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+
+  if (hours < 24) {
+    return `${hours} hr`;
+  }
+
+  return `${Math.floor(hours / 24)} day`;
+}
+
+function isWaitingRunState(state: string): boolean {
+  return state === "WAITING_APPROVAL";
+}
+
+async function queueItemForApproval(
+  tenantId: string,
+  approvalRequest: PrismaApprovalRequestRecord,
+): Promise<ApprovalQueueItem | null> {
+  const summary = await createPrismaDemoReadRepository(prisma).findRunById({
+    tenantId,
+    runId: approvalRequest.governedRunId,
+  });
+
+  if (summary === null) {
+    return null;
+  }
+
+  return { approvalRequest, summary };
+}
+
+async function ensurePendingApprovalRequests(tenantId: string): Promise<void> {
+  const runs = await createPrismaGovernedRunRepository(prisma).listRecent({
+    tenantId,
+    take: WAITING_RUN_SCAN_LIMIT,
+  });
+  const approvals = createPrismaApprovalRequestRepository(prisma);
+
+  await Promise.all(
+    runs
+      .filter(
+        (run) =>
+          isWaitingRunState(run.currentState) && isWaitingRunState(run.status),
+      )
+      .map((run) =>
+        approvals.findOrCreateForRun({
+          tenantId,
+          governedRunId: run.id,
+        }),
+      ),
+  );
+}
+
+async function loadApprovalDecisionCenterState(
+  selectedApprovalId: string | undefined,
+): Promise<ApprovalDecisionCenterState> {
+  try {
+    const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
+    const approvals = createPrismaApprovalRequestRepository(prisma);
+    const readRepository = createPrismaDemoReadRepository(prisma);
+
+    await ensurePendingApprovalRequests(tenantId);
+
+    const pendingApprovals = await approvals.listPendingForTenant({
+      tenantId,
+      take: APPROVAL_QUEUE_LIMIT,
+    });
+    const queue = (
+      await Promise.all(
+        pendingApprovals.map((approvalRequest) =>
+          queueItemForApproval(tenantId, approvalRequest),
+        ),
+      )
+    ).filter((item): item is ApprovalQueueItem => item !== null);
+    const selectedApproval =
+      selectedApprovalId === undefined
+        ? queue.at(0)?.approvalRequest ?? null
+        : await approvals.findById({ tenantId, id: selectedApprovalId });
+    const fallbackDecided =
+      selectedApproval === null && queue.length === 0
+        ? await readRepository.findLatestDecidedApprovalRun({ tenantId })
+        : null;
+    const fallbackApproval =
+      fallbackDecided === null
+        ? null
+        : await approvals.findForRun({
+            tenantId,
+            governedRunId: fallbackDecided.run.id,
+          });
+    const selected =
+      selectedApproval === null
+        ? fallbackApproval === null
+          ? null
+          : await queueItemForApproval(tenantId, fallbackApproval)
+        : await queueItemForApproval(tenantId, selectedApproval);
+    const timeline =
+      selected === null
+        ? null
+        : await loadInvestigationTimeline({
+            tenantId,
+            runId: selected.approvalRequest.governedRunId,
+          });
+
+    return {
+      status: "READY",
+      queue,
+      selected,
+      timeline: timeline?.status === "READY" ? timeline : null,
+    };
+  } catch {
+    return { status: "UNAVAILABLE", queue: [], selected: null, timeline: null };
+  }
 }
 
 function renderDetail(label: string, value: string | number | null): ReactElement {
   return (
-    <div style={styles.detail}>
+    <div style={styles.raisedPanel}>
       <p style={styles.label}>{label}</p>
       <p style={styles.value}>{value ?? "Pending"}</p>
     </div>
   );
 }
 
-function renderRunContext(
-  summary: DemoPersistedRunSummary,
-  approvalRequest: PrismaApprovalRequestRecord,
+function renderQueueRow(
+  item: ApprovalQueueItem,
+  selectedApprovalId: string | null,
+  now: Date,
 ): ReactElement {
-  const { run, latestPolicy, latestAdmission, latestSnapshot, auditCount } =
-    summary;
+  const isSelected = selectedApprovalId === item.approvalRequest.id;
+  const { run, latestPolicy } = item.summary;
 
   return (
-    <div style={styles.grid}>
-      {renderDetail("Run", shortId(run.id))}
-      {renderDetail("Current state", run.currentState)}
-      {renderDetail("Risk level", latestPolicy?.riskLevel ?? "Not checked")}
-      {renderDetail("Policy check", latestPolicy?.safeSummary ?? "Pending")}
-      {renderDetail("Readiness check", latestAdmission?.safeSummary ?? "Pending")}
-      {renderDetail("Evidence records", auditCount)}
-      {renderDetail(
-        "Latest snapshot",
-        latestSnapshot === null
-          ? "No snapshot"
-          : `${latestSnapshot.sequence}: ${latestSnapshot.state}`,
-      )}
-      {renderDetail("Requested role", approvalRequest.requestedRole)}
-      {renderDetail("Requester", approvalRequest.requesterRef)}
-    </div>
-  );
-}
-
-function renderEmptyState(): ReactElement {
-  return (
-    <section aria-label="No approval waiting" style={styles.hero}>
-      <p style={styles.eyebrow}>Approval queue</p>
-      <h1 style={styles.title}>No run is waiting for approval</h1>
+    <li
+      key={item.approvalRequest.id}
+      style={
+        isSelected
+          ? { ...styles.raisedPanel, ...styles.selectedPanel }
+          : styles.raisedPanel
+      }
+    >
+      <p style={styles.label}>Approval request</p>
+      <p style={styles.value}>{shortId(item.approvalRequest.id)}</p>
+      <span style={styles.statusPill}>Approval required</span>
+      <p style={styles.smallText}>{run.purpose}</p>
+      <div style={styles.detailGrid}>
+        {renderDetail("Risk level", latestPolicy?.riskLevel ?? "Not checked")}
+        {renderDetail("Run scope", run.resourceRef)}
+        {renderDetail("Requested role", item.approvalRequest.requestedRole)}
+        {renderDetail("Requester", item.approvalRequest.requesterRef)}
+        {renderDetail(
+          "Waiting",
+          formatWaitingTime(item.approvalRequest.createdAt, now),
+        )}
+      </div>
       <p style={styles.text}>
-        Create a governed request from the controlled demo scenario first. The
-        approvals page only renders controls for a persisted run that is already
-        waiting for approval.
-      </p>
-      <p style={styles.text}>
-        <a href="/mycelia/runs" style={styles.link}>
-          Return to Runs
+        <a
+          href={`/mycelia/approvals?approvalId=${encodeURIComponent(
+            item.approvalRequest.id,
+          )}`}
+          style={styles.link}
+        >
+          Open decision file
         </a>
       </p>
-    </section>
+    </li>
   );
 }
 
-function renderPendingState(
-  state: Extract<ApprovalDecisionLiveState, { readonly status: "PENDING" }>,
-): ReactElement {
-  return (
-    <section aria-label="Pending approval decision" style={styles.hero}>
-      <p style={styles.eyebrow}>Approval required</p>
-      <h1 style={styles.title}>{LIVE_DEMO_SCENARIO.title}</h1>
+function renderQueue(state: ApprovalDecisionCenterState, now: Date): ReactElement {
+  if (state.status === "UNAVAILABLE") {
+    return (
       <p style={styles.text}>
-        Approval is required before this can proceed. Approve or reject the run
-        using only persisted local demo records.
+        Local approval data could not be loaded. Confirm the local SQLite
+        database is migrated and seeded.
       </p>
-      {renderRunContext(state.summary, state.approvalRequest)}
-      <div style={styles.actionRow}>
+    );
+  }
+
+  if (state.queue.length === 0) {
+    return (
+      <p style={styles.text}>
+        No approval request is currently pending. Create a governed request to
+        add work to this queue.
+      </p>
+    );
+  }
+
+  return (
+    <ol style={styles.queueList}>
+      {state.queue.map((item) =>
+        renderQueueRow(item, state.selected?.approvalRequest.id ?? null, now),
+      )}
+    </ol>
+  );
+}
+
+function evidencePreview(
+  timeline: InvestigationTimelineReadyResult | null,
+): readonly InvestigationTimelineEntry[] {
+  return (
+    timeline?.timeline
+      .filter((entry) => entry.kind === "AuditRecord")
+      .slice(0, 3) ?? []
+  );
+}
+
+function renderEvidencePreview(
+  timeline: InvestigationTimelineReadyResult | null,
+): ReactElement {
+  const entries = evidencePreview(timeline);
+
+  if (entries.length === 0) {
+    return (
+      <p style={styles.text}>
+        Evidence preview appears after the run records its first evidence step.
+      </p>
+    );
+  }
+
+  return (
+    <ol style={styles.evidenceList}>
+      {entries.map((entry) => (
+        <li key={entry.id} style={styles.evidenceItem}>
+          <p style={styles.label}>{entry.title}</p>
+          <p style={styles.smallText}>{entry.safeSummary}</p>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function renderDecisionForms(
+  approvalRequest: PrismaApprovalRequestRecord,
+): ReactElement | null {
+  if (approvalRequest.status !== "PENDING") {
+    return null;
+  }
+
+  return (
+    <section style={{ ...styles.raisedPanel, marginTop: MYCELIA_TOKENS.spacing[4] }}>
+      <p style={styles.eyebrow}>Decision note</p>
+      <h2 style={styles.sectionTitle}>Record a defensible decision</h2>
+      <p style={styles.text}>
+        Approvals can include a note. Rejections require a rationale before the
+        decision can be persisted.
+      </p>
+      <div style={styles.actionGrid}>
         <form action={approveGovernedRequest}>
+          <input type="hidden" name="approvalId" value={approvalRequest.id} />
+          <label style={styles.label} htmlFor="approve-summary">
+            Approval note
+          </label>
+          <textarea
+            id="approve-summary"
+            name="safeDecisionSummary"
+            placeholder="Optional reason for approving this request."
+            style={styles.textarea}
+          />
           <button type="submit" style={styles.approveButton}>
             Approve
           </button>
         </form>
         <form action={rejectGovernedRequest}>
+          <input type="hidden" name="approvalId" value={approvalRequest.id} />
+          <label style={styles.label} htmlFor="reject-summary">
+            Rejection rationale
+          </label>
+          <textarea
+            id="reject-summary"
+            name="safeDecisionSummary"
+            placeholder="Required rationale for rejecting this request."
+            required
+            style={styles.textarea}
+          />
           <button type="submit" style={styles.rejectButton}>
             Reject
           </button>
@@ -297,29 +522,77 @@ function renderPendingState(
   );
 }
 
-function renderDecidedState(
-  state: Extract<ApprovalDecisionLiveState, { readonly status: "DECIDED" }>,
+function renderDecisionDetail(
+  state: ApprovalDecisionCenterState,
 ): ReactElement {
-  const { approvalRequest } = state;
+  if (state.selected === null) {
+    return (
+      <section style={styles.panel}>
+        <p style={styles.eyebrow}>Decision Center</p>
+        <h1 style={styles.title}>No approval selected</h1>
+        <p style={styles.text}>
+          Select a pending approval request from the queue to review its
+          decision file.
+        </p>
+      </section>
+    );
+  }
+
+  const { approvalRequest, summary } = state.selected;
+  const { run, latestPolicy, latestAdmission, auditCount } = summary;
+  const isDecided =
+    approvalRequest.status === "APPROVED" ||
+    approvalRequest.status === "REJECTED";
 
   return (
-    <section aria-label="Persisted approval decision" style={styles.hero}>
-      <p style={styles.eyebrow}>Approval complete</p>
-      <h1 style={styles.title}>{approvalRequest.status}</h1>
+    <section style={styles.panel}>
+      <p style={styles.eyebrow}>Decision Center</p>
+      <h1 style={styles.title}>Approval Decision Center</h1>
       <p style={styles.text}>
-        {approvalRequest.safeDecisionSummary ?? "The approval result was persisted."}
+        Review the request summary, business context, risk basis, affected
+        scope and evidence preview before deciding.
       </p>
-      {renderRunContext(state.summary, approvalRequest)}
-      <div style={styles.grid}>
-        {renderDetail("Decision outcome", approvalRequest.decisionOutcome)}
-        {renderDetail("Decision reason", approvalRequest.decisionReasonCode)}
-        {renderDetail("Approver", approvalRequest.approverRef)}
-        {renderDetail("Decided at", formatDecisionTime(approvalRequest.decidedAt))}
+      <div style={styles.detailGrid}>
+        {renderDetail("Request summary", run.purpose)}
+        {renderDetail("Business context", run.resourceRef)}
+        {renderDetail("Submitter", approvalRequest.requesterRef)}
+        {renderDetail("Current state", humanState(run.currentState))}
+        {renderDetail("Risk level", latestPolicy?.riskLevel ?? "Not checked")}
+        {renderDetail("Policy check", latestPolicy?.safeSummary ?? "Pending")}
+        {renderDetail("Readiness check", latestAdmission?.safeSummary ?? "Pending")}
+        {renderDetail("Run scope", run.resourceRef)}
+        {renderDetail("Requested role", approvalRequest.requestedRole)}
+        {renderDetail("Evidence records", auditCount)}
+        {renderDetail("Approval status", approvalRequest.status)}
+        {renderDetail("Decision summary", approvalRequest.safeDecisionSummary)}
       </div>
-      <div style={styles.hint}>
-        The investigation view reads this run&apos;s full evidence trail from local
-        SQLite now.
-      </div>
+      <section style={{ ...styles.raisedPanel, marginTop: MYCELIA_TOKENS.spacing[4] }}>
+        <p style={styles.eyebrow}>Evidence preview</p>
+        <h2 style={styles.sectionTitle}>Relevant evidence before the full trace</h2>
+        {renderEvidencePreview(state.timeline)}
+        <p style={styles.text}>
+          <a href="/mycelia/investigations" style={styles.link}>
+            Open full history and lineage
+          </a>
+        </p>
+      </section>
+      {isDecided ? (
+        <section style={{ ...styles.raisedPanel, marginTop: MYCELIA_TOKENS.spacing[4] }}>
+          <p style={styles.eyebrow}>Decision recorded</p>
+          <h2 style={styles.sectionTitle}>{approvalRequest.status}</h2>
+          <div style={styles.detailGrid}>
+            {renderDetail("Decision outcome", approvalRequest.decisionOutcome)}
+            {renderDetail("Decision reason", approvalRequest.decisionReasonCode)}
+            {renderDetail("Approver", approvalRequest.approverRef)}
+            {renderDetail(
+              "Decided at",
+              approvalRequest.decidedAt?.toISOString() ?? null,
+            )}
+          </div>
+        </section>
+      ) : (
+        renderDecisionForms(approvalRequest)
+      )}
     </section>
   );
 }
@@ -329,10 +602,12 @@ export default async function MyceliaApprovalDecisionPage({
 }: {
   readonly searchParams?: LivePageSearchParams;
 }) {
-  const outcome = parseLiveOutcomeSearchParams(
-    searchParams === undefined ? undefined : await searchParams,
-  );
-  const state = await loadApprovalDecisionState();
+  const resolvedSearchParams =
+    searchParams === undefined ? undefined : await searchParams;
+  const outcome = parseLiveOutcomeSearchParams(resolvedSearchParams);
+  const selectedApprovalId = firstParam(resolvedSearchParams?.approvalId);
+  const state = await loadApprovalDecisionCenterState(selectedApprovalId);
+  const now = new Date();
 
   return (
     <main aria-labelledby="approval-decision-title" style={styles.page}>
@@ -341,9 +616,18 @@ export default async function MyceliaApprovalDecisionPage({
       </div>
       <LiveRouteNav currentStage="approval" />
       <LiveOutcomeBanner outcome={outcome} />
-      {state.status === "EMPTY" ? renderEmptyState() : null}
-      {state.status === "PENDING" ? renderPendingState(state) : null}
-      {state.status === "DECIDED" ? renderDecidedState(state) : null}
+      <div style={styles.workspaceGrid}>
+        <section style={styles.panel}>
+          <p style={styles.eyebrow}>Approval queue</p>
+          <h1 style={styles.title}>Pending decisions</h1>
+          <p style={styles.text}>
+            Most recent pending approval requests appear first. Each row is read
+            from local SQLite.
+          </p>
+          {renderQueue(state, now)}
+        </section>
+        {renderDecisionDetail(state)}
+      </div>
     </main>
   );
 }

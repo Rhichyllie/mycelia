@@ -27,6 +27,8 @@ const REASON_LABELS = {
     "The selected run is no longer waiting for approval, so the decision was not applied.",
   APPROVAL_REQUEST_NOT_PENDING:
     "The approval request is no longer pending, so the prior decision was preserved.",
+  APPROVAL_RATIONALE_REQUIRED:
+    "Add a rationale before rejecting this approval request.",
   APPROVAL_DECISION_FAILED:
     "The approval decision failed before the atomic write path completed.",
   POLICY_REQUIRES_APPROVAL:

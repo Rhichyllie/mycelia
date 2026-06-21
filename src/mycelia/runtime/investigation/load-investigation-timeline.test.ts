@@ -236,6 +236,8 @@ describe("LIVE-4 investigation timeline read model", () => {
         tenantId,
         runId: created.runId,
         decision: "REJECT",
+        safeDecisionSummary:
+          "Rejected because the local demo reviewer found the fixture risk unacceptable.",
       });
 
       expect(decision.ok).toBe(true);

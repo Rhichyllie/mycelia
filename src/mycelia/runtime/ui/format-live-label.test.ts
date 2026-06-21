@@ -29,6 +29,12 @@ describe("live label formatting", () => {
         reasonCode: "POLICY_EVALUATED",
       }),
     ).toBe("The policy check was recorded for this governed run.");
+    expect(
+      formatLiveReasonLabel({
+        status: "FAILED_SAFE",
+        reasonCode: "APPROVAL_RATIONALE_REQUIRED",
+      }),
+    ).toBe("Add a rationale before rejecting this approval request.");
   });
 
   it("uses safe fallback text without exposing raw machine codes", () => {

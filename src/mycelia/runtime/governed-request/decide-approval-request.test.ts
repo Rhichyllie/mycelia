@@ -193,6 +193,8 @@ describe("LIVE-3 approval decision write path", () => {
         tenantId,
         runId: created.runId,
         decision: "REJECT",
+        safeDecisionSummary:
+          "Rejected because the local demo reviewer found the fixture risk unacceptable.",
       });
 
       expect(decision).toMatchObject({
@@ -333,6 +335,8 @@ describe("LIVE-3 approval decision write path", () => {
         tenantId,
         runId: created.runId,
         decision: "REJECT",
+        safeDecisionSummary:
+          "Rejected after a stale second decision attempt in the local demo.",
       });
       const approvalAfter = await approvals.findForRun({
         tenantId,

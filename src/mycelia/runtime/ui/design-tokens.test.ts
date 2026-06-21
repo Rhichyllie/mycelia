@@ -62,4 +62,18 @@ describe("MYCELIA design token foundation", () => {
     expect(runWorkspaceSource).toContain("Readiness check");
     expect(runWorkspaceSource).toContain("History and lineage");
   });
+
+  it("keeps the approval decision center wired to queue, detail and rationale capture", () => {
+    const approvalSource = source("app", "mycelia", "approvals", "page.tsx");
+
+    expect(approvalSource).toContain("listPendingForTenant");
+    expect(approvalSource).toContain("approvalId");
+    expect(approvalSource).toContain("loadInvestigationTimeline");
+    expect(approvalSource).toContain("Decision summary");
+    expect(approvalSource).toContain("Risk level");
+    expect(approvalSource).toContain("Policy check");
+    expect(approvalSource).toContain("Evidence preview");
+    expect(approvalSource).toContain("Rejection rationale");
+    expect(approvalSource).toContain("safeDecisionSummary");
+  });
 });
