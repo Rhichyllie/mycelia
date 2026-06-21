@@ -437,8 +437,11 @@ function renderCaseFile(state: RunWorkspaceState): ReactElement {
         <h2 style={styles.sectionTitle}>Recent case timeline</h2>
         {renderTimelineSummary(state.timeline)}
         <p style={styles.text}>
-          <a href="/mycelia/investigations" style={styles.link}>
-            Open the full investigation trail
+          <a
+            href={`/mycelia/investigations?runId=${encodeURIComponent(run.id)}`}
+            style={styles.link}
+          >
+            Open full investigation for this run
           </a>
         </p>
       </section>

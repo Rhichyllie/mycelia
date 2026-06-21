@@ -1,10 +1,13 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import { prisma } from "@/mycelia/runtime/db/client";
+import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import {
   loadInvestigationTimeline,
   type InvestigationTimelineEntry,
   type InvestigationTimelineReadyResult,
 } from "@/mycelia/runtime/investigation/load-investigation-timeline";
+import { createPrismaGovernedRunRepository } from "@/mycelia/runtime/repositories/prisma-governed-run.repository";
 import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
 import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
 import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
@@ -13,6 +16,16 @@ import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
 export const dynamic = "force-dynamic";
 
 type LivePageSearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+type RecentRunOption = {
+  readonly id: string;
+  readonly currentState: string;
+  readonly status: string;
+  readonly purpose: string;
+  readonly createdAt: Date;
+};
+
+const RECENT_RUN_SELECTOR_LIMIT = 8;
 
 const styles = {
   page: {
@@ -35,6 +48,31 @@ const styles = {
     background: MYCELIA_TOKENS.color.bg.surface,
     marginTop: MYCELIA_TOKENS.spacing[4],
     padding: MYCELIA_TOKENS.spacing[6],
+  },
+  selector: {
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.surface,
+    marginTop: MYCELIA_TOKENS.spacing[4],
+    padding: MYCELIA_TOKENS.spacing[4],
+  },
+  selectorList: {
+    listStyle: "none",
+    margin: `${MYCELIA_TOKENS.spacing[3]} 0 0`,
+    padding: 0,
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 190px), 1fr))",
+    gap: MYCELIA_TOKENS.spacing[2],
+  },
+  selectorItem: {
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.md,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    padding: MYCELIA_TOKENS.spacing[3],
+  },
+  activeSelectorItem: {
+    border: `1px solid ${MYCELIA_TOKENS.color.brand.sage}`,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
   },
   eyebrow: {
     margin: 0,
@@ -122,6 +160,13 @@ const styles = {
     color: MYCELIA_TOKENS.color.brand.sage,
     fontWeight: 850,
   },
+  selectorLink: {
+    color: MYCELIA_TOKENS.color.brand.sage,
+    display: "inline-flex",
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
+    fontWeight: 850,
+    textDecoration: "none",
+  },
   hint: {
     border: `1px solid ${MYCELIA_TOKENS.color.evidence.sealed}`,
     borderRadius: MYCELIA_TOKENS.radius.panel,
@@ -134,6 +179,12 @@ const styles = {
     lineHeight: 1.45,
   },
 } satisfies Record<string, CSSProperties>;
+
+function firstParam(value: string | string[] | undefined): string | undefined {
+  const resolved = Array.isArray(value) ? value[0] : value;
+
+  return resolved === undefined || resolved.trim() === "" ? undefined : resolved;
+}
 
 function shortId(value: string): string {
   return value.length <= 12 ? value : `${value.slice(0, 8)}...${value.slice(-4)}`;
@@ -191,6 +242,68 @@ function renderEmptyState(): ReactElement {
   );
 }
 
+async function loadRecentRuns(): Promise<readonly RecentRunOption[]> {
+  const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
+
+  return createPrismaGovernedRunRepository(prisma).listRecent({
+    tenantId,
+    take: RECENT_RUN_SELECTOR_LIMIT,
+  });
+}
+
+function renderRunSelector(
+  recentRuns: readonly RecentRunOption[],
+  selectedRunId: string | undefined,
+): ReactElement {
+  if (recentRuns.length === 0) {
+    return (
+      <section aria-label="Recent governed runs" style={styles.selector}>
+        <p style={styles.eyebrow}>Run selector</p>
+        <p style={styles.text}>
+          Recent governed runs will appear here once local SQLite has persisted
+          activity.
+        </p>
+      </section>
+    );
+  }
+
+  return (
+    <section aria-label="Recent governed runs" style={styles.selector}>
+      <p style={styles.eyebrow}>Run selector</p>
+      <p style={styles.text}>
+        Open a specific run investigation, or leave the URL without a run id to
+        inspect the most recent run.
+      </p>
+      <ol style={styles.selectorList}>
+        {recentRuns.map((run) => {
+          const isSelected = run.id === selectedRunId;
+
+          return (
+            <li
+              key={run.id}
+              style={
+                isSelected
+                  ? { ...styles.selectorItem, ...styles.activeSelectorItem }
+                  : styles.selectorItem
+              }
+            >
+              <a
+                aria-current={isSelected ? "page" : undefined}
+                href={`/mycelia/investigations?runId=${encodeURIComponent(run.id)}`}
+                style={styles.selectorLink}
+              >
+                {shortId(run.id)}
+              </a>
+              <p style={styles.value}>{run.currentState}</p>
+              <p style={styles.text}>{formatDate(run.createdAt)}</p>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
 function renderRunOverview(result: InvestigationTimelineReadyResult): ReactElement {
   const { run } = result;
 
@@ -218,6 +331,14 @@ function renderRunOverview(result: InvestigationTimelineReadyResult): ReactEleme
   );
 }
 
+function isNarrativeEntry(entry: InvestigationTimelineEntry): boolean {
+  return entry.kind !== "AuditRecord";
+}
+
+function isEvidenceEntry(entry: InvestigationTimelineEntry): boolean {
+  return entry.kind === "AuditRecord";
+}
+
 function renderTimelineEntry(entry: InvestigationTimelineEntry): ReactElement {
   return (
     <li key={entry.id} style={styles.timelineItem}>
@@ -239,20 +360,56 @@ function renderTimelineEntry(entry: InvestigationTimelineEntry): ReactElement {
   );
 }
 
-function renderTimeline(result: InvestigationTimelineReadyResult): ReactElement {
+function renderTimelineSection(input: {
+  readonly id: string;
+  readonly eyebrow: string;
+  readonly heading: string;
+  readonly description: string;
+  readonly entries: readonly InvestigationTimelineEntry[];
+  readonly emptyText: string;
+}): ReactElement {
   return (
-    <section aria-labelledby="timeline-heading" style={styles.section}>
-      <p style={styles.eyebrow}>Chronological history</p>
-      <h2 id="timeline-heading" style={styles.title}>
-        Persisted case events
+    <section aria-labelledby={input.id} style={styles.section}>
+      <p style={styles.eyebrow}>{input.eyebrow}</p>
+      <h2 id={input.id} style={styles.title}>
+        {input.heading}
       </h2>
-      <p style={styles.text}>
-        Timeline entries are assembled from state snapshots, policy checks,
-        readiness checks, approval requests and evidence records.
-      </p>
-      <ol style={styles.timeline}>{result.timeline.map(renderTimelineEntry)}</ol>
+      <p style={styles.text}>{input.description}</p>
+      {input.entries.length === 0 ? (
+        <p style={styles.text}>{input.emptyText}</p>
+      ) : (
+        <ol style={styles.timeline}>{input.entries.map(renderTimelineEntry)}</ol>
+      )}
     </section>
   );
+}
+
+function renderNarrativeTimeline(
+  result: InvestigationTimelineReadyResult,
+): ReactElement {
+  return renderTimelineSection({
+    id: "narrative-timeline-heading",
+    eyebrow: "Narrative timeline",
+    heading: "What happened, in order",
+    description:
+      "This sequence keeps state progression, policy checks, readiness checks and approval moments in strict chronological order.",
+    entries: result.timeline.filter(isNarrativeEntry),
+    emptyText: "Narrative events will appear once the governed run records state changes.",
+  });
+}
+
+function renderEvidenceRecords(
+  result: InvestigationTimelineReadyResult,
+): ReactElement {
+  return renderTimelineSection({
+    id: "evidence-records-heading",
+    eyebrow: "Evidence records",
+    heading: "Audit evidence captured for this run",
+    description:
+      "Evidence records are the persisted audit entries that support the narrative above.",
+    entries: result.timeline.filter(isEvidenceEntry),
+    emptyText: "Evidence records will appear once the governed run writes audit entries.",
+  });
 }
 
 function renderControlledSummary(
@@ -289,7 +446,8 @@ function renderReadyState(result: InvestigationTimelineReadyResult): ReactElemen
   return (
     <>
       {renderRunOverview(result)}
-      {renderTimeline(result)}
+      {renderNarrativeTimeline(result)}
+      {renderEvidenceRecords(result)}
       {renderControlledSummary(result)}
     </>
   );
@@ -300,10 +458,17 @@ export default async function MyceliaInvestigationsPage({
 }: {
   readonly searchParams?: LivePageSearchParams;
 }) {
-  const outcome = parseLiveOutcomeSearchParams(
-    searchParams === undefined ? undefined : await searchParams,
-  );
-  const result = await loadInvestigationTimeline();
+  const resolvedSearchParams =
+    searchParams === undefined ? undefined : await searchParams;
+  const outcome = parseLiveOutcomeSearchParams(resolvedSearchParams);
+  const requestedRunId = firstParam(resolvedSearchParams?.runId);
+  const [result, recentRuns] = await Promise.all([
+    loadInvestigationTimeline(
+      requestedRunId === undefined ? {} : { runId: requestedRunId },
+    ),
+    loadRecentRuns(),
+  ]);
+  const selectedRunId = result.status === "READY" ? result.run.id : requestedRunId;
 
   return (
     <main aria-labelledby="investigation-title" style={styles.page}>
@@ -312,6 +477,7 @@ export default async function MyceliaInvestigationsPage({
       </div>
       <LiveRouteNav currentStage="investigation" />
       <LiveOutcomeBanner outcome={outcome} />
+      {renderRunSelector(recentRuns, selectedRunId)}
       {result.status === "EMPTY" ? renderEmptyState() : renderReadyState(result)}
     </main>
   );

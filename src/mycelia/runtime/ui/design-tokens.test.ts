@@ -61,6 +61,8 @@ describe("MYCELIA design token foundation", () => {
     expect(runWorkspaceSource).toContain("Policy check");
     expect(runWorkspaceSource).toContain("Readiness check");
     expect(runWorkspaceSource).toContain("History and lineage");
+    expect(runWorkspaceSource).toContain("/mycelia/investigations?runId=");
+    expect(runWorkspaceSource).toContain("Open full investigation for this run");
   });
 
   it("keeps the approval decision center wired to queue, detail and rationale capture", () => {
@@ -75,5 +77,18 @@ describe("MYCELIA design token foundation", () => {
     expect(approvalSource).toContain("Evidence preview");
     expect(approvalSource).toContain("Rejection rationale");
     expect(approvalSource).toContain("safeDecisionSummary");
+    expect(approvalSource).toContain("/mycelia/investigations?runId=");
+  });
+
+  it("keeps investigations wired to deep links and narrative evidence sections", () => {
+    const investigationSource = source("app", "mycelia", "investigations", "page.tsx");
+
+    expect(investigationSource).toContain("resolvedSearchParams?.runId");
+    expect(investigationSource).toContain("loadInvestigationTimeline");
+    expect(investigationSource).toContain("createPrismaGovernedRunRepository");
+    expect(investigationSource).toContain("listRecent");
+    expect(investigationSource).toContain("/mycelia/investigations?runId=");
+    expect(investigationSource).toContain("Narrative timeline");
+    expect(investigationSource).toContain("Evidence records");
   });
 });
