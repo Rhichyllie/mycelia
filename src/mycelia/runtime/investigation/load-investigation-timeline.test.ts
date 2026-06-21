@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
+import { LIVE_DEMO_SCENARIO } from "../demo-scenario";
 import { createGovernedRequest } from "../governed-request/create-governed-request";
 import { decideApprovalRequest } from "../governed-request/decide-approval-request";
 import { createPrismaApprovalRequestRepository } from "../repositories/prisma-approval-request.repository";
@@ -66,7 +67,11 @@ afterEach(() => {
 });
 
 async function createWaitingApprovalRun(client: PrismaClient, tenantId: string) {
-  const created = await createGovernedRequest({ client, tenantId });
+  const created = await createGovernedRequest({
+    client,
+    tenantId,
+    scenarioKey: LIVE_DEMO_SCENARIO.scenarioKey,
+  });
 
   if (!created.ok) {
     throw new Error(created.safeReason);

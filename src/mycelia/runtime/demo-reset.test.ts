@@ -10,6 +10,7 @@ import {
   DEMO_SEED_GOVERNED_RUN_ID,
   seedDemoScenario,
 } from "./demo-seed-scenario";
+import { LIVE_DEMO_SCENARIO } from "./demo-scenario";
 import { createGovernedRequest } from "./governed-request/create-governed-request";
 import { decideApprovalRequest } from "./governed-request/decide-approval-request";
 import { loadInvestigationTimeline } from "./investigation/load-investigation-timeline";
@@ -132,7 +133,11 @@ async function createAndDecideExtraRun(
   client: PrismaClient,
   tenantId: string,
 ): Promise<string> {
-  const created = await createGovernedRequest({ client, tenantId });
+  const created = await createGovernedRequest({
+    client,
+    tenantId,
+    scenarioKey: LIVE_DEMO_SCENARIO.scenarioKey,
+  });
 
   if (!created.ok) {
     throw new Error(created.safeReason);

@@ -7,6 +7,11 @@ import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import { resetDemoDatabase, type ResetDemoDatabaseResult } from "@/mycelia/runtime/demo-reset";
 import {
+  findLiveDemoScenarioByKey,
+  LIVE_DEMO_SCENARIO,
+  type LiveDemoScenarioKey,
+} from "@/mycelia/runtime/demo-scenario";
+import {
   createGovernedRequest as createGovernedRequestWritePath,
   type CreateGovernedRequestResult,
 } from "@/mycelia/runtime/governed-request/create-governed-request";
@@ -21,9 +26,25 @@ export type ResetDemoActionResult =
     };
 
 function revalidateDemoSurfaces(): void {
+  revalidatePath("/mycelia");
   revalidatePath("/mycelia/runs");
   revalidatePath("/mycelia/approvals");
   revalidatePath("/mycelia/investigations");
+}
+
+function selectedScenarioKey(
+  formData: FormData | undefined,
+): LiveDemoScenarioKey | null {
+  if (!(formData instanceof FormData)) {
+    return LIVE_DEMO_SCENARIO.scenarioKey;
+  }
+
+  const rawValue = formData.get("scenarioKey");
+  const scenario = findLiveDemoScenarioByKey(
+    typeof rawValue === "string" ? rawValue : null,
+  );
+
+  return scenario?.scenarioKey ?? null;
 }
 
 export async function createGovernedRequest(
@@ -34,7 +55,20 @@ export async function createGovernedRequest(
   formData?: FormData,
 ): Promise<CreateGovernedRequestResult | void> {
   const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
-  const result = await createGovernedRequestWritePath({ client: prisma, tenantId });
+  const scenarioKey = selectedScenarioKey(formData);
+  const result: CreateGovernedRequestResult =
+    scenarioKey === null
+      ? {
+          ok: false,
+          status: "FAILED_SAFE",
+          safeReason:
+            "Selected fixture scenario was not recognized, so no run was created.",
+        }
+      : await createGovernedRequestWritePath({
+          client: prisma,
+          tenantId,
+          scenarioKey,
+        });
 
   if (!result.ok) {
     if (formData instanceof FormData) {
@@ -44,10 +78,15 @@ export async function createGovernedRequest(
     return result;
   }
 
-  revalidatePath("/mycelia/runs");
+  revalidateDemoSurfaces();
 
   if (formData instanceof FormData) {
-    return;
+    redirect(
+      buildLiveOutcomeRedirectPath(`/mycelia/runs?runId=${result.runId}`, {
+        status: "RUN_CREATED",
+        reasonCode: result.admissionReasonCode,
+      }),
+    );
   }
 
   return result;

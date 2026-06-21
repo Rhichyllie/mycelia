@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
+import { LIVE_DEMO_SCENARIO } from "../demo-scenario";
 import { loadInvestigationTimeline } from "../investigation/load-investigation-timeline";
 import { createPrismaApprovalRequestRepository } from "../repositories/prisma-approval-request.repository";
 import { createGovernedRequest } from "./create-governed-request";
@@ -57,7 +58,11 @@ async function createTempClient() {
 }
 
 async function createPendingApproval(client: PrismaClient, tenantId: string) {
-  const created = await createGovernedRequest({ client, tenantId });
+  const created = await createGovernedRequest({
+    client,
+    tenantId,
+    scenarioKey: LIVE_DEMO_SCENARIO.scenarioKey,
+  });
 
   if (!created.ok) {
     throw new Error(created.safeReason);

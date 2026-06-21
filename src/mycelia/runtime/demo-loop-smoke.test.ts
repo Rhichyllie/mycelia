@@ -10,6 +10,7 @@ import {
   DEMO_SEED_GOVERNED_RUN_ID,
   seedDemoScenario,
 } from "./demo-seed-scenario";
+import { LIVE_DEMO_SCENARIO } from "./demo-scenario";
 import { createGovernedRequest } from "./governed-request/create-governed-request";
 import {
   decideApprovalRequest,
@@ -129,7 +130,11 @@ describe("LIVE-6 commercial demo loop smoke test", () => {
         await expectSeedBaseline(client, tenantId);
         await waitForCreatedAtOrdering();
 
-        const created = await createGovernedRequest({ client, tenantId });
+        const created = await createGovernedRequest({
+          client,
+          tenantId,
+          scenarioKey: LIVE_DEMO_SCENARIO.scenarioKey,
+        });
         expect(created.ok).toBe(true);
 
         if (!created.ok) {

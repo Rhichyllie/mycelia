@@ -41,6 +41,9 @@ describe("live label formatting", () => {
     expect(formatLiveOutcomeTitle("FAILED_SAFE")).toBe(
       "The demo action stopped safely before completing.",
     );
+    expect(formatLiveOutcomeTitle("RUN_CREATED")).toBe(
+      "The governed request was created.",
+    );
     expect(
       formatLiveReasonLabel({
         status: "FAILED_SAFE",
@@ -69,6 +72,24 @@ describe("live label formatting", () => {
     ).toEqual({
       status: "FAILED_SAFE",
       reasonCode: "RUN_NOT_WAITING_APPROVAL",
+    });
+
+    const successHref = buildLiveOutcomeRedirectPath("/mycelia/runs?runId=run_1", {
+      status: "RUN_CREATED",
+      reasonCode: "POLICY_ADMITTED_LOW_RISK",
+    });
+
+    expect(successHref).toBe(
+      "/mycelia/runs?runId=run_1&liveStatus=RUN_CREATED&liveReasonCode=POLICY_ADMITTED_LOW_RISK",
+    );
+    expect(
+      parseLiveOutcomeSearchParams({
+        liveStatus: "RUN_CREATED",
+        liveReasonCode: "POLICY_ADMITTED_LOW_RISK",
+      }),
+    ).toEqual({
+      status: "RUN_CREATED",
+      reasonCode: "POLICY_ADMITTED_LOW_RISK",
     });
   });
 
