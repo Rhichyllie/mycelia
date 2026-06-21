@@ -3,6 +3,8 @@ import type { PrismaClient } from "@prisma/client";
 import { prisma } from "./db/client";
 import { getMyceliaDemoDatabaseConfig } from "./db/demo-config";
 import {
+  DEMO_STUDIO_USER_EMAIL,
+  DEMO_STUDIO_WORKSPACE_SLUG,
   seedDemoScenario,
   type SeedDemoScenarioResult,
 } from "./demo-seed-scenario";
@@ -35,22 +37,26 @@ export async function resetDemoDatabase(
   const tenantId = input.tenantId ?? getMyceliaDemoDatabaseConfig().tenantId;
 
   try {
-    return await client.$transaction(async (tx) => {
+    await client.$transaction(async (tx) => {
       await tx.auditRecord.deleteMany({ where: { tenantId } });
       await tx.approvalRequest.deleteMany({ where: { tenantId } });
       await tx.admissionDecisionRecord.deleteMany({ where: { tenantId } });
       await tx.policyDecisionRecord.deleteMany({ where: { tenantId } });
       await tx.runtimeStateSnapshot.deleteMany({ where: { tenantId } });
       await tx.governedRun.deleteMany({ where: { tenantId } });
-
-      const seed = await seedDemoScenario({ client: tx, tenantId });
-
-      return {
-        ok: true,
-        tenantId,
-        seed,
-      } satisfies ResetDemoDatabaseSuccess;
+      await tx.workspace.deleteMany({ where: { slug: DEMO_STUDIO_WORKSPACE_SLUG } });
+      await tx.appUser.deleteMany({
+        where: { emailNormalized: DEMO_STUDIO_USER_EMAIL },
+      });
     });
+
+    const seed = await seedDemoScenario({ client, tenantId });
+
+    return {
+      ok: true,
+      tenantId,
+      seed,
+    } satisfies ResetDemoDatabaseSuccess;
   } catch {
     return {
       ok: false,

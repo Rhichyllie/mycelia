@@ -8,18 +8,25 @@ import { describe, expect, it } from "vitest";
 import { DemoScenarioSeedAllowedRoutes } from "../../demo/demo-scenario-seed-package";
 import { PilotDemoEndToEndSurface } from ".";
 
-const routePath = join(process.cwd(), "app", "mycelia", "demo", "page.tsx");
-const actionPath = join(process.cwd(), "app", "mycelia", "demo", "actions.ts");
+const routePath = join(process.cwd(), "app", "mycelia", "runs", "page.tsx");
+const actionPath = join(process.cwd(), "app", "mycelia", "runs", "actions.ts");
+const legacyRoutePath = join(process.cwd(), "app", "mycelia", "demo", "page.tsx");
 
 describe("pilot demo route safety", () => {
-  it("creates the route at app/mycelia/demo/page.tsx", () => {
+  it("creates the live route at app/mycelia/runs/page.tsx", () => {
     expect(existsSync(routePath)).toBe(true);
+  });
+
+  it("keeps the legacy demo route as a redirect", () => {
+    const source = readFileSync(legacyRoutePath, "utf8");
+
+    expect(source).toContain("redirect");
+    expect(source).toContain("/mycelia/runs");
   });
 
   it("keeps the route scoped to the LIVE-2 governed request and LIVE-5 reset actions", () => {
     const source = readFileSync(routePath, "utf8");
 
-    expect(source).toContain("PilotDemoEndToEndSurface");
     expect(source).toContain("createGovernedRequest");
     expect(source).toContain("<form action={createGovernedRequest}");
     expect(source).toContain("Start governed request");

@@ -110,5 +110,20 @@ export function createPrismaGovernedRunRepository(
         take: input.take ?? 20,
       });
     },
+    countForTenant(input: { readonly tenantId: string }): Promise<number> {
+      return client.governedRun.count({ where: { tenantId: input.tenantId } });
+    },
+    countByState(input: {
+      readonly tenantId: string;
+      readonly state: string;
+    }): Promise<number> {
+      return client.governedRun.count({
+        where: {
+          tenantId: input.tenantId,
+          currentState: input.state,
+          status: input.state,
+        },
+      });
+    },
   };
 }

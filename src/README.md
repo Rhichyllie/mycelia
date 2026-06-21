@@ -60,7 +60,6 @@ Active MYCELIA source begins here.
 - `src/mycelia/ui-surfaces/approval-decision-ui-surface/`: Phase 3I controlled non-mutating approval decision preview surface.
 - `src/mycelia/demo/demo-scenario-seed-package/`: Phase 3J deterministic non-executing demo scenario seed package connecting request, approval and investigation surfaces.
 - `src/mycelia/demo/pilot-demo-end-to-end/`: Phase 3K controlled non-executing pilot demo walkthrough over deterministic scenario seeds, hardened in Phase 3L as a guided customer pilot route.
-- `src/mycelia/demo/demo-local-preview/`: Phase 3L descriptive local preview contract for controlled demo inspection.
 
 ## Not Implemented Yet
 
@@ -93,5 +92,5 @@ deterministic demo scenario seeds, a controlled pilot walkthrough and a
 local-only demo preview command exist, but mutable operational/runtime UI does
 not.
 
-Legacy MapIA code must remain under `legacy/` and must not be copied back
+Legacy retired source code must remain under `legacy/` and must not be copied back
 without architecture review.

@@ -1,7 +1,5 @@
-import {
-  GovernedRequestCreationSurface,
-} from "@/mycelia/ui-surfaces/governed-request-creation-surface";
+import { redirect } from "next/navigation";
 
-export default function MyceliaGovernedRequestCreationPage() {
-  return <GovernedRequestCreationSurface />;
+export default function MyceliaLegacyRequestCreationRedirectPage(): never {
+  redirect("/mycelia/runs");
 }

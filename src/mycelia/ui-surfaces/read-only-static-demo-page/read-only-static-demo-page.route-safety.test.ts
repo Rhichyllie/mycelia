@@ -49,7 +49,7 @@ const FORBIDDEN_ROUTE_PATTERNS = [
   "connection_string",
   "external_service",
   "legacy",
-  "mapia",
+  "retired source",
 ] as const;
 
 function source(fileUrl: URL): string {

@@ -35,9 +35,9 @@ function collectAnchors(node: ReactNode): { href?: string; text: string; current
 describe("live route nav", () => {
   it("defines the three governed demo stages", () => {
     expect(LIVE_ROUTE_NAV_ITEMS.map((item) => item.href)).toEqual([
-      "/mycelia/demo",
-      "/mycelia/approval/decision",
-      "/mycelia/investigation",
+      "/mycelia/runs",
+      "/mycelia/approvals",
+      "/mycelia/investigations",
     ]);
   });
 

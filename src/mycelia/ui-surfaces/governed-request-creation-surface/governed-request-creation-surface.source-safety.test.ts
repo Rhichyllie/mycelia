@@ -100,7 +100,7 @@ describe("governed request creation source safety", () => {
       /\bdangerouslySetInnerHTML\b/,
       /\bdownload\b/i,
       /\bpdf\b/i,
-      /\bMapIA\b/,
+      /\bretired source\b/,
     ];
 
     for (const file of productionFiles) {

@@ -54,14 +54,14 @@ export async function approveGovernedRequest(
   if (!result.ok) {
     if (formData instanceof FormData) {
       redirect(
-        buildLiveOutcomeRedirectPath("/mycelia/approval/decision", result),
+        buildLiveOutcomeRedirectPath("/mycelia/approvals", result),
       );
     }
 
     return result;
   }
 
-  revalidatePath("/mycelia/approval/decision");
+  revalidatePath("/mycelia/approvals");
 
   if (formData instanceof FormData) {
     return;
@@ -83,14 +83,14 @@ export async function rejectGovernedRequest(
   if (!result.ok) {
     if (formData instanceof FormData) {
       redirect(
-        buildLiveOutcomeRedirectPath("/mycelia/approval/decision", result),
+        buildLiveOutcomeRedirectPath("/mycelia/approvals", result),
       );
     }
 
     return result;
   }
 
-  revalidatePath("/mycelia/approval/decision");
+  revalidatePath("/mycelia/approvals");
 
   if (formData instanceof FormData) {
     return;

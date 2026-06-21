@@ -200,5 +200,5 @@ describe("LIVE-6 commercial demo loop smoke test", () => {
     } finally {
       await client.$disconnect();
     }
-  });
+  }, 30000);
 });

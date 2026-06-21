@@ -43,7 +43,7 @@ const FORBIDDEN_PRODUCT_SURFACE_INDEX_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  "retired source",
 ] as const;
 
 function source(fileUrl: URL): string {

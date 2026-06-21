@@ -39,7 +39,7 @@ const FORBIDDEN_INTERNAL_RUNTIME_ORCHESTRATOR_SOURCE_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  "retired source",
   "URL.createObjectURL",
   "new Blob",
   "download=",

@@ -36,7 +36,7 @@ const FORBIDDEN_GOVERNED_RUN_LIFECYCLE_SOURCE_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  "retired source",
   "URL.createObjectURL",
   "new Blob",
   "download=",

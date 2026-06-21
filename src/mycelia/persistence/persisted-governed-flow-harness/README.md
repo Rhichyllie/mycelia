@@ -9,7 +9,7 @@ reads back the six Phase 3A record types through an injected repository client.
 
 It does not create API routes, render UI, create auth, execute replay, call
 tools, call external services, create billing, create multi-tenancy admin,
-revive MapIA or become a full runtime product surface.
+revive retired source or become a full runtime product surface.
 
 The harness is deterministic. Scenario inputs supply safe identifiers and ISO
 timestamps. The module does not generate identifiers, call timers, use random

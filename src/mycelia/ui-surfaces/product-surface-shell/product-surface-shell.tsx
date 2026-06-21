@@ -1,47 +1,29 @@
 import type { CSSProperties, ReactElement, ReactNode } from "react";
 
-import { PRODUCT_SURFACE_INDEX_ITEMS } from "../../ui-surfaces/product-surface-index";
-
 export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
   {
-    label: "Home",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[0].route,
+    label: "Control Center",
+    href: "/mycelia",
   },
   {
-    label: "MYCELIA",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[1].route,
+    label: "Runs",
+    href: "/mycelia/runs",
   },
   {
-    label: "Executive",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[2].route,
+    label: "Approvals",
+    href: "/mycelia/approvals",
   },
   {
-    label: "Static Demo",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[3].route,
+    label: "Investigations",
+    href: "/mycelia/investigations",
   },
   {
-    label: "Walkthrough",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[4].route,
+    label: "Studio",
+    href: "/mycelia/studio",
   },
   {
-    label: "Pilot Demo",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[5].route,
-  },
-  {
-    label: "Request Draft",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[6].route,
-  },
-  {
-    label: "Approval",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[7].route,
-  },
-  {
-    label: "Investigation",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[8].route,
-  },
-  {
-    label: "Roadmap",
-    href: PRODUCT_SURFACE_INDEX_ITEMS[9].route,
+    label: "About",
+    href: "/mycelia/about",
   },
 ] as const;
 
@@ -57,16 +39,12 @@ export const PRODUCT_SURFACE_SHELL_SAFETY_BADGES = [
 export type ProductSurfaceShellNavItem = {
   readonly label: string;
   readonly href:
-    | "/"
     | "/mycelia"
-    | "/mycelia/static-demo"
-    | "/mycelia/roadmap"
-    | "/mycelia/walkthrough"
-    | "/mycelia/demo"
-    | "/mycelia/request/new"
-    | "/mycelia/approval/decision"
-    | "/mycelia/investigation"
-    | "/mycelia/executive";
+    | "/mycelia/runs"
+    | "/mycelia/approvals"
+    | "/mycelia/investigations"
+    | "/mycelia/studio"
+    | "/mycelia/about";
 };
 
 export type ProductSurfaceShellModel = {

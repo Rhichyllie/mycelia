@@ -36,7 +36,7 @@ const FORBIDDEN_POLICY_ADMISSION_V1_SOURCE_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  "retired source",
   "URL.createObjectURL",
   "new Blob",
   "download=",

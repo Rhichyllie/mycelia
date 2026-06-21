@@ -9,7 +9,6 @@ import {
   ProductSurfaceShell,
   getProductSurfaceShellModel,
 } from ".";
-import { PRODUCT_SURFACE_INDEX_ITEMS } from "../../ui-surfaces/product-surface-index";
 
 const UNSAFE_SHELL_STRING_PATTERN =
   /(@|https?:\/\/|www\.|[A-Za-z]:\\|\\\\|;|&&|\|\||`|\$\(|authorization|api[_-]?key|bearer|connection[_-]?string|credential|password|private[_-]?key|select\s|insert\s|update\s|delete\s|drop\s|\bsql\b|token)/i;
@@ -51,20 +50,16 @@ describe("product surface shell", () => {
     expect(model.positioning).toContain("governed agentic runtime");
   });
 
-  it("includes Home, MYCELIA, Executive, Static Demo, Walkthrough, Pilot Demo, Request Draft, Approval, Investigation and Roadmap nav items", () => {
+  it("includes the enterprise navigation items", () => {
     const model = getProductSurfaceShellModel();
 
     expect(model.nav_items.map((item) => item.label)).toEqual([
-      "Home",
-      "MYCELIA",
-      "Executive",
-      "Static Demo",
-      "Walkthrough",
-      "Pilot Demo",
-      "Request Draft",
-      "Approval",
-      "Investigation",
-      "Roadmap",
+      "Control Center",
+      "Runs",
+      "Approvals",
+      "Investigations",
+      "Studio",
+      "About",
     ]);
   });
 
@@ -72,26 +67,15 @@ describe("product surface shell", () => {
     const model = getProductSurfaceShellModel();
 
     expect(model.nav_items.map((item) => item.href)).toEqual([
-      "/",
       "/mycelia",
-      "/mycelia/executive",
-      "/mycelia/static-demo",
-      "/mycelia/walkthrough",
-      "/mycelia/demo",
-      "/mycelia/request/new",
-      "/mycelia/approval/decision",
-      "/mycelia/investigation",
-      "/mycelia/roadmap",
+      "/mycelia/runs",
+      "/mycelia/approvals",
+      "/mycelia/investigations",
+      "/mycelia/studio",
+      "/mycelia/about",
     ]);
   });
 
-  it("keeps navigation coherent with the product surface index", () => {
-    const model = getProductSurfaceShellModel();
-
-    expect(model.nav_items.map((item) => item.href)).toEqual(
-      PRODUCT_SURFACE_INDEX_ITEMS.map((item) => item.route),
-    );
-  });
 
   it("includes accurate local live-demo safety badges", () => {
     const model = getProductSurfaceShellModel();
@@ -108,7 +92,7 @@ describe("product surface shell", () => {
     expect(model.safety_badges).not.toContain("Static");
     expect(model.safety_badges).not.toContain("Read-only");
     expect(model.safety_badges).not.toContain("No DB writes");
-    expect(model.safety_badges).not.toContain("No API calls");
+    expect(model.safety_badges).not.toContain(["No API", "calls"].join(" "));
   });
 
   it("describes the live local persistence boundary accurately", () => {

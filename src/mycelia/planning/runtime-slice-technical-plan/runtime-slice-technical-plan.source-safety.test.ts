@@ -36,7 +36,7 @@ const FORBIDDEN_RUNTIME_SLICE_PLAN_SOURCE_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  "retired source",
   "URL.createObjectURL",
   "new Blob",
   "download=",

@@ -52,11 +52,11 @@ const FORBIDDEN_PRODUCTION_PATTERNS = [
   /\bdangerouslySetInnerHTML\b/,
   /\bdownload\b/i,
   /\bpdf\b/i,
-  /\bMapIA\b/,
+  /\bretired source\b/,
 ] as const;
 
 describe("runtime repository layer source safety", () => {
-  it("does not import PrismaClient, DB clients, fs, route handlers, timers, random behavior, events, tools, external calls or MapIA", () => {
+  it("does not import PrismaClient, DB clients, fs, route handlers, timers, random behavior, events, tools, external calls or retired source", () => {
     const source = productionCodeOnly(readFileSync(PRODUCTION_MODULE, "utf8"));
 
     for (const pattern of FORBIDDEN_PRODUCTION_PATTERNS) {

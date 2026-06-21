@@ -15,7 +15,7 @@ The module separates:
 
 It does not query databases, instantiate PrismaClient, call APIs, call fetch,
 use auth/session state, execute replay, execute tools, emit events, write
-files, create file artifacts or revive MapIA.
+files, create file artifacts or revive retired source.
 
 The route surface now loads through the persisted investigation read model while
 remaining read-only. Future work can replace the reference source with a

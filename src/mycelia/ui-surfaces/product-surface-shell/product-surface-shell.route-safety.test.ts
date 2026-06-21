@@ -5,8 +5,36 @@ import { describe, expect, it } from "vitest";
 
 const layoutPath = new URL("../../../../app/layout.tsx", import.meta.url);
 const homeRoutePath = new URL("../../../../app/page.tsx", import.meta.url);
-const productHubRoutePath = new URL(
+const controlCenterRoutePath = new URL(
   "../../../../app/mycelia/page.tsx",
+  import.meta.url,
+);
+const runsRoutePath = new URL(
+  "../../../../app/mycelia/runs/page.tsx",
+  import.meta.url,
+);
+const runsActionPath = new URL(
+  "../../../../app/mycelia/runs/actions.ts",
+  import.meta.url,
+);
+const approvalsRoutePath = new URL(
+  "../../../../app/mycelia/approvals/page.tsx",
+  import.meta.url,
+);
+const approvalsActionPath = new URL(
+  "../../../../app/mycelia/approvals/actions.ts",
+  import.meta.url,
+);
+const investigationsRoutePath = new URL(
+  "../../../../app/mycelia/investigations/page.tsx",
+  import.meta.url,
+);
+const studioRoutePath = new URL(
+  "../../../../app/mycelia/studio/page.tsx",
+  import.meta.url,
+);
+const aboutRoutePath = new URL(
+  "../../../../app/mycelia/about/page.tsx",
   import.meta.url,
 );
 const staticDemoRoutePath = new URL(
@@ -21,24 +49,24 @@ const walkthroughRoutePath = new URL(
   "../../../../app/mycelia/walkthrough/page.tsx",
   import.meta.url,
 );
-const pilotDemoRoutePath = new URL(
+const executiveRoutePath = new URL(
+  "../../../../app/mycelia/executive/page.tsx",
+  import.meta.url,
+);
+const legacyDemoRoutePath = new URL(
   "../../../../app/mycelia/demo/page.tsx",
   import.meta.url,
 );
-const investigationRoutePath = new URL(
+const legacyInvestigationRoutePath = new URL(
   "../../../../app/mycelia/investigation/page.tsx",
   import.meta.url,
 );
-const requestCreationRoutePath = new URL(
+const legacyRequestCreationRoutePath = new URL(
   "../../../../app/mycelia/request/new/page.tsx",
   import.meta.url,
 );
-const approvalDecisionRoutePath = new URL(
+const legacyApprovalDecisionRoutePath = new URL(
   "../../../../app/mycelia/approval/decision/page.tsx",
-  import.meta.url,
-);
-const executiveRoutePath = new URL(
-  "../../../../app/mycelia/executive/page.tsx",
   import.meta.url,
 );
 const shellPath = new URL("./product-surface-shell.tsx", import.meta.url);
@@ -52,9 +80,7 @@ const FORBIDDEN_SHELL_PATTERNS = [
   "XMLHttpRequest",
   "cookies(",
   "headers(",
-  "redirect(",
   "notFound(",
-  "revalidate",
   "server action",
   "\"use server\"",
   "'use server'",
@@ -78,8 +104,37 @@ const FORBIDDEN_SHELL_PATTERNS = [
   RETIRED_SOURCE_CODENAME,
 ] as const;
 
+const PRIMARY_ROUTE_STALE_CLAIMS = [
+  ["Phase", "0"].join(" "),
+  ["intentionally", "not", "implemented"].join(" "),
+  ["no", "runtime", "execution"].join(" "),
+  ["no", "persistence"].join(" "),
+  ["no", "API", "calls"].join(" "),
+  ["no", "writes"].join(" "),
+  ["No", "live", "DB", "write"].join(" "),
+] as const;
+
 function source(fileUrl: URL): string {
   return readFileSync(fileUrl, "utf8");
+}
+
+function expectNoForbiddenShellPatterns(fileUrl: URL): void {
+  const routeSource = source(fileUrl).toLowerCase();
+
+  for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
+    expect(routeSource).not.toContain(pattern.toLowerCase());
+  }
+}
+
+function expectRedirect(fileUrl: URL, target: string): void {
+  const routeSource = source(fileUrl);
+
+  expect(routeSource).toContain("redirect");
+  expect(routeSource).toContain(target);
+  expect(routeSource).not.toContain("fetch(");
+  expect(routeSource).not.toContain("Response.json");
+  expect(routeSource).not.toContain("<form");
+  expect(routeSource).not.toContain("<button");
 }
 
 describe("product surface shell route safety", () => {
@@ -90,136 +145,91 @@ describe("product surface shell route safety", () => {
     expect(layoutSource).toContain("@/mycelia/ui-surfaces/product-surface-shell");
   });
 
-  it("keeps the home route safe", () => {
-    const routeSource = source(homeRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
+  it("keeps primary enterprise routes free of unsafe shell patterns", () => {
+    for (const fileUrl of [
+      homeRoutePath,
+      controlCenterRoutePath,
+      investigationsRoutePath,
+      studioRoutePath,
+      aboutRoutePath,
+      staticDemoRoutePath,
+      roadmapRoutePath,
+      walkthroughRoutePath,
+      executiveRoutePath,
+      shellPath,
+    ]) {
+      expectNoForbiddenShellPatterns(fileUrl);
     }
   });
 
-  it("keeps the static demo route safe", () => {
-    const routeSource = source(staticDemoRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
-    }
-  });
-
-  it("keeps the product information route safe", () => {
-    const routeSource = source(productHubRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
-    }
-  });
-
-  it("keeps the roadmap route safe", () => {
-    const routeSource = source(roadmapRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
-    }
-  });
-
-  it("keeps the walkthrough route safe", () => {
-    const routeSource = source(walkthroughRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
-    }
-  });
-
-  it("keeps the pilot demo route safe", () => {
-    const routeSource = source(pilotDemoRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
-    }
-  });
-
-  it("keeps the investigation route safe", () => {
-    const routeSource = source(investigationRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
-    }
-  });
-
-  it("keeps the request creation route safe", () => {
-    const routeSource = source(requestCreationRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
-    }
-  });
-
-  it("keeps the approval decision route safe", () => {
-    const routeSource = source(approvalDecisionRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
-    }
-  });
-
-  it("keeps the executive route safe", () => {
-    const routeSource = source(executiveRoutePath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(routeSource).not.toContain(pattern.toLowerCase());
-    }
-  });
-
-  it("keeps the shell source safe", () => {
-    const shellSource = source(shellPath).toLowerCase();
-
-    for (const pattern of FORBIDDEN_SHELL_PATTERNS) {
-      expect(shellSource).not.toContain(pattern.toLowerCase());
-    }
+  it("keeps legacy routes as narrow redirects", () => {
+    expectRedirect(legacyDemoRoutePath, "/mycelia/runs");
+    expectRedirect(legacyRequestCreationRoutePath, "/mycelia/runs");
+    expectRedirect(legacyApprovalDecisionRoutePath, "/mycelia/approvals");
+    expectRedirect(legacyInvestigationRoutePath, "/mycelia/investigations");
   });
 
   it("uses only internal shell links", () => {
     const shellSource = source(shellPath);
 
-    expect(shellSource).toContain("PRODUCT_SURFACE_INDEX_ITEMS");
     expect(shellSource).toContain("href={item.href}");
     expect(shellSource).not.toContain("target=");
     expect(shellSource).not.toContain("rel=");
   });
 
-  it("keeps forms limited to the LIVE-2, LIVE-3 and LIVE-5 governed demo actions", () => {
+  it("keeps forms limited to the governed run and approval actions", () => {
     const staticRouteSource = [
       source(layoutPath),
       source(homeRoutePath),
-      source(productHubRoutePath),
+      source(controlCenterRoutePath),
       source(staticDemoRoutePath),
       source(roadmapRoutePath),
       source(walkthroughRoutePath),
-      source(requestCreationRoutePath),
-      source(investigationRoutePath),
+      source(legacyRequestCreationRoutePath),
+      source(investigationsRoutePath),
+      source(studioRoutePath),
+      source(aboutRoutePath),
       source(executiveRoutePath),
       source(shellPath),
     ].join("\n");
-    const pilotSource = source(pilotDemoRoutePath);
-    const approvalSource = source(approvalDecisionRoutePath);
+    const runsSource = source(runsRoutePath);
+    const approvalsSource = source(approvalsRoutePath);
 
     expect(staticRouteSource).not.toContain("<form");
     expect(staticRouteSource).not.toContain("<button");
     expect(staticRouteSource).not.toContain("action=");
-    expect(pilotSource).toContain("<form action={createGovernedRequest}");
-    expect(pilotSource).toContain("Start governed request");
-    expect(pilotSource).toContain("<form action={resetDemo}");
-    expect(pilotSource).toContain("Reset demo");
-    expect(pilotSource).not.toContain("fetch(");
-    expect(pilotSource).not.toContain("Response.json");
-    expect(pilotSource).not.toMatch(/Approve request|Reject request/i);
-    expect(approvalSource).toContain("<form action={approveGovernedRequest}");
-    expect(approvalSource).toContain("<form action={rejectGovernedRequest}");
-    expect(approvalSource).toContain("Approve");
-    expect(approvalSource).toContain("Reject");
-    expect(approvalSource).not.toContain("fetch(");
-    expect(approvalSource).not.toContain("Response.json");
+    expect(runsSource).toContain("<form action={createGovernedRequest}");
+    expect(runsSource).toContain("Start governed request");
+    expect(runsSource).toContain("<form action={resetDemo}");
+    expect(runsSource).toContain("Reset demo");
+    expect(runsSource).not.toContain("fetch(");
+    expect(runsSource).not.toContain("Response.json");
+    expect(runsSource).not.toMatch(/Approve request|Reject request/i);
+    expect(approvalsSource).toContain("<form action={approveGovernedRequest}");
+    expect(approvalsSource).toContain("<form action={rejectGovernedRequest}");
+    expect(approvalsSource).toContain("Approve");
+    expect(approvalsSource).toContain("Reject");
+    expect(approvalsSource).not.toContain("fetch(");
+    expect(approvalsSource).not.toContain("Response.json");
   });
+
+  it("keeps primary enterprise copy free of stale inactive-product claims", () => {
+    const primarySource = [
+      source(controlCenterRoutePath),
+      source(runsRoutePath),
+      source(approvalsRoutePath),
+      source(investigationsRoutePath),
+      source(studioRoutePath),
+      source(shellPath),
+      source(runsActionPath),
+      source(approvalsActionPath),
+    ].join("\n");
+
+    for (const claim of PRIMARY_ROUTE_STALE_CLAIMS) {
+      expect(primarySource).not.toContain(claim);
+    }
+  });
+
   it("does not modify pnpm-lock.yaml", () => {
     const status = execFileSync(
       "git",
@@ -230,4 +240,3 @@ describe("product surface shell route safety", () => {
     expect(status.trim()).toBe("");
   });
 });
-

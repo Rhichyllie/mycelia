@@ -26,17 +26,8 @@ function sqliteUrl(dbPath: string): string {
   return `file:${dbPath.replace(/\\/g, "/")}`;
 }
 
-async function applyMinimalMigration(client: PrismaClient) {
-  const migration = readFileSync(
-    repoPath(
-      "prisma",
-      "migrations",
-      "000001_minimal_runtime_slice",
-      "migration.sql",
-    ),
-    "utf8",
-  );
-
+async function applyMigrationFile(client: PrismaClient, path: string) {
+  const migration = readFileSync(path, "utf8");
   const statements = migration
     .split(/;\s*(?:\r?\n|$)/)
     .map((statement) => statement.trim())
@@ -44,6 +35,19 @@ async function applyMinimalMigration(client: PrismaClient) {
 
   for (const statement of statements) {
     await client.$executeRawUnsafe(statement);
+  }
+}
+
+async function applyMigrations(client: PrismaClient) {
+  for (const migration of [
+    "000001_minimal_runtime_slice",
+    "000002_auth_foundation",
+    "000003_workspace_graph_foundation",
+  ]) {
+    await applyMigrationFile(
+      client,
+      repoPath("prisma", "migrations", migration, "migration.sql"),
+    );
   }
 }
 
@@ -57,7 +61,7 @@ async function createTempClient() {
   });
 
   tempRoots.push(root);
-  await applyMinimalMigration(client);
+  await applyMigrations(client);
 
   return { client, dbPath };
 }
@@ -76,6 +80,10 @@ async function tenantCounts(client: PrismaClient, tenantId: string) {
     admissions,
     approvalRequests,
     audits,
+    workspaces,
+    projects,
+    nodes,
+    edges,
   ] = await Promise.all([
     client.governedRun.count({ where: { tenantId } }),
     client.runtimeStateSnapshot.count({ where: { tenantId } }),
@@ -83,6 +91,10 @@ async function tenantCounts(client: PrismaClient, tenantId: string) {
     client.admissionDecisionRecord.count({ where: { tenantId } }),
     client.approvalRequest.count({ where: { tenantId } }),
     client.auditRecord.count({ where: { tenantId } }),
+    client.workspace.count({ where: { slug: "acme-enterprise" } }),
+    client.project.count({ where: { slug: "governed-run-lifecycle" } }),
+    client.node.count(),
+    client.edge.count(),
   ]);
 
   return {
@@ -92,6 +104,10 @@ async function tenantCounts(client: PrismaClient, tenantId: string) {
     admissions,
     approvalRequests,
     audits,
+    workspaces,
+    projects,
+    nodes,
+    edges,
   };
 }
 
@@ -175,6 +191,10 @@ describe("LIVE-5 demo seed correction and reset", () => {
         admissions: 1,
         approvalRequests: 0,
         audits: 2,
+        workspaces: 1,
+        projects: 1,
+        nodes: 5,
+        edges: 4,
       });
     } finally {
       await client.$disconnect();
@@ -235,6 +255,10 @@ describe("LIVE-5 demo seed correction and reset", () => {
         admissions: 1,
         approvalRequests: 0,
         audits: 2,
+        workspaces: 1,
+        projects: 1,
+        nodes: 5,
+        edges: 4,
       });
     } finally {
       await client.$disconnect();
@@ -256,6 +280,10 @@ describe("LIVE-5 demo seed correction and reset", () => {
         admissions: 2,
         approvalRequests: 1,
         audits: 5,
+        workspaces: 1,
+        projects: 1,
+        nodes: 5,
+        edges: 4,
       });
 
       const reset = await resetDemoDatabase({ client, tenantId });
@@ -268,6 +296,10 @@ describe("LIVE-5 demo seed correction and reset", () => {
         admissions: 1,
         approvalRequests: 0,
         audits: 2,
+        workspaces: 1,
+        projects: 1,
+        nodes: 5,
+        edges: 4,
       });
       expect(await client.governedRun.findFirst({
         where: { tenantId, id: extraRunId },
@@ -323,6 +355,9 @@ describe("LIVE-5 demo seed correction and reset", () => {
         decidedAt: null,
       });
       expect(await client.approvalRequest.count({ where: { tenantId } })).toBe(1);
+      expect(await client.workspace.count({ where: { slug: "acme-enterprise" } })).toBe(1);
+      expect(await client.node.count()).toBe(5);
+      expect(await client.edge.count()).toBe(4);
     } finally {
       await client.$disconnect();
     }

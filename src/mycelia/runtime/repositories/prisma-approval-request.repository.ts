@@ -132,5 +132,13 @@ export function createPrismaApprovalRequestRepository(
         },
       });
     },
+    countPendingForTenant(input: { readonly tenantId: string }): Promise<number> {
+      return client.approvalRequest.count({
+        where: {
+          tenantId: input.tenantId,
+          status: "PENDING",
+        },
+      });
+    },
   };
 }

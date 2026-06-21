@@ -62,5 +62,8 @@ export function createPrismaAuditRepository(
         },
       });
     },
+    countForTenant(input: { readonly tenantId: string }): Promise<number> {
+      return client.auditRecord.count({ where: { tenantId: input.tenantId } });
+    },
   };
 }

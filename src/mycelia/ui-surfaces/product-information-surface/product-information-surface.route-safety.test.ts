@@ -4,13 +4,15 @@ import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const routePath = new URL(
-  "../../../../app/mycelia/page.tsx",
+  "../../../../app/mycelia/about/page.tsx",
   import.meta.url,
 );
 const surfacePath = new URL(
   "./product-information-surface.tsx",
   import.meta.url,
 );
+
+const RETIRED_SOURCE_CODENAME = ["ma", "pia"].join("");
 
 const FORBIDDEN_PRODUCT_INFORMATION_ROUTE_PATTERNS = [
   "dangerouslySetInnerHTML",
@@ -40,7 +42,7 @@ const FORBIDDEN_PRODUCT_INFORMATION_ROUTE_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  RETIRED_SOURCE_CODENAME,
 ] as const;
 
 function source(fileUrl: URL): string {
@@ -48,7 +50,7 @@ function source(fileUrl: URL): string {
 }
 
 describe("product information App Router surface safety", () => {
-  it("creates the /mycelia App Router file", () => {
+  it("creates the /mycelia/about App Router file", () => {
     expect(existsSync(routePath)).toBe(true);
   });
 
@@ -61,7 +63,7 @@ describe("product information App Router surface safety", () => {
     );
   });
 
-  it("keeps the /mycelia route free of unsafe runtime behavior", () => {
+  it("keeps the /mycelia/about route free of unsafe runtime behavior", () => {
     const routeSource = source(routePath).toLowerCase();
 
     for (const pattern of FORBIDDEN_PRODUCT_INFORMATION_ROUTE_PATTERNS) {

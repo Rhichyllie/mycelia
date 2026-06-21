@@ -4,6 +4,11 @@ import { admitGovernedRequest } from "./admission";
 import { classifyGovernedRequest } from "./classify";
 import { getMyceliaDemoDatabaseConfig } from "./db/demo-config";
 import { LIVE_DEMO_SCENARIO } from "./demo-scenario";
+import type { GraphSnapshot } from "./graph/canonical-graph";
+import { createWorkspaceProject } from "./graph/create-workspace-project";
+import { persistGraphSnapshot } from "./graph/persist-graph-snapshot";
+import { createPrismaProjectRepository } from "./repositories/prisma-project.repository";
+import { createPrismaWorkspaceRepository } from "./repositories/prisma-workspace.repository";
 
 export const DEMO_SEED_GOVERNED_RUN_ID =
   "demo_run_medium_risk_vendor_contract_review";
@@ -21,14 +26,28 @@ export const DEMO_SEED_AUDIT_RUN_CREATED_ID =
 export const DEMO_SEED_AUDIT_POLICY_EVALUATED_ID =
   "demo_audit_medium_risk_vendor_contract_review_02";
 
-export type DemoSeedScenarioClient = Pick<
-  PrismaClient,
-  | "admissionDecisionRecord"
-  | "auditRecord"
-  | "governedRun"
-  | "policyDecisionRecord"
-  | "runtimeStateSnapshot"
->;
+export const DEMO_STUDIO_USER_ID =
+  "11111111-1111-4111-8111-111111111111";
+export const DEMO_STUDIO_USER_EMAIL = "demo-studio-owner@example.com";
+export const DEMO_STUDIO_WORKSPACE_SLUG = "acme-enterprise";
+export const DEMO_STUDIO_PROJECT_SLUG = "governed-run-lifecycle";
+
+const DEMO_STUDIO_NODE_IDS = {
+  request: "22222222-2222-4222-8222-222222222221",
+  policy: "22222222-2222-4222-8222-222222222222",
+  approval: "22222222-2222-4222-8222-222222222223",
+  audit: "22222222-2222-4222-8222-222222222224",
+  investigation: "22222222-2222-4222-8222-222222222225",
+} as const;
+
+const DEMO_STUDIO_EDGE_IDS = {
+  requestToPolicy: "33333333-3333-4333-8333-333333333331",
+  policyToApproval: "33333333-3333-4333-8333-333333333332",
+  approvalToAudit: "33333333-3333-4333-8333-333333333333",
+  auditToInvestigation: "33333333-3333-4333-8333-333333333334",
+} as const;
+
+export type DemoSeedScenarioClient = PrismaClient;
 
 export type SeedDemoScenarioInput = {
   readonly client: DemoSeedScenarioClient;
@@ -40,7 +59,182 @@ export type SeedDemoScenarioResult = {
   readonly governedRunId: typeof DEMO_SEED_GOVERNED_RUN_ID;
   readonly currentState: "WAITING_APPROVAL";
   readonly status: "WAITING_APPROVAL";
+  readonly workspaceSlug: typeof DEMO_STUDIO_WORKSPACE_SLUG;
+  readonly projectSlug: typeof DEMO_STUDIO_PROJECT_SLUG;
 };
+
+function demoStudioGraphSnapshot(projectId: string): GraphSnapshot {
+  return {
+    nodes: [
+      {
+        id: DEMO_STUDIO_NODE_IDS.request,
+        projectId,
+        kind: "flow-step",
+        label: "Request",
+        position: { x: 0, y: 0 },
+        data: { stage: "request" },
+        externalRefs: [],
+      },
+      {
+        id: DEMO_STUDIO_NODE_IDS.policy,
+        projectId,
+        kind: "flow-step",
+        label: "Policy",
+        position: { x: 220, y: 0 },
+        data: { stage: "policy" },
+        externalRefs: [],
+      },
+      {
+        id: DEMO_STUDIO_NODE_IDS.approval,
+        projectId,
+        kind: "flow-step",
+        label: "Approval",
+        position: { x: 440, y: 0 },
+        data: { stage: "approval" },
+        externalRefs: [],
+      },
+      {
+        id: DEMO_STUDIO_NODE_IDS.audit,
+        projectId,
+        kind: "flow-step",
+        label: "Audit",
+        position: { x: 660, y: 0 },
+        data: { stage: "audit" },
+        externalRefs: [],
+      },
+      {
+        id: DEMO_STUDIO_NODE_IDS.investigation,
+        projectId,
+        kind: "flow-step",
+        label: "Investigation",
+        position: { x: 880, y: 0 },
+        data: { stage: "investigation" },
+        externalRefs: [],
+      },
+    ],
+    edges: [
+      {
+        id: DEMO_STUDIO_EDGE_IDS.requestToPolicy,
+        projectId,
+        sourceNodeId: DEMO_STUDIO_NODE_IDS.request,
+        targetNodeId: DEMO_STUDIO_NODE_IDS.policy,
+        kind: "flows-to",
+        label: "classifies",
+        data: { ordered: true },
+        externalRefs: [],
+      },
+      {
+        id: DEMO_STUDIO_EDGE_IDS.policyToApproval,
+        projectId,
+        sourceNodeId: DEMO_STUDIO_NODE_IDS.policy,
+        targetNodeId: DEMO_STUDIO_NODE_IDS.approval,
+        kind: "flows-to",
+        label: "requires approval",
+        data: { ordered: true },
+        externalRefs: [],
+      },
+      {
+        id: DEMO_STUDIO_EDGE_IDS.approvalToAudit,
+        projectId,
+        sourceNodeId: DEMO_STUDIO_NODE_IDS.approval,
+        targetNodeId: DEMO_STUDIO_NODE_IDS.audit,
+        kind: "flows-to",
+        label: "records",
+        data: { ordered: true },
+        externalRefs: [],
+      },
+      {
+        id: DEMO_STUDIO_EDGE_IDS.auditToInvestigation,
+        projectId,
+        sourceNodeId: DEMO_STUDIO_NODE_IDS.audit,
+        targetNodeId: DEMO_STUDIO_NODE_IDS.investigation,
+        kind: "flows-to",
+        label: "investigates",
+        data: { ordered: true },
+        externalRefs: [],
+      },
+    ],
+    viewport: { x: 0, y: 0, zoom: 1 },
+  };
+}
+
+async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void> {
+  await client.appUser.upsert({
+    where: { emailNormalized: DEMO_STUDIO_USER_EMAIL },
+    update: {
+      email: DEMO_STUDIO_USER_EMAIL,
+      displayName: "Demo Studio Owner",
+      active: true,
+    },
+    create: {
+      id: DEMO_STUDIO_USER_ID,
+      email: DEMO_STUDIO_USER_EMAIL,
+      emailNormalized: DEMO_STUDIO_USER_EMAIL,
+      displayName: "Demo Studio Owner",
+      active: true,
+    },
+  });
+
+  const workspaces = createPrismaWorkspaceRepository(client);
+  const projects = createPrismaProjectRepository(client);
+  const existingWorkspace = await workspaces.findBySlug({
+    slug: DEMO_STUDIO_WORKSPACE_SLUG,
+  });
+  let projectId: string | null = null;
+
+  if (existingWorkspace === null) {
+    const created = await createWorkspaceProject({
+      client,
+      userId: DEMO_STUDIO_USER_ID,
+      workspace: {
+        slug: DEMO_STUDIO_WORKSPACE_SLUG,
+        name: "Acme Enterprise",
+        ownerIdentity: DEMO_STUDIO_USER_EMAIL,
+      },
+      project: {
+        slug: DEMO_STUDIO_PROJECT_SLUG,
+        name: "Governed Run Lifecycle",
+        description: "Read-only graph for the local governed-run demo.",
+        template: "graph",
+      },
+    });
+
+    if (!created.ok) {
+      throw new Error(created.safeReason);
+    }
+
+    projectId = created.projectId;
+  } else {
+    const existingProject = await projects.findBySlug({
+      workspaceId: existingWorkspace.id,
+      slug: DEMO_STUDIO_PROJECT_SLUG,
+    });
+
+    if (existingProject === null) {
+      const createdProject = await projects.create({
+        id: crypto.randomUUID(),
+        workspaceId: existingWorkspace.id,
+        slug: DEMO_STUDIO_PROJECT_SLUG,
+        name: "Governed Run Lifecycle",
+        description: "Read-only graph for the local governed-run demo.",
+        template: "graph",
+      });
+      projectId = createdProject.id;
+    } else {
+      projectId = existingProject.id;
+    }
+  }
+
+  if (projectId === null) {
+    throw new Error("Demo studio project was not resolved before graph seed.");
+  }
+
+  await persistGraphSnapshot({
+    client,
+    projectId,
+    snapshot: demoStudioGraphSnapshot(projectId),
+  });
+}
 
 export async function seedDemoScenario(
   input: SeedDemoScenarioInput,
@@ -235,10 +429,14 @@ export async function seedDemoScenario(
     },
   });
 
+  await seedDemoStudioGraph(input.client);
+
   return {
     tenantId,
     governedRunId: DEMO_SEED_GOVERNED_RUN_ID,
     currentState: "WAITING_APPROVAL",
     status: "WAITING_APPROVAL",
+    workspaceSlug: DEMO_STUDIO_WORKSPACE_SLUG,
+    projectSlug: DEMO_STUDIO_PROJECT_SLUG,
   };
 }

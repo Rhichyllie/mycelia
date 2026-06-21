@@ -3,33 +3,29 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const routePath = join(
-  process.cwd(),
-  "app",
-  "mycelia",
-  "investigation",
-  "page.tsx",
-);
-const routeHandlerPath = join(
-  process.cwd(),
-  "app",
-  "mycelia",
-  "investigation",
-  "route.ts",
-);
+const routePath = join(process.cwd(), "app", "mycelia", "investigations", "page.tsx");
+const legacyRoutePath = join(process.cwd(), "app", "mycelia", "investigation", "page.tsx");
+const routeHandlerPath = join(process.cwd(), "app", "mycelia", "investigations", "route.ts");
 
 function routeSource(): string {
   return readFileSync(routePath, "utf8");
 }
 
 describe("minimal investigation ui route safety", () => {
-  it("creates the live read-only investigation page route", () => {
+  it("creates the live read-only investigations page route", () => {
     const source = routeSource();
 
     expect(existsSync(routePath)).toBe(true);
-    expect(source).toContain("export default async function MyceliaInvestigationPage");
+    expect(source).toContain("export default async function MyceliaInvestigationsPage");
     expect(source).toContain("loadInvestigationTimeline");
     expect(source).toContain('export const dynamic = "force-dynamic"');
+  });
+
+  it("keeps the legacy investigation route as a redirect", () => {
+    const source = readFileSync(legacyRoutePath, "utf8");
+
+    expect(source).toContain("redirect");
+    expect(source).toContain("/mycelia/investigations");
   });
 
   it("does not create a route handler or API behavior", () => {

@@ -21,9 +21,9 @@ export type ResetDemoActionResult =
     };
 
 function revalidateDemoSurfaces(): void {
-  revalidatePath("/mycelia/demo");
-  revalidatePath("/mycelia/approval/decision");
-  revalidatePath("/mycelia/investigation");
+  revalidatePath("/mycelia/runs");
+  revalidatePath("/mycelia/approvals");
+  revalidatePath("/mycelia/investigations");
 }
 
 export async function createGovernedRequest(
@@ -38,13 +38,13 @@ export async function createGovernedRequest(
 
   if (!result.ok) {
     if (formData instanceof FormData) {
-      redirect(buildLiveOutcomeRedirectPath("/mycelia/demo", result));
+      redirect(buildLiveOutcomeRedirectPath("/mycelia/runs", result));
     }
 
     return result;
   }
 
-  revalidatePath("/mycelia/demo");
+  revalidatePath("/mycelia/runs");
 
   if (formData instanceof FormData) {
     return;
@@ -69,7 +69,7 @@ export async function resetDemo(
 
   if (!result.ok) {
     if (formData instanceof FormData) {
-      redirect(buildLiveOutcomeRedirectPath("/mycelia/demo", result));
+      redirect(buildLiveOutcomeRedirectPath("/mycelia/runs", result));
     }
 
     return result;
