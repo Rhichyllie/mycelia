@@ -5,8 +5,13 @@ import {
   type InvestigationTimelineEntry,
   type InvestigationTimelineReadyResult,
 } from "@/mycelia/runtime/investigation/load-investigation-timeline";
+import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
+import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
+import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
 
 export const dynamic = "force-dynamic";
+
+type LivePageSearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 const styles = {
   page: {
@@ -272,7 +277,14 @@ function renderReadyState(result: InvestigationTimelineReadyResult): ReactElemen
   );
 }
 
-export default async function MyceliaInvestigationPage() {
+export default async function MyceliaInvestigationPage({
+  searchParams,
+}: {
+  readonly searchParams?: LivePageSearchParams;
+}) {
+  const outcome = parseLiveOutcomeSearchParams(
+    searchParams === undefined ? undefined : await searchParams,
+  );
   const result = await loadInvestigationTimeline();
 
   return (
@@ -280,6 +292,8 @@ export default async function MyceliaInvestigationPage() {
       <div style={styles.banner}>
         Controlled Demo Environment -- fixture data, no production auth
       </div>
+      <LiveRouteNav currentStage="investigation" />
+      <LiveOutcomeBanner outcome={outcome} />
       {result.status === "EMPTY" ? renderEmptyState() : renderReadyState(result)}
     </main>
   );

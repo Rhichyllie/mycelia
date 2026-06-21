@@ -3,6 +3,9 @@ import type { CSSProperties, ReactElement } from "react";
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import { LIVE_DEMO_SCENARIO } from "@/mycelia/runtime/demo-scenario";
+import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
+import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
+import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
 import {
   createPrismaApprovalRequestRepository,
   type PrismaApprovalRequestRecord,
@@ -14,6 +17,8 @@ import {
 import { approveGovernedRequest, rejectGovernedRequest } from "./actions";
 
 export const dynamic = "force-dynamic";
+
+type LivePageSearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 type ApprovalDecisionLiveState =
   | {
@@ -311,14 +316,21 @@ function renderDecidedState(
         {renderDetail("Decided at", formatDecisionTime(approvalRequest.decidedAt))}
       </div>
       <div style={styles.hint}>
-        Next: LIVE-4 will read this run&apos;s full audit trail from the
-        investigation view.
+        The investigation view reads this run&apos;s full audit trail from local
+        SQLite now.
       </div>
     </section>
   );
 }
 
-export default async function MyceliaApprovalDecisionPage() {
+export default async function MyceliaApprovalDecisionPage({
+  searchParams,
+}: {
+  readonly searchParams?: LivePageSearchParams;
+}) {
+  const outcome = parseLiveOutcomeSearchParams(
+    searchParams === undefined ? undefined : await searchParams,
+  );
   const state = await loadApprovalDecisionState();
 
   return (
@@ -326,6 +338,8 @@ export default async function MyceliaApprovalDecisionPage() {
       <div id="approval-decision-title" style={styles.banner}>
         Controlled Demo Environment -- fixture data, no production auth
       </div>
+      <LiveRouteNav currentStage="approval" />
+      <LiveOutcomeBanner outcome={outcome} />
       {state.status === "EMPTY" ? renderEmptyState() : null}
       {state.status === "PENDING" ? renderPendingState(state) : null}
       {state.status === "DECIDED" ? renderDecidedState(state) : null}

@@ -46,13 +46,12 @@ export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
 ] as const;
 
 export const PRODUCT_SURFACE_SHELL_SAFETY_BADGES = [
-  "Static",
-  "Read-only",
-  "Descriptor-level",
-  "No runtime execution",
-  "No DB writes",
-  "No API calls",
-  "No external services",
+  "Local SQLite",
+  "Real persistence",
+  "Governed runtime",
+  "Local demo mode",
+  "No production auth",
+  "No cloud deployment",
 ] as const;
 
 export type ProductSurfaceShellNavItem = {
@@ -86,7 +85,7 @@ export function getProductSurfaceShellModel(): ProductSurfaceShellModel {
     nav_items: PRODUCT_SURFACE_SHELL_NAV_ITEMS,
     safety_badges: PRODUCT_SURFACE_SHELL_SAFETY_BADGES,
     footer_note:
-      "Current surfaces are product previews only. They do not execute runtime or mutate persisted data.",
+      "The governed-run demo lifecycle executes and persists locally in SQLite. These routes remain pre-production: no production auth gate or cloud deployment is active.",
   };
 }
 

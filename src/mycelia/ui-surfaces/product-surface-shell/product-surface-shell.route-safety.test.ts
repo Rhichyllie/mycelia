@@ -43,6 +43,8 @@ const executiveRoutePath = new URL(
 );
 const shellPath = new URL("./product-surface-shell.tsx", import.meta.url);
 
+const RETIRED_SOURCE_CODENAME = ["ma", "pia"].join("");
+
 const FORBIDDEN_SHELL_PATTERNS = [
   "dangerouslySetInnerHTML",
   "fetch(",
@@ -73,7 +75,7 @@ const FORBIDDEN_SHELL_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  RETIRED_SOURCE_CODENAME,
 ] as const;
 
 function source(fileUrl: URL): string {

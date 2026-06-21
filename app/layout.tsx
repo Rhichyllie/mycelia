@@ -6,7 +6,7 @@ import { ProductSurfaceShell } from "@/mycelia/ui-surfaces/product-surface-shell
 export const metadata: Metadata = {
   title: "MYCELIA",
   description:
-    "Governed operational intelligence and read-only descriptor-level demo surfaces.",
+    "Governed operational intelligence with a local SQLite-backed governed-run demo loop.",
 };
 
 export default function RootLayout({

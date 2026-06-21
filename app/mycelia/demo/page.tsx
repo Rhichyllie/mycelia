@@ -4,6 +4,9 @@ import { PilotDemoEndToEndSurface } from "@/mycelia/demo/pilot-demo-end-to-end";
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import { LIVE_DEMO_SCENARIO } from "@/mycelia/runtime/demo-scenario";
+import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
+import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
+import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
 import {
   createPrismaDemoReadRepository,
   type DemoPersistedRunSummary,
@@ -11,6 +14,8 @@ import {
 import { createGovernedRequest, resetDemo } from "./actions";
 
 export const dynamic = "force-dynamic";
+
+type LivePageSearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 type DemoLiveState =
   | {
@@ -212,7 +217,14 @@ function renderPersistedRun(state: DemoLiveState): ReactElement {
   );
 }
 
-export default async function MyceliaPilotDemoPage() {
+export default async function MyceliaPilotDemoPage({
+  searchParams,
+}: {
+  readonly searchParams?: LivePageSearchParams;
+}) {
+  const outcome = parseLiveOutcomeSearchParams(
+    searchParams === undefined ? undefined : await searchParams,
+  );
   const demoMode = getMyceliaDemoDatabaseConfig().demoMode;
   const liveState = await loadDemoLiveState();
 
@@ -222,6 +234,8 @@ export default async function MyceliaPilotDemoPage() {
         <div style={styles.banner}>
           Controlled Demo Environment -- fixture data, no production auth
         </div>
+        <LiveRouteNav currentStage="request" />
+        <LiveOutcomeBanner outcome={outcome} />
         <div style={styles.liveGrid}>
           <article style={styles.panel}>
             <p style={styles.eyebrow}>Seeded scenario</p>
@@ -244,7 +258,7 @@ export default async function MyceliaPilotDemoPage() {
               </form>
             ) : null}
             <div style={styles.hint}>
-              Next: LIVE-3 will decide approval/rejection.
+              The approval page can approve or reject the latest waiting run now; the investigation page reads the persisted trail after that decision.
             </div>
           </article>
 
