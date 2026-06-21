@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
@@ -10,6 +11,7 @@ import {
   type DecideApprovalRequestResult,
 } from "@/mycelia/runtime/governed-request/decide-approval-request";
 import { createPrismaDemoReadRepository } from "@/mycelia/runtime/repositories/prisma-demo-read.repository";
+import { buildLiveOutcomeRedirectPath } from "@/mycelia/runtime/ui/format-live-label";
 
 function noWaitingRunFailure(): DecideApprovalRequestResult {
   return {
@@ -49,6 +51,16 @@ export async function approveGovernedRequest(
   // The demo resolves the current waiting run on the server instead of trusting form input.
   const result = await decideLatestWaitingApprovalRun("APPROVE");
 
+  if (!result.ok) {
+    if (formData instanceof FormData) {
+      redirect(
+        buildLiveOutcomeRedirectPath("/mycelia/approval/decision", result),
+      );
+    }
+
+    return result;
+  }
+
   revalidatePath("/mycelia/approval/decision");
 
   if (formData instanceof FormData) {
@@ -67,6 +79,16 @@ export async function rejectGovernedRequest(
 ): Promise<DecideApprovalRequestResult | void> {
   // The demo resolves the current waiting run on the server instead of trusting form input.
   const result = await decideLatestWaitingApprovalRun("REJECT");
+
+  if (!result.ok) {
+    if (formData instanceof FormData) {
+      redirect(
+        buildLiveOutcomeRedirectPath("/mycelia/approval/decision", result),
+      );
+    }
+
+    return result;
+  }
 
   revalidatePath("/mycelia/approval/decision");
 

@@ -12,7 +12,7 @@ import {
 import { PRODUCT_SURFACE_INDEX_ITEMS } from "../../ui-surfaces/product-surface-index";
 
 const UNSAFE_SHELL_STRING_PATTERN =
-  /(@|https?:\/\/|www\.|[A-Za-z]:\\|\\\\|;|&&|\|\||`|\$\(|authorization|api[_-]?key|bearer|connection[_-]?string|credential|password|private[_-]?key|select\s|insert\s|update\s|delete\s|drop\s|sql|token)/i;
+  /(@|https?:\/\/|www\.|[A-Za-z]:\\|\\\\|;|&&|\|\||`|\$\(|authorization|api[_-]?key|bearer|connection[_-]?string|credential|password|private[_-]?key|select\s|insert\s|update\s|delete\s|drop\s|\bsql\b|token)/i;
 
 function collectStrings(input: unknown): string[] {
   if (typeof input === "string") {
@@ -93,12 +93,31 @@ describe("product surface shell", () => {
     );
   });
 
-  it("includes all safety badges", () => {
+  it("includes accurate local live-demo safety badges", () => {
     const model = getProductSurfaceShellModel();
 
-    for (const badge of PRODUCT_SURFACE_SHELL_SAFETY_BADGES) {
-      expect(model.safety_badges).toContain(badge);
-    }
+    expect(model.safety_badges).toEqual(PRODUCT_SURFACE_SHELL_SAFETY_BADGES);
+    expect(model.safety_badges).toEqual([
+      "Local SQLite",
+      "Real persistence",
+      "Governed runtime",
+      "Local demo mode",
+      "No production auth",
+      "No cloud deployment",
+    ]);
+    expect(model.safety_badges).not.toContain("Static");
+    expect(model.safety_badges).not.toContain("Read-only");
+    expect(model.safety_badges).not.toContain("No DB writes");
+    expect(model.safety_badges).not.toContain("No API calls");
+  });
+
+  it("describes the live local persistence boundary accurately", () => {
+    const model = getProductSurfaceShellModel();
+
+    expect(model.footer_note).toContain("executes and persists locally in SQLite");
+    expect(model.footer_note).toContain("pre-production");
+    expect(model.footer_note).not.toContain("do not execute runtime");
+    expect(model.footer_note).not.toContain("mutate persisted data");
   });
 
   it("creates a React element without mounting", () => {

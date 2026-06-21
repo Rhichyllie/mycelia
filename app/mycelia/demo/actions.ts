@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
@@ -9,6 +10,7 @@ import {
   createGovernedRequest as createGovernedRequestWritePath,
   type CreateGovernedRequestResult,
 } from "@/mycelia/runtime/governed-request/create-governed-request";
+import { buildLiveOutcomeRedirectPath } from "@/mycelia/runtime/ui/format-live-label";
 
 export type ResetDemoActionResult =
   | ResetDemoDatabaseResult
@@ -34,6 +36,14 @@ export async function createGovernedRequest(
   const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
   const result = await createGovernedRequestWritePath({ client: prisma, tenantId });
 
+  if (!result.ok) {
+    if (formData instanceof FormData) {
+      redirect(buildLiveOutcomeRedirectPath("/mycelia/demo", result));
+    }
+
+    return result;
+  }
+
   revalidatePath("/mycelia/demo");
 
   if (formData instanceof FormData) {
@@ -56,6 +66,14 @@ export async function resetDemo(
         status: "DEMO_MODE_DISABLED",
         safeReason: "Demo reset is disabled outside demo mode.",
       };
+
+  if (!result.ok) {
+    if (formData instanceof FormData) {
+      redirect(buildLiveOutcomeRedirectPath("/mycelia/demo", result));
+    }
+
+    return result;
+  }
 
   revalidateDemoSurfaces();
 
