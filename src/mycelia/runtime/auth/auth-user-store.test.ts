@@ -62,7 +62,7 @@ async function applyAuthFoundationMigrations(client: PrismaClient) {
 }
 
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-mapia-auth-"));
+  const root = mkdtempSync(join(tmpdir(), "mycelia-auth-"));
   const dbPath = join(root, "auth.sqlite");
   const client = new PrismaClient({
     datasources: {

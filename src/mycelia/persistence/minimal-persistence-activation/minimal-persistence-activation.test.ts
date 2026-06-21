@@ -21,6 +21,15 @@ const REQUIRED_MODELS = [
 
 const AUTH_FOUNDATION_MODELS = ["AppUser", "AuthIdentity"] as const;
 
+const ENGINE_FOUNDATION_MODELS = [
+  "Workspace",
+  "WorkspaceMembership",
+  "Project",
+  "Node",
+  "Edge",
+  "ExternalRef",
+] as const;
+
 const RUN_LINKED_MODELS = REQUIRED_MODELS.filter(
   (model) => model !== "GovernedRun",
 );
@@ -117,10 +126,11 @@ describe("minimal persistence activation", () => {
     ).toBe(true);
   });
 
-  it("keeps the six governance models and the auth foundation models", () => {
+  it("keeps the six governance models plus auth and engine foundation models", () => {
     expect(modelNames(schemaText())).toEqual([
       ...REQUIRED_MODELS,
       ...AUTH_FOUNDATION_MODELS,
+      ...ENGINE_FOUNDATION_MODELS,
     ]);
   });
 

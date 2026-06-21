@@ -46,13 +46,13 @@ type SessionUserWithAuthClaims = NonNullable<Session["user"]> & {
 type JwtWithAuthClaims = JWT & {
   authProvider?: unknown;
   authMode?: unknown;
-  mapiaSessionInvalid?: true;
-  mapiaSessionErrorCode?: string;
+  myceliaSessionInvalid?: true;
+  myceliaSessionErrorCode?: string;
 };
 
-type MapiaInvalidJwt = JWT & {
-  mapiaSessionInvalid: true;
-  mapiaSessionErrorCode: string;
+type MyceliaInvalidJwt = JWT & {
+  myceliaSessionInvalid: true;
+  myceliaSessionErrorCode: string;
 };
 
 function normalizeEmailClaim(input?: string | null) {
@@ -104,7 +104,7 @@ function buildDevCredentialsProvider() {
       return {
         id: normalizedEmail,
         email: normalizedEmail,
-        name: "MapIA Development Admin",
+        name: "MYCELIA Development Admin",
       };
     },
   });
@@ -147,7 +147,7 @@ function buildOidcProvider(): OAuthConfig<OidcProfile> {
           profile.preferred_username ??
           normalizedEmail ??
           subject ??
-          "MapIA User",
+          "MYCELIA User",
         image: profile.picture,
       };
     },
@@ -207,15 +207,15 @@ function buildProviderList(
   return [];
 }
 
-function buildInvalidJwtToken(errorCode: string): MapiaInvalidJwt {
+function buildInvalidJwtToken(errorCode: string): MyceliaInvalidJwt {
   return {
-    mapiaSessionInvalid: true,
-    mapiaSessionErrorCode: errorCode,
+    myceliaSessionInvalid: true,
+    myceliaSessionErrorCode: errorCode,
   };
 }
 
-function isInvalidJwtToken(token: JWT): token is MapiaInvalidJwt {
-  return (token as JwtWithAuthClaims).mapiaSessionInvalid === true;
+function isInvalidJwtToken(token: JWT): token is MyceliaInvalidJwt {
+  return (token as JwtWithAuthClaims).myceliaSessionInvalid === true;
 }
 
 export function getAuthOptions(): NextAuthOptions {
@@ -327,8 +327,8 @@ export function getAuthOptions(): NextAuthOptions {
           mutableToken.name = claimedUser.name;
           mutableToken.authProvider = authProvider;
           mutableToken.authMode = authMode.data;
-          delete mutableToken.mapiaSessionInvalid;
-          delete mutableToken.mapiaSessionErrorCode;
+          delete mutableToken.myceliaSessionInvalid;
+          delete mutableToken.myceliaSessionErrorCode;
           return token;
         }
 
