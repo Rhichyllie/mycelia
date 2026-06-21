@@ -1,4 +1,7 @@
-export type LiveOutcomeStatus = "FAILED_SAFE" | "DEMO_MODE_DISABLED";
+export type LiveOutcomeStatus =
+  | "FAILED_SAFE"
+  | "DEMO_MODE_DISABLED"
+  | "RUN_CREATED";
 
 export type LiveOutcome = {
   readonly status: LiveOutcomeStatus;
@@ -18,6 +21,7 @@ const LIVE_OUTCOME_SAFE_REASON_PARAM = "liveSafeReason";
 const STATUS_LABELS = {
   FAILED_SAFE: "The demo action stopped safely before completing.",
   DEMO_MODE_DISABLED: "Demo reset is disabled in this environment.",
+  RUN_CREATED: "The governed request was created.",
 } as const satisfies Record<LiveOutcomeStatus, string>;
 
 const REASON_LABELS = {
@@ -70,7 +74,11 @@ function hasKnownReasonCode(
 }
 
 function parseLiveOutcomeStatus(value: string | undefined): LiveOutcomeStatus | null {
-  if (value === "FAILED_SAFE" || value === "DEMO_MODE_DISABLED") {
+  if (
+    value === "FAILED_SAFE" ||
+    value === "DEMO_MODE_DISABLED" ||
+    value === "RUN_CREATED"
+  ) {
     return value;
   }
 
@@ -124,7 +132,7 @@ export function buildLiveOutcomeRedirectPath(
     params.set(LIVE_OUTCOME_SAFE_REASON_PARAM, outcome.safeReason);
   }
 
-  return `${path}?${params.toString()}`;
+  return `${path}${path.includes("?") ? "&" : "?"}${params.toString()}`;
 }
 
 export function formatLiveOutcomeTitle(status: LiveOutcomeStatus): string {

@@ -16,6 +16,10 @@ const styles = {
     marginTop: MYCELIA_TOKENS.spacing[4],
     padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
   },
+  successBanner: {
+    border: `1px solid ${MYCELIA_TOKENS.color.runtime.active}`,
+    background: MYCELIA_TOKENS.color.intent.successBg,
+  },
   title: {
     margin: 0,
     fontSize: "0.9rem",
@@ -37,6 +41,14 @@ const styles = {
   },
 } satisfies Record<string, CSSProperties>;
 
+function bannerStyle(outcome: LiveOutcome): CSSProperties {
+  if (outcome.status === "RUN_CREATED") {
+    return { ...styles.banner, ...styles.successBanner };
+  }
+
+  return styles.banner;
+}
+
 export function LiveOutcomeBanner({
   outcome,
 }: {
@@ -47,7 +59,7 @@ export function LiveOutcomeBanner({
   }
 
   return (
-    <div aria-live="polite" role="status" style={styles.banner}>
+    <div aria-live="polite" role="status" style={bannerStyle(outcome)}>
       <p style={styles.title}>{formatLiveOutcomeTitle(outcome.status)}</p>
       <p style={styles.text}>{formatLiveReasonLabel(outcome)}</p>
       <p style={styles.caption}>

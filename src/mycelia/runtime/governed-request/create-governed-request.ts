@@ -1,10 +1,13 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 
-import { admitGovernedRequest } from "../admission";
-import { classifyGovernedRequest } from "../classify";
+import { admitGovernedRequest, type AdmissionOutcome } from "../admission";
+import { classifyGovernedRequest, type DemoRiskLevel } from "../classify";
 import { prisma } from "../db/client";
 import { getMyceliaDemoDatabaseConfig } from "../db/demo-config";
-import { LIVE_DEMO_SCENARIO } from "../demo-scenario";
+import {
+  findLiveDemoScenarioByKey,
+  type LiveDemoScenarioKey,
+} from "../demo-scenario";
 import { createPrismaAdmissionRepository } from "../repositories/prisma-admission.repository";
 import { createPrismaAuditRepository } from "../repositories/prisma-audit.repository";
 import { createPrismaGovernedRunRepository } from "../repositories/prisma-governed-run.repository";
@@ -15,11 +18,16 @@ export type CreateGovernedRequestSuccess = {
   readonly ok: true;
   readonly runId: string;
   readonly correlationId: string;
-  readonly currentState: "WAITING_APPROVAL";
-  readonly status: "WAITING_APPROVAL";
-  readonly riskLevel: "MEDIUM";
-  readonly admissionOutcome: "APPROVAL_REQUIRED";
-  readonly lifecycleIntentHint: "WAITING_APPROVAL";
+  readonly scenarioKey: LiveDemoScenarioKey;
+  readonly scenarioTitle: string;
+  readonly currentState: CreateGovernedRequestFinalState;
+  readonly status: CreateGovernedRequestFinalState;
+  readonly riskLevel: CreateGovernedRequestRiskLevel;
+  readonly admissionOutcome: CreateGovernedRequestAdmissionOutcome;
+  readonly lifecycleIntentHint: CreateGovernedRequestFinalState;
+  readonly policyReasonCode: string;
+  readonly admissionReasonCode: string;
+  readonly safeSummary: string;
   readonly auditCount: 2;
 };
 
@@ -33,7 +41,23 @@ export type CreateGovernedRequestResult =
   | CreateGovernedRequestSuccess
   | CreateGovernedRequestFailure;
 
+export type CreateGovernedRequestRiskLevel = Exclude<
+  DemoRiskLevel,
+  "UNKNOWN"
+>;
+
+export type CreateGovernedRequestAdmissionOutcome = Exclude<
+  AdmissionOutcome,
+  "FAILED_SAFE"
+>;
+
+export type CreateGovernedRequestFinalState =
+  | "COMPLETED"
+  | "WAITING_APPROVAL"
+  | "REJECTED";
+
 export type CreateGovernedRequestInput = {
+  readonly scenarioKey: LiveDemoScenarioKey;
   readonly client?: PrismaClient;
   readonly tenantId?: string;
 };
@@ -51,17 +75,26 @@ function createRepositories(client: RuntimeTransactionClient) {
 }
 
 export async function createGovernedRequest(
-  input: CreateGovernedRequestInput = {},
+  input: CreateGovernedRequestInput,
 ): Promise<CreateGovernedRequestResult> {
   const client = input.client ?? prisma;
   const tenantId = input.tenantId ?? getMyceliaDemoDatabaseConfig().tenantId;
+  const scenario = findLiveDemoScenarioByKey(input.scenarioKey);
   const runId = crypto.randomUUID();
   const correlationId = crypto.randomUUID();
+
+  if (scenario === null) {
+    return {
+      ok: false,
+      status: "FAILED_SAFE",
+      safeReason:
+        "Selected fixture scenario was not recognized, so no run was created.",
+    };
+  }
 
   try {
     return await client.$transaction(async (tx) => {
       const repositories = createRepositories(tx);
-      const scenario = LIVE_DEMO_SCENARIO;
 
       await repositories.runs.create({
         id: runId,
@@ -103,8 +136,19 @@ export async function createGovernedRequest(
         purpose: scenario.purpose,
       });
 
-      if (classification.riskLevel !== "MEDIUM") {
-        throw new Error("LIVE-2 deterministic classifier failed closed.");
+      if (classification.riskLevel === "UNKNOWN") {
+        throw new Error("Deterministic classifier failed closed.");
+      }
+
+      const admission = admitGovernedRequest(classification.riskLevel);
+      const admissionOutcome = admission.outcome;
+      const lifecycleIntentHint = admission.lifecycleIntentHint;
+
+      if (
+        admissionOutcome === "FAILED_SAFE" ||
+        !isSupportedFinalState(lifecycleIntentHint)
+      ) {
+        throw new Error("Deterministic readiness check failed closed.");
       }
 
       await repositories.policy.createDecision({
@@ -112,29 +156,20 @@ export async function createGovernedRequest(
         tenantId,
         governedRunId: runId,
         riskLevel: classification.riskLevel,
-        outcome: "APPROVAL_REQUIRED",
+        outcome: admissionOutcome,
         reasonCode: classification.reasonCode,
         safeSummary: classification.safeSummary,
         policyRef: scenario.policyRef,
       });
 
-      const admission = admitGovernedRequest(classification.riskLevel);
-
-      if (
-        admission.outcome !== "APPROVAL_REQUIRED" ||
-        admission.lifecycleIntentHint !== "WAITING_APPROVAL"
-      ) {
-        throw new Error("LIVE-2 deterministic admission failed closed.");
-      }
-
       await repositories.admission.createDecision({
         id: crypto.randomUUID(),
         tenantId,
         governedRunId: runId,
-        outcome: admission.outcome,
+        outcome: admissionOutcome,
         reasonCode: admission.reasonCode,
         safeSummary: admission.safeSummary,
-        lifecycleIntentHint: admission.lifecycleIntentHint,
+        lifecycleIntentHint,
       });
 
       await repositories.audit.create({
@@ -145,8 +180,7 @@ export async function createGovernedRequest(
         requirement: "REQUIRED",
         recordKindHint: "POLICY_DECISION_RECORD",
         reasonCode: "POLICY_EVALUATED",
-        safeSummary:
-          "Policy evaluation classified the fixture as medium risk and required approval.",
+        safeSummary: `${classification.safeSummary} ${admission.safeSummary}`,
         subjectRef: runId,
         actorRef: scenario.requesterRef,
         evidenceRef: scenario.policyRef,
@@ -155,30 +189,34 @@ export async function createGovernedRequest(
       await repositories.runs.updateState({
         tenantId,
         id: runId,
-        currentState: admission.lifecycleIntentHint,
-        status: admission.lifecycleIntentHint,
+        currentState: lifecycleIntentHint,
+        status: lifecycleIntentHint,
       });
 
       await repositories.state.createSnapshot({
         id: crypto.randomUUID(),
         tenantId,
         governedRunId: runId,
-        state: admission.lifecycleIntentHint,
+        state: lifecycleIntentHint,
         sequence: 2,
-        reasonCode: "POLICY_REQUIRES_APPROVAL",
-        safeSummary:
-          "Medium risk policy evaluation moved the run to awaiting approval.",
+        reasonCode: admission.reasonCode,
+        safeSummary: admission.safeSummary,
       });
 
       return {
         ok: true,
         runId,
         correlationId,
-        currentState: "WAITING_APPROVAL",
-        status: "WAITING_APPROVAL",
+        scenarioKey: scenario.scenarioKey,
+        scenarioTitle: scenario.title,
+        currentState: lifecycleIntentHint,
+        status: lifecycleIntentHint,
         riskLevel: classification.riskLevel,
-        admissionOutcome: admission.outcome,
-        lifecycleIntentHint: "WAITING_APPROVAL",
+        admissionOutcome,
+        lifecycleIntentHint,
+        policyReasonCode: classification.reasonCode,
+        admissionReasonCode: admission.reasonCode,
+        safeSummary: admission.safeSummary,
         auditCount: 2,
       } satisfies CreateGovernedRequestSuccess;
     });
@@ -190,4 +228,14 @@ export async function createGovernedRequest(
         "Governed request creation failed before completing the atomic write path.",
     };
   }
+}
+
+function isSupportedFinalState(
+  value: string,
+): value is CreateGovernedRequestFinalState {
+  return (
+    value === "COMPLETED" ||
+    value === "WAITING_APPROVAL" ||
+    value === "REJECTED"
+  );
 }

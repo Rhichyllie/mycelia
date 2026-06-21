@@ -2,7 +2,11 @@ import type { CSSProperties, ReactElement } from "react";
 
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
-import { LIVE_DEMO_SCENARIO } from "@/mycelia/runtime/demo-scenario";
+import {
+  findLiveDemoScenarioByResourceRef,
+  LIVE_DEMO_SCENARIO,
+  LIVE_DEMO_SCENARIOS,
+} from "@/mycelia/runtime/demo-scenario";
 import {
   loadInvestigationTimeline,
   type InvestigationTimelineEntry,
@@ -112,6 +116,37 @@ const styles = {
     flexWrap: "wrap",
     gap: MYCELIA_TOKENS.spacing[3],
     marginTop: MYCELIA_TOKENS.spacing[4],
+  },
+  createForm: {
+    display: "grid",
+    gap: MYCELIA_TOKENS.spacing[4],
+    marginTop: MYCELIA_TOKENS.spacing[4],
+  },
+  scenarioFieldset: {
+    border: 0,
+    display: "grid",
+    gap: MYCELIA_TOKENS.spacing[3],
+    margin: 0,
+    padding: 0,
+  },
+  scenarioGrid: {
+    display: "grid",
+    gap: MYCELIA_TOKENS.spacing[3],
+  },
+  scenarioOption: {
+    alignItems: "flex-start",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    cursor: "pointer",
+    display: "grid",
+    gap: MYCELIA_TOKENS.spacing[2],
+    gridTemplateColumns: "auto minmax(0, 1fr)",
+    padding: MYCELIA_TOKENS.spacing[4],
+  },
+  scenarioRadio: {
+    accentColor: MYCELIA_TOKENS.color.brand.sage,
+    marginTop: MYCELIA_TOKENS.spacing[1],
   },
   primaryButton: {
     border: `1px solid ${MYCELIA_TOKENS.color.brand.sage}`,
@@ -292,6 +327,33 @@ function renderStatePill(state: string): ReactElement {
   );
 }
 
+function renderScenarioChoices(): ReactElement {
+  return (
+    <fieldset style={styles.scenarioFieldset}>
+      <legend style={styles.label}>Fixture scenario</legend>
+      <div style={styles.scenarioGrid}>
+        {LIVE_DEMO_SCENARIOS.map((scenario) => (
+          <label key={scenario.scenarioKey} style={styles.scenarioOption}>
+            <input
+              defaultChecked={
+                scenario.scenarioKey === LIVE_DEMO_SCENARIO.scenarioKey
+              }
+              name="scenarioKey"
+              style={styles.scenarioRadio}
+              type="radio"
+              value={scenario.scenarioKey}
+            />
+            <span>
+              <span style={styles.value}>{scenario.title}</span>
+              <span style={styles.smallText}>{scenario.choiceSummary}</span>
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
 function renderRunRow(
   summary: DemoPersistedRunSummary,
   selectedRun: DemoPersistedRunSummary["run"] | null,
@@ -372,6 +434,8 @@ function renderCaseFile(state: RunWorkspaceState): ReactElement {
 
   const { run, latestPolicy, latestAdmission, latestSnapshot, auditCount } =
     state.selected;
+  const scenario =
+    findLiveDemoScenarioByResourceRef(run.resourceRef) ?? LIVE_DEMO_SCENARIO;
   const approvalStatus =
     state.timeline?.approvalRequest?.status ??
     (run.currentState === "WAITING_APPROVAL" ? "Approval is required" : "Not requested");
@@ -379,10 +443,10 @@ function renderCaseFile(state: RunWorkspaceState): ReactElement {
   return (
     <section style={styles.panel}>
       <p style={styles.eyebrow}>Run Workspace</p>
-      <h1 style={styles.title}>{LIVE_DEMO_SCENARIO.title}</h1>
+      <h1 style={styles.title}>{scenario.title}</h1>
       <p style={styles.text}>{run.purpose}</p>
       <div style={styles.detailGrid}>
-        {renderDetail("Request summary", LIVE_DEMO_SCENARIO.fixtureSummary)}
+        {renderDetail("Request summary", scenario.fixtureSummary)}
         {renderDetail("Run scope", run.resourceRef)}
         {renderDetail("Affected systems", "Fixture document workspace")}
         {renderDetail("Requester", run.requesterRef)}
@@ -439,10 +503,12 @@ export default async function MyceliaRunsPage({
         <p style={styles.eyebrow}>New work</p>
         <h1 style={styles.title}>Start a governed request</h1>
         <p style={styles.text}>
-          Create a real local run from fixture metadata. Approval is required before this can proceed.
+          Choose a fixture scenario and create a real local run. The policy check
+          will complete, require approval, or deny based on the selected fixture metadata.
         </p>
-        <div style={styles.formRow}>
-          <form action={createGovernedRequest}>
+        <div style={styles.createForm}>
+          <form action={createGovernedRequest} style={styles.createForm}>
+            {renderScenarioChoices()}
             <button type="submit" style={styles.primaryButton}>
               Start governed request
             </button>

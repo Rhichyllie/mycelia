@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { createGovernedRequest } from "./create-governed-request";
 import { decideApprovalRequest } from "./decide-approval-request";
+import { LIVE_DEMO_SCENARIO } from "../demo-scenario";
 import { createPrismaApprovalRequestRepository } from "../repositories/prisma-approval-request.repository";
 import { createPrismaAuditRepository } from "../repositories/prisma-audit.repository";
 import { createPrismaGovernedRunRepository } from "../repositories/prisma-governed-run.repository";
@@ -65,7 +66,11 @@ afterEach(() => {
 });
 
 async function createWaitingApprovalFixture(client: PrismaClient, tenantId: string) {
-  const result = await createGovernedRequest({ client, tenantId });
+  const result = await createGovernedRequest({
+    client,
+    tenantId,
+    scenarioKey: LIVE_DEMO_SCENARIO.scenarioKey,
+  });
 
   if (!result.ok) {
     throw new Error(result.safeReason);
@@ -365,7 +370,11 @@ describe("LIVE-3 approval decision write path", () => {
     const tenantId = "tenant_live_3_ensure";
 
     try {
-      const created = await createGovernedRequest({ client, tenantId });
+      const created = await createGovernedRequest({
+        client,
+        tenantId,
+        scenarioKey: LIVE_DEMO_SCENARIO.scenarioKey,
+      });
 
       if (!created.ok) {
         throw new Error(created.safeReason);

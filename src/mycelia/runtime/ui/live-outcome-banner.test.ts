@@ -40,4 +40,22 @@ describe("live outcome banner", () => {
     expect(text).toContain("Create a governed request before asking the approval page");
     expect(text).not.toContain("NO_WAITING_APPROVAL_RUN");
   });
+
+  it("renders human-readable run creation reasoning", () => {
+    const element = LiveOutcomeBanner({
+      outcome: {
+        status: "RUN_CREATED",
+        reasonCode: "POLICY_ADMITTED_LOW_RISK",
+      },
+    });
+
+    expect(isValidElement(element)).toBe(true);
+
+    const text = collectText(element).join(" ");
+    expect(text).toContain("The governed request was created.");
+    expect(text).toContain(
+      "The policy check cleared the low-risk request without approval.",
+    );
+    expect(text).not.toContain("POLICY_ADMITTED_LOW_RISK");
+  });
 });
