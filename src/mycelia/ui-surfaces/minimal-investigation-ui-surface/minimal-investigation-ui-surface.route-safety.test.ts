@@ -18,6 +18,9 @@ describe("minimal investigation ui route safety", () => {
     expect(existsSync(routePath)).toBe(true);
     expect(source).toContain("export default async function MyceliaInvestigationsPage");
     expect(source).toContain("loadInvestigationTimeline");
+    expect(source).toContain("createPrismaGovernedRunRepository");
+    expect(source).toContain("listRecent");
+    expect(source).toContain("runId");
     expect(source).toContain('export const dynamic = "force-dynamic"');
   });
 
@@ -43,7 +46,9 @@ describe("minimal investigation ui route safety", () => {
     const source = routeSource();
 
     expect(source).toContain("Controlled Demo Environment");
-    expect(source).toContain("Chronological history");
+    expect(source).toContain("Run selector");
+    expect(source).toContain("Narrative timeline");
+    expect(source).toContain("Evidence records");
     expect(source).toContain("What MYCELIA controlled");
     expect(source).not.toContain("MinimalInvestigationUiSurface");
     expect(source).not.toContain("resolveInvestigationSelectionTarget");

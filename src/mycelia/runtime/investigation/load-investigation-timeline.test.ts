@@ -303,6 +303,7 @@ describe("LIVE-4 investigation timeline read model", () => {
     try {
       const first = await createWaitingApprovalRun(client, tenantId);
       const second = await createWaitingApprovalRun(client, tenantId);
+      const mostRecent = await loadInvestigationTimeline({ client, tenantId });
       const result = await loadInvestigationTimeline({
         client,
         tenantId,
@@ -310,13 +311,20 @@ describe("LIVE-4 investigation timeline read model", () => {
       });
 
       expect(first.runId).not.toBe(second.runId);
+      expect(mostRecent.status).toBe("READY");
       expect(result.status).toBe("READY");
+
+      if (mostRecent.status !== "READY") {
+        throw new Error("Expected READY most recent investigation timeline.");
+      }
 
       if (result.status !== "READY") {
         throw new Error("Expected READY investigation timeline.");
       }
 
+      expect(mostRecent.run.id).toBe(second.runId);
       expect(result.run.id).toBe(first.runId);
+      expect(result.run.id).not.toBe(mostRecent.run.id);
       expect(result.summary.finalState).toBe("WAITING_APPROVAL");
     } finally {
       await client.$disconnect();

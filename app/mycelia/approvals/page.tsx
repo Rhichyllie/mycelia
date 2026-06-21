@@ -571,7 +571,12 @@ function renderDecisionDetail(
         <h2 style={styles.sectionTitle}>Relevant evidence before the full trace</h2>
         {renderEvidencePreview(state.timeline)}
         <p style={styles.text}>
-          <a href="/mycelia/investigations" style={styles.link}>
+          <a
+            href={`/mycelia/investigations?runId=${encodeURIComponent(
+              approvalRequest.governedRunId,
+            )}`}
+            style={styles.link}
+          >
             Open full history and lineage
           </a>
         </p>
