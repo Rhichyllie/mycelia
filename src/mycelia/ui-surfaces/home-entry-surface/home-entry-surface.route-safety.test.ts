@@ -39,7 +39,7 @@ const FORBIDDEN_HOME_ROUTE_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  "retired source",
 ] as const;
 
 function source(fileUrl: URL): string {

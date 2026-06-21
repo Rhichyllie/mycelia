@@ -70,7 +70,7 @@ afterEach(() => {
 });
 
 describe("LIVE-1 local demo database activation", () => {
-  it("adds local DB scripts without changing guarded product commands", () => {
+  it("adds local DB scripts and activates standard product commands", () => {
     const scripts = packageJson().scripts;
 
     expect(scripts?.["db:generate"]).toBe("prisma generate");
@@ -80,9 +80,10 @@ describe("LIVE-1 local demo database activation", () => {
       "prisma migrate reset --force --skip-seed && pnpm db:seed",
     );
     expect(scripts?.["db:studio"]).toBe("prisma studio");
-    expect(scripts?.dev).toBe("node scripts/phase0-guard.mjs dev");
-    expect(scripts?.build).toBe("node scripts/phase0-guard.mjs build");
-    expect(scripts?.start).toBe("node scripts/phase0-guard.mjs start");
+    expect(scripts?.dev).toBe("next dev");
+    expect(scripts?.build).toBe("next build");
+    expect(scripts?.start).toBe("next start");
+    expect(scripts?.["demo:local"]).toBeUndefined();
   });
 
   it("documents safe local demo environment defaults", () => {

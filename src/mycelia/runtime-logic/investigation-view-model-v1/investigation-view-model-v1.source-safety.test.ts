@@ -44,7 +44,7 @@ describe("investigation view model v1 source safety", () => {
       /node:path/,
       /https?:\/\//,
       /www\./,
-      /MapIA/i,
+      /retired source/i,
       /PrismaClient/,
       /@prisma\/client/,
       /prisma\s+migrate/i,

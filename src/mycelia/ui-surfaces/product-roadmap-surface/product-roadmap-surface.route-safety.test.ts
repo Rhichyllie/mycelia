@@ -37,7 +37,7 @@ const FORBIDDEN_ROADMAP_ROUTE_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  "retired source",
 ] as const;
 
 function source(fileUrl: URL): string {

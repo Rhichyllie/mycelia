@@ -3,7 +3,9 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const routePath = join(
+const routePath = join(process.cwd(), "app", "mycelia", "approvals", "page.tsx");
+const actionPath = join(process.cwd(), "app", "mycelia", "approvals", "actions.ts");
+const legacyRoutePath = join(
   process.cwd(),
   "app",
   "mycelia",
@@ -11,35 +13,27 @@ const routePath = join(
   "decision",
   "page.tsx",
 );
-const actionPath = join(
-  process.cwd(),
-  "app",
-  "mycelia",
-  "approval",
-  "decision",
-  "actions.ts",
-);
-const routeHandlerPath = join(
-  process.cwd(),
-  "app",
-  "mycelia",
-  "approval",
-  "decision",
-  "route.ts",
-);
+const routeHandlerPath = join(process.cwd(), "app", "mycelia", "approvals", "route.ts");
 
 function routeSource(): string {
   return readFileSync(routePath, "utf8");
 }
 
 describe("approval decision route safety", () => {
-  it("creates the controlled approval decision page route", () => {
+  it("creates the controlled approvals page route", () => {
     const source = routeSource();
 
     expect(existsSync(routePath)).toBe(true);
     expect(source).toContain("export default async function MyceliaApprovalDecisionPage");
     expect(source).toContain("approveGovernedRequest");
     expect(source).toContain("rejectGovernedRequest");
+  });
+
+  it("keeps the legacy approval decision route as a redirect", () => {
+    const source = readFileSync(legacyRoutePath, "utf8");
+
+    expect(source).toContain("redirect");
+    expect(source).toContain("/mycelia/approvals");
   });
 
   it("does not create a route handler or API behavior", () => {

@@ -6,17 +6,17 @@ export const LIVE_ROUTE_NAV_ITEMS = [
   {
     stage: "request",
     label: "Request",
-    href: "/mycelia/demo",
+    href: "/mycelia/runs",
   },
   {
     stage: "approval",
     label: "Approval",
-    href: "/mycelia/approval/decision",
+    href: "/mycelia/approvals",
   },
   {
     stage: "investigation",
     label: "Investigation",
-    href: "/mycelia/investigation",
+    href: "/mycelia/investigations",
   },
 ] as const satisfies readonly {
   readonly stage: LiveRouteStage;

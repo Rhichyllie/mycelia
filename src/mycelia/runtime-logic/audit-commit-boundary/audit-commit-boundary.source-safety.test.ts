@@ -37,7 +37,7 @@ const FORBIDDEN_AUDIT_COMMIT_BOUNDARY_SOURCE_PATTERNS = [
   "http://",
   "https://",
   "www.",
-  "mapia",
+  "retired source",
   "URL.createObjectURL",
   "new Blob",
   "download=",

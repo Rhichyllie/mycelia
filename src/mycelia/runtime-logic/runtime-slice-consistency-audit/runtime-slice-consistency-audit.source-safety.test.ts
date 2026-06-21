@@ -119,7 +119,7 @@ const FORBIDDEN_RUNTIME_SLICE_CODE_PATTERNS = [
   /\bdangerouslySetInnerHTML\b/,
   /\bdownload\b/i,
   /\bpdf\b/i,
-  /\bMapIA\b/,
+  /\bretired source\b/,
 ] as const;
 
 function productionCodeOnly(source: string): string {

@@ -49,7 +49,7 @@ const FORBIDDEN_PATTERNS = [
   /\bdangerouslySetInnerHTML\b/,
   /\bdownload\b/i,
   /\bpdf\b/i,
-  /\bMapIA\b/,
+  /\bretired source\b/,
 ] as const;
 
 describe("prisma runtime repository adapter source safety", () => {

@@ -29,8 +29,8 @@ describe("governed request creation route safety", () => {
     const source = routeSource();
 
     expect(existsSync(routePath)).toBe(true);
-    expect(source).toContain("export default function MyceliaGovernedRequestCreationPage");
-    expect(source).toContain("GovernedRequestCreationSurface");
+    expect(source).toContain("redirect");
+    expect(source).toContain("/mycelia/runs");
   });
 
   it("does not create a route handler or API behavior", () => {
@@ -43,13 +43,14 @@ describe("governed request creation route safety", () => {
     expect(source).not.toContain("POST(");
   });
 
-  it("keeps the page static and non-mutating", () => {
+  it("keeps the legacy page as a narrow redirect", () => {
     const source = routeSource();
 
     expect(source).not.toContain("\"use client\"");
     expect(source).not.toContain("'use client'");
     expect(source).not.toContain("<form");
     expect(source).not.toContain("<button");
+    expect(source).toContain("redirect");
     expect(source).not.toContain("fetch(");
     expect(source).not.toContain("PrismaClient");
     expect(source).not.toContain("writeFile");

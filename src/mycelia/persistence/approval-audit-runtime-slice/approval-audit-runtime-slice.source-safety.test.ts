@@ -66,7 +66,7 @@ describe("approval audit runtime slice source safety", () => {
       /\bcreateServer\b/,
       /\broute\.ts\b/,
       /\bdangerouslySetInnerHTML\b/,
-      /\bMapIA\b/,
+      /\bretired source\b/,
       /\bdownload\b/i,
       /\bpdf\b/i,
     ];

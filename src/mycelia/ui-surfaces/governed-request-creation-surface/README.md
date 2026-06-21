@@ -9,4 +9,4 @@ leaking storage/runtime details into JSX.
 
 This module does not create API routes, persist records, call PrismaClient, query
 databases, execute runtime work, execute replay, call tools, call external
-services, emit events, create export/download/PDF behavior, or revive MapIA.
+services, emit events, create export/download/PDF behavior, or revive retired source.

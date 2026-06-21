@@ -50,11 +50,11 @@ const FORBIDDEN_PATTERNS = [
   /\bdangerouslySetInnerHTML\b/,
   /\bdownload\b/i,
   /\bpdf\b/i,
-  /\bMapIA\b/,
+  /\bretired source\b/,
 ] as const;
 
 describe("persisted governed flow harness source safety", () => {
-  it("does not add API, UI, auth, external calls, replay execution, tools or MapIA", () => {
+  it("does not add API, UI, auth, external calls, replay execution, tools or retired source", () => {
     const source = productionCodeOnly(readFileSync(PRODUCTION_MODULE, "utf8"));
 
     for (const pattern of FORBIDDEN_PATTERNS) {

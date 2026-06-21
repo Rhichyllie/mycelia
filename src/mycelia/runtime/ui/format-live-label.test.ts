@@ -41,13 +41,13 @@ describe("live label formatting", () => {
   });
 
   it("parses and builds live outcome query strings", () => {
-    const href = buildLiveOutcomeRedirectPath("/mycelia/approval/decision", {
+    const href = buildLiveOutcomeRedirectPath("/mycelia/approvals", {
       status: "FAILED_SAFE",
       reasonCode: "RUN_NOT_WAITING_APPROVAL",
     });
 
     expect(href).toBe(
-      "/mycelia/approval/decision?liveStatus=FAILED_SAFE&liveReasonCode=RUN_NOT_WAITING_APPROVAL",
+      "/mycelia/approvals?liveStatus=FAILED_SAFE&liveReasonCode=RUN_NOT_WAITING_APPROVAL",
     );
     expect(
       parseLiveOutcomeSearchParams({
