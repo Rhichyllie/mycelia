@@ -30,15 +30,15 @@ const REASON_LABELS = {
   APPROVAL_DECISION_FAILED:
     "The approval decision failed before the atomic write path completed.",
   POLICY_REQUIRES_APPROVAL:
-    "The policy evaluation requires a human approval step.",
+    "The policy check requires approval before this can proceed.",
   POLICY_ADMITTED_LOW_RISK:
-    "The policy evaluation admitted the low-risk request without approval.",
+    "The policy check cleared the low-risk request without approval.",
   POLICY_DENIED_HIGH_RISK:
-    "The policy evaluation blocked the high-risk request.",
+    "This request is blocked by policy.",
   POLICY_FAILED_SAFE_UNKNOWN_RISK:
-    "The policy evaluation stopped because the risk level was unknown.",
+    "The policy check stopped because the risk level was unknown.",
   RUN_CREATED: "The governed run was created from fixture metadata.",
-  POLICY_EVALUATED: "The policy evaluation was recorded for this governed run.",
+  POLICY_EVALUATED: "The policy check was recorded for this governed run.",
   APPROVAL_ACCEPTED: "The approval request was accepted and persisted.",
   APPROVAL_REJECTED: "The approval request was rejected and persisted.",
 } as const satisfies Record<string, string>;

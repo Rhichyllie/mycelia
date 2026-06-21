@@ -23,6 +23,12 @@ describe("live label formatting", () => {
     ).toBe(
       "The approval request is no longer pending, so the prior decision was preserved.",
     );
+    expect(
+      formatLiveReasonLabel({
+        status: "FAILED_SAFE",
+        reasonCode: "POLICY_EVALUATED",
+      }),
+    ).toBe("The policy check was recorded for this governed run.");
   });
 
   it("uses safe fallback text without exposing raw machine codes", () => {

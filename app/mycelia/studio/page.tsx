@@ -4,83 +4,88 @@ import {
   loadStudioGraph,
   type StudioGraphResult,
 } from "@/mycelia/runtime/studio/load-studio-graph";
+import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
 
 export const dynamic = "force-dynamic";
 
 const styles = {
   page: {
-    width: "min(1180px, calc(100% - 40px))",
+    width: MYCELIA_TOKENS.layout.pageWidth,
     margin: "0 auto",
-    padding: "34px 0 48px",
+    padding: MYCELIA_TOKENS.layout.pagePadding,
   },
   banner: {
-    border: "1px solid #a8c6b1",
-    borderRadius: "8px",
-    background: "#f1f8f2",
-    color: "#21382a",
-    padding: "14px 16px",
+    border: `1px solid ${MYCELIA_TOKENS.color.tenant.boundary}`,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.text.primary,
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
     fontSize: "0.92rem",
     fontWeight: 850,
   },
   section: {
-    border: "1px solid #d7e1d8",
-    borderRadius: "8px",
-    background: "#ffffff",
-    marginTop: "16px",
-    padding: "24px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.surface,
+    marginTop: MYCELIA_TOKENS.spacing[4],
+    padding: MYCELIA_TOKENS.spacing[6],
   },
   eyebrow: {
     margin: 0,
-    color: "#52685b",
-    fontSize: "0.76rem",
+    color: MYCELIA_TOKENS.color.brand.sage,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
   },
   title: {
-    margin: "8px 0 0",
-    color: "#17281f",
-    fontSize: "clamp(1.55rem, 2.4vw, 2.35rem)",
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.heading1,
     lineHeight: 1.15,
     letterSpacing: 0,
   },
   text: {
-    margin: "10px 0 0",
-    color: "#4e6156",
-    fontSize: "0.94rem",
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.secondary,
+    fontSize: MYCELIA_TOKENS.type.body,
     lineHeight: 1.6,
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
-    gap: "14px",
-    marginTop: "18px",
+    gap: MYCELIA_TOKENS.spacing[4],
+    marginTop: MYCELIA_TOKENS.spacing[5],
   },
   card: {
-    border: "1px solid #e0e8e1",
-    borderRadius: "8px",
-    background: "#fbfcfa",
-    padding: "14px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    padding: MYCELIA_TOKENS.spacing[4],
   },
   label: {
     margin: 0,
-    color: "#637468",
-    fontSize: "0.72rem",
+    color: MYCELIA_TOKENS.color.text.tertiary,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     textTransform: "uppercase",
   },
   value: {
-    margin: "6px 0 0",
-    color: "#1d3327",
-    fontSize: "0.92rem",
+    margin: `${MYCELIA_TOKENS.spacing[2]} 0 0`,
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.data,
     fontWeight: 780,
     overflowWrap: "anywhere",
   },
 } satisfies Record<string, CSSProperties>;
 
-function renderDetail(label: string, value: string | number): ReactElement {
+function renderDetail(
+  label: string,
+  value: string | number,
+  key?: string,
+): ReactElement {
   return (
-    <div style={styles.card}>
+    <div key={key} style={styles.card}>
       <p style={styles.label}>{label}</p>
       <p style={styles.value}>{value}</p>
     </div>
@@ -100,7 +105,9 @@ function renderEmptyState(): ReactElement {
   );
 }
 
-function renderReadyState(result: Extract<StudioGraphResult, { readonly status: "READY" }>): ReactElement {
+function renderReadyState(
+  result: Extract<StudioGraphResult, { readonly status: "READY" }>,
+): ReactElement {
   return (
     <>
       <section style={styles.section}>
@@ -123,7 +130,7 @@ function renderReadyState(result: Extract<StudioGraphResult, { readonly status: 
         <h2 style={styles.title}>Persisted graph nodes</h2>
         <div style={styles.grid}>
           {result.snapshot.nodes.map((node) =>
-            renderDetail(node.kind, node.label),
+            renderDetail(node.kind, node.label, node.id),
           )}
         </div>
       </section>
@@ -132,11 +139,19 @@ function renderReadyState(result: Extract<StudioGraphResult, { readonly status: 
         <h2 style={styles.title}>Persisted graph edges</h2>
         <div style={styles.grid}>
           {result.snapshot.edges.map((edge) => {
-            const source = result.snapshot.nodes.find((node) => node.id === edge.sourceNodeId);
-            const target = result.snapshot.nodes.find((node) => node.id === edge.targetNodeId);
+            const source = result.snapshot.nodes.find(
+              (node) => node.id === edge.sourceNodeId,
+            );
+            const target = result.snapshot.nodes.find(
+              (node) => node.id === edge.targetNodeId,
+            );
+
             return renderDetail(
               edge.kind,
-              `${source?.label ?? edge.sourceNodeId} -> ${target?.label ?? edge.targetNodeId}`,
+              `${source?.label ?? edge.sourceNodeId} -> ${
+                target?.label ?? edge.targetNodeId
+              }`,
+              edge.id,
             );
           })}
         </div>

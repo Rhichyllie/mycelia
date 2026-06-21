@@ -1,11 +1,13 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import { MYCELIA_TOKENS } from "./design-tokens";
+
 export type LiveRouteStage = "request" | "approval" | "investigation";
 
 export const LIVE_ROUTE_NAV_ITEMS = [
   {
     stage: "request",
-    label: "Request",
+    label: "Run",
     href: "/mycelia/runs",
   },
   {
@@ -26,29 +28,29 @@ export const LIVE_ROUTE_NAV_ITEMS = [
 
 const styles = {
   nav: {
-    border: "1px solid #d7e1d8",
-    borderRadius: "8px",
-    background: "#ffffff",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.surface,
     display: "flex",
     flexWrap: "wrap",
-    gap: "8px",
-    marginTop: "14px",
-    padding: "10px",
+    gap: MYCELIA_TOKENS.spacing[2],
+    marginTop: MYCELIA_TOKENS.spacing[4],
+    padding: MYCELIA_TOKENS.spacing[3],
   },
   link: {
-    border: "1px solid #c7d2c9",
-    borderRadius: "6px",
-    color: "#22342a",
-    background: "#fbfcfa",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.md,
+    color: MYCELIA_TOKENS.color.text.secondary,
+    background: MYCELIA_TOKENS.color.bg.panel,
     padding: "8px 11px",
     fontSize: "0.84rem",
     fontWeight: 820,
     textDecoration: "none",
   },
   activeLink: {
-    border: "1px solid #27603a",
-    background: "#245b37",
-    color: "#ffffff",
+    border: MYCELIA_TOKENS.border.strong,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.brand.sage,
   },
 } satisfies Record<string, CSSProperties>;
 

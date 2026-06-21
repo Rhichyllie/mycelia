@@ -3,6 +3,7 @@ import type { CSSProperties, ReactElement } from "react";
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import { LIVE_DEMO_SCENARIO } from "@/mycelia/runtime/demo-scenario";
+import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
 import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
 import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
 import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
@@ -37,110 +38,110 @@ type ApprovalDecisionLiveState =
 
 const styles = {
   page: {
-    width: "min(1180px, calc(100% - 40px))",
+    width: MYCELIA_TOKENS.layout.pageWidth,
     margin: "0 auto",
-    padding: "34px 0 48px",
+    padding: MYCELIA_TOKENS.layout.pagePadding,
   },
   banner: {
-    border: "1px solid #a8c6b1",
-    borderRadius: "8px",
-    background: "#f1f8f2",
-    color: "#21382a",
-    padding: "14px 16px",
+    border: `1px solid ${MYCELIA_TOKENS.color.tenant.boundary}`,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.text.primary,
+    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
     fontSize: "0.92rem",
     fontWeight: 850,
   },
   hero: {
-    border: "1px solid #d7e1d8",
-    borderRadius: "8px",
-    background: "#ffffff",
-    marginTop: "16px",
-    padding: "24px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.surface,
+    marginTop: MYCELIA_TOKENS.spacing[4],
+    padding: MYCELIA_TOKENS.spacing[6],
   },
   eyebrow: {
     margin: 0,
-    color: "#52685b",
-    fontSize: "0.76rem",
+    color: MYCELIA_TOKENS.color.brand.sage,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
   },
   title: {
     margin: "8px 0 0",
-    color: "#17281f",
-    fontSize: "clamp(1.55rem, 2.4vw, 2.35rem)",
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.heading1,
     lineHeight: 1.15,
     letterSpacing: 0,
   },
   text: {
     margin: "10px 0 0",
-    color: "#4e6156",
-    fontSize: "0.94rem",
+    color: MYCELIA_TOKENS.color.text.secondary,
+    fontSize: MYCELIA_TOKENS.type.body,
     lineHeight: 1.6,
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
-    gap: "14px",
-    marginTop: "18px",
+    gap: MYCELIA_TOKENS.spacing[4],
+    marginTop: MYCELIA_TOKENS.spacing[5],
   },
   detail: {
-    border: "1px solid #e0e8e1",
-    borderRadius: "8px",
-    background: "#fbfcfa",
-    padding: "12px",
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.bg.panel,
+    padding: MYCELIA_TOKENS.spacing[3],
   },
   label: {
     margin: 0,
-    color: "#637468",
-    fontSize: "0.72rem",
+    color: MYCELIA_TOKENS.color.text.tertiary,
+    fontSize: MYCELIA_TOKENS.type.label,
     fontWeight: 850,
     textTransform: "uppercase",
   },
   value: {
     margin: "5px 0 0",
-    color: "#1d3327",
-    fontSize: "0.9rem",
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontSize: MYCELIA_TOKENS.type.data,
     fontWeight: 780,
     overflowWrap: "anywhere",
   },
   actionRow: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "10px",
-    marginTop: "18px",
+    gap: MYCELIA_TOKENS.spacing[3],
+    marginTop: MYCELIA_TOKENS.spacing[5],
   },
   approveButton: {
-    border: "1px solid #27603a",
-    borderRadius: "6px",
-    background: "#245b37",
-    color: "#ffffff",
+    border: `1px solid ${MYCELIA_TOKENS.color.state.success}`,
+    borderRadius: MYCELIA_TOKENS.radius.md,
+    background: MYCELIA_TOKENS.color.intent.successBg,
+    color: MYCELIA_TOKENS.color.state.success,
     cursor: "pointer",
     fontSize: "0.92rem",
     fontWeight: 850,
     padding: "11px 16px",
   },
   rejectButton: {
-    border: "1px solid #8a3434",
-    borderRadius: "6px",
-    background: "#7a2f2f",
-    color: "#ffffff",
+    border: `1px solid ${MYCELIA_TOKENS.color.state.danger}`,
+    borderRadius: MYCELIA_TOKENS.radius.md,
+    background: MYCELIA_TOKENS.color.intent.dangerBg,
+    color: MYCELIA_TOKENS.color.state.danger,
     cursor: "pointer",
     fontSize: "0.92rem",
     fontWeight: 850,
     padding: "11px 16px",
   },
   link: {
-    color: "#245b37",
+    color: MYCELIA_TOKENS.color.brand.sage,
     fontWeight: 850,
   },
   hint: {
-    border: "1px solid #d9c48d",
-    borderRadius: "8px",
-    background: "#fff9e8",
-    color: "#604812",
-    marginTop: "18px",
-    padding: "12px",
+    border: `1px solid ${MYCELIA_TOKENS.color.policy.requiresApproval}`,
+    borderRadius: MYCELIA_TOKENS.radius.panel,
+    background: MYCELIA_TOKENS.color.intent.warningBg,
+    color: MYCELIA_TOKENS.color.text.primary,
+    marginTop: MYCELIA_TOKENS.spacing[5],
+    padding: MYCELIA_TOKENS.spacing[3],
     fontSize: "0.88rem",
     fontWeight: 760,
     lineHeight: 1.45,
@@ -233,10 +234,10 @@ function renderRunContext(
     <div style={styles.grid}>
       {renderDetail("Run", shortId(run.id))}
       {renderDetail("Current state", run.currentState)}
-      {renderDetail("Risk", latestPolicy?.riskLevel ?? "Not evaluated")}
-      {renderDetail("Policy", latestPolicy?.safeSummary ?? "Pending")}
-      {renderDetail("Admission", latestAdmission?.safeSummary ?? "Pending")}
-      {renderDetail("Audit records", auditCount)}
+      {renderDetail("Risk level", latestPolicy?.riskLevel ?? "Not checked")}
+      {renderDetail("Policy check", latestPolicy?.safeSummary ?? "Pending")}
+      {renderDetail("Readiness check", latestAdmission?.safeSummary ?? "Pending")}
+      {renderDetail("Evidence records", auditCount)}
       {renderDetail(
         "Latest snapshot",
         latestSnapshot === null
@@ -252,16 +253,16 @@ function renderRunContext(
 function renderEmptyState(): ReactElement {
   return (
     <section aria-label="No approval waiting" style={styles.hero}>
-      <p style={styles.eyebrow}>Approval decision</p>
-      <h1 style={styles.title}>No governed request is currently awaiting approval</h1>
+      <p style={styles.eyebrow}>Approval queue</p>
+      <h1 style={styles.title}>No run is waiting for approval</h1>
       <p style={styles.text}>
         Create a governed request from the controlled demo scenario first. The
-        approval decision page only renders controls for a persisted run that is
-        already waiting for approval.
+        approvals page only renders controls for a persisted run that is already
+        waiting for approval.
       </p>
       <p style={styles.text}>
         <a href="/mycelia/runs" style={styles.link}>
-          Return to the demo request flow
+          Return to Runs
         </a>
       </p>
     </section>
@@ -273,11 +274,11 @@ function renderPendingState(
 ): ReactElement {
   return (
     <section aria-label="Pending approval decision" style={styles.hero}>
-      <p style={styles.eyebrow}>Approval decision required</p>
+      <p style={styles.eyebrow}>Approval required</p>
       <h1 style={styles.title}>{LIVE_DEMO_SCENARIO.title}</h1>
       <p style={styles.text}>
-        The medium-risk fixture reached the approval gate. Decide whether the
-        governed request may continue, using only persisted local demo records.
+        Approval is required before this can proceed. Approve or reject the run
+        using only persisted local demo records.
       </p>
       {renderRunContext(state.summary, state.approvalRequest)}
       <div style={styles.actionRow}>
@@ -303,10 +304,10 @@ function renderDecidedState(
 
   return (
     <section aria-label="Persisted approval decision" style={styles.hero}>
-      <p style={styles.eyebrow}>Approval decided</p>
+      <p style={styles.eyebrow}>Approval complete</p>
       <h1 style={styles.title}>{approvalRequest.status}</h1>
       <p style={styles.text}>
-        {approvalRequest.safeDecisionSummary ?? "The approval decision was persisted."}
+        {approvalRequest.safeDecisionSummary ?? "The approval result was persisted."}
       </p>
       {renderRunContext(state.summary, approvalRequest)}
       <div style={styles.grid}>
@@ -316,7 +317,7 @@ function renderDecidedState(
         {renderDetail("Decided at", formatDecisionTime(approvalRequest.decidedAt))}
       </div>
       <div style={styles.hint}>
-        The investigation view reads this run&apos;s full audit trail from local
+        The investigation view reads this run&apos;s full evidence trail from local
         SQLite now.
       </div>
     </section>
@@ -336,7 +337,7 @@ export default async function MyceliaApprovalDecisionPage({
   return (
     <main aria-labelledby="approval-decision-title" style={styles.page}>
       <div id="approval-decision-title" style={styles.banner}>
-        Controlled Demo Environment -- fixture data, no production auth
+        Controlled demo environment -- fixture data, no production auth
       </div>
       <LiveRouteNav currentStage="approval" />
       <LiveOutcomeBanner outcome={outcome} />

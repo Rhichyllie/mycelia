@@ -54,13 +54,13 @@ describe("product information App Router surface safety", () => {
     expect(existsSync(routePath)).toBe(true);
   });
 
-  it("routes to the ProductInformationSurface view", () => {
+  it("routes to the tokenized About index for secondary product story pages", () => {
     const routeSource = source(routePath);
 
-    expect(routeSource).toContain("ProductInformationSurface");
-    expect(routeSource).toContain(
-      "@/mycelia/ui-surfaces/product-information-surface",
-    );
+    expect(routeSource).toContain("MYCELIA_TOKENS");
+    expect(routeSource).toContain("/mycelia/static-demo");
+    expect(routeSource).toContain("/mycelia/walkthrough");
+    expect(routeSource).toContain("/mycelia/roadmap");
   });
 
   it("keeps the /mycelia/about route free of unsafe runtime behavior", () => {

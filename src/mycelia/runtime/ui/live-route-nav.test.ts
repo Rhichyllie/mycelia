@@ -45,11 +45,11 @@ describe("live route nav", () => {
     const anchors = collectAnchors(LiveRouteNav({ currentStage: "approval" }));
 
     expect(anchors.map((anchor) => anchor.text)).toEqual([
-      "Request",
+      "Run",
       "Approval",
       "Investigation",
     ]);
     expect(anchors.find((anchor) => anchor.text === "Approval")?.current).toBe("page");
-    expect(anchors.find((anchor) => anchor.text === "Request")?.current).toBeUndefined();
+    expect(anchors.find((anchor) => anchor.text === "Run")?.current).toBeUndefined();
   });
 });

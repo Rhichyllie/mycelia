@@ -293,4 +293,31 @@ describe("LIVE-4 investigation timeline read model", () => {
       await client.$disconnect();
     }
   });
+
+  it("loads a specific run when a runId is provided", async () => {
+    const { client } = await createTempClient();
+    const tenantId = "tenant_live_4_specific_run";
+
+    try {
+      const first = await createWaitingApprovalRun(client, tenantId);
+      const second = await createWaitingApprovalRun(client, tenantId);
+      const result = await loadInvestigationTimeline({
+        client,
+        tenantId,
+        runId: first.runId,
+      });
+
+      expect(first.runId).not.toBe(second.runId);
+      expect(result.status).toBe("READY");
+
+      if (result.status !== "READY") {
+        throw new Error("Expected READY investigation timeline.");
+      }
+
+      expect(result.run.id).toBe(first.runId);
+      expect(result.summary.finalState).toBe("WAITING_APPROVAL");
+    } finally {
+      await client.$disconnect();
+    }
+  });
 });
