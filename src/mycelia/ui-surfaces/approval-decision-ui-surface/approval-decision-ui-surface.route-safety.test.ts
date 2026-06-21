@@ -46,11 +46,17 @@ describe("approval decision route safety", () => {
     expect(source).not.toContain("POST(");
   });
 
-  it("keeps the route scoped to the LIVE-3 approval decision actions", () => {
+  it("keeps the route scoped to the LIVE-9 approval decision center actions", () => {
     const source = routeSource();
 
     expect(source).not.toContain("\"use client\"");
     expect(source).not.toContain("'use client'");
+    expect(source).toContain("listPendingForTenant");
+    expect(source).toContain("loadInvestigationTimeline");
+    expect(source).toContain("approvalId");
+    expect(source).toContain("safeDecisionSummary");
+    expect(source).toContain("Rejection rationale");
+    expect(source).toContain("<textarea");
     expect(source).toContain("<form action={approveGovernedRequest}");
     expect(source).toContain("<form action={rejectGovernedRequest}");
     expect(source).toContain("Approve");
@@ -71,6 +77,8 @@ describe("approval decision route safety", () => {
     expect(source).toContain('"use server"');
     expect(source).toContain("approveGovernedRequest");
     expect(source).toContain("rejectGovernedRequest");
+    expect(source).toContain("APPROVAL_RATIONALE_REQUIRED");
+    expect(source).toContain("safeDecisionSummary");
     expect(source).not.toMatch(/route\.ts|NextRequest|Response\.json/i);
     expect(source).not.toMatch(/fetch\s*\(/i);
     expect(source).not.toMatch(/cookies\s*\(|headers\s*\(|auth\s*\(/i);

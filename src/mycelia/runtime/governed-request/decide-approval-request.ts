@@ -34,6 +34,7 @@ export type DecideApprovalRequestFailure = {
     | "NO_WAITING_APPROVAL_RUN"
     | "RUN_NOT_WAITING_APPROVAL"
     | "APPROVAL_REQUEST_NOT_PENDING"
+    | "APPROVAL_RATIONALE_REQUIRED"
     | "APPROVAL_DECISION_FAILED";
   readonly safeReason: string;
 };
@@ -45,6 +46,7 @@ export type DecideApprovalRequestResult =
 export type DecideApprovalRequestInput = {
   readonly runId: string;
   readonly decision: ApprovalDecisionOutcome;
+  readonly safeDecisionSummary?: string;
   readonly client?: PrismaClient;
   readonly tenantId?: string;
 };
@@ -94,12 +96,32 @@ function decisionSpec(decision: ApprovalDecisionOutcome): {
   };
 }
 
+function normalizeSafeDecisionSummary(value: string | undefined): string | null {
+  const trimmed = value?.trim();
+
+  if (!trimmed) {
+    return null;
+  }
+
+  return trimmed.slice(0, 500);
+}
+
 export async function decideApprovalRequest(
   input: DecideApprovalRequestInput,
 ): Promise<DecideApprovalRequestResult> {
   const client = input.client ?? prisma;
   const tenantId = input.tenantId ?? getMyceliaDemoDatabaseConfig().tenantId;
   const { approverRef } = getMyceliaDemoDatabaseConfig();
+  const requestedSummary = normalizeSafeDecisionSummary(
+    input.safeDecisionSummary,
+  );
+
+  if (input.decision === "REJECT" && requestedSummary === null) {
+    return failClosed(
+      "APPROVAL_RATIONALE_REQUIRED",
+      "Rejecting an approval request requires a rationale.",
+    );
+  }
 
   try {
     return await client.$transaction(async (tx) => {
@@ -133,6 +155,7 @@ export async function decideApprovalRequest(
       }
 
       const spec = decisionSpec(input.decision);
+      const safeDecisionSummary = requestedSummary ?? spec.safeSummary;
       const decidedAt = new Date();
       const updatedApproval = await repositories.approvals.updateDecision({
         tenantId,
@@ -140,7 +163,7 @@ export async function decideApprovalRequest(
         status: spec.finalState,
         decisionOutcome: input.decision,
         decisionReasonCode: spec.reasonCode,
-        safeDecisionSummary: spec.safeSummary,
+        safeDecisionSummary,
         approverRef,
         decidedAt,
       });
@@ -153,7 +176,7 @@ export async function decideApprovalRequest(
         requirement: "REQUIRED",
         recordKindHint: "APPROVAL_REQUEST",
         reasonCode: spec.reasonCode,
-        safeSummary: spec.safeSummary,
+        safeSummary: safeDecisionSummary,
         subjectRef: input.runId,
         actorRef: approverRef,
         evidenceRef: approvalRequest.id,
@@ -173,7 +196,7 @@ export async function decideApprovalRequest(
         state: spec.finalState,
         sequence: 3,
         reasonCode: spec.reasonCode,
-        safeSummary: spec.safeSummary,
+        safeSummary: safeDecisionSummary,
       });
 
       return {
@@ -185,7 +208,7 @@ export async function decideApprovalRequest(
         approvalStatus: spec.finalState,
         decisionOutcome: input.decision,
         decisionReasonCode: spec.reasonCode,
-        safeDecisionSummary: spec.safeSummary,
+        safeDecisionSummary,
         approverRef,
         decidedAt: updatedApproval.decidedAt ?? decidedAt,
       } satisfies DecideApprovalRequestSuccess;

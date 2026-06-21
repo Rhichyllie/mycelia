@@ -28,6 +28,11 @@ export type UpdateApprovalRequestDecisionInput = {
   readonly decidedAt: Date;
 };
 
+export type ListPendingApprovalRequestsInput = {
+  readonly tenantId: string;
+  readonly take: number;
+};
+
 export function createPrismaApprovalRequestRepository(
   client: PrismaApprovalRequestRepositoryClient = prisma,
 ) {
@@ -48,6 +53,29 @@ export function createPrismaApprovalRequestRepository(
 
   return {
     findForRun,
+    findById(input: {
+      readonly tenantId: string;
+      readonly id: string;
+    }): Promise<ApprovalRequest | null> {
+      return client.approvalRequest.findFirst({
+        where: {
+          id: input.id,
+          tenantId: input.tenantId,
+        },
+      });
+    },
+    listPendingForTenant(
+      input: ListPendingApprovalRequestsInput,
+    ): Promise<ApprovalRequest[]> {
+      return client.approvalRequest.findMany({
+        where: {
+          tenantId: input.tenantId,
+          status: "PENDING",
+        },
+        orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+        take: input.take,
+      });
+    },
     async findOrCreateForRun(
       input: TenantScopedRunInput,
     ): Promise<ApprovalRequest | null> {

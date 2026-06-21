@@ -154,6 +154,10 @@ describe("LIVE-6 commercial demo loop smoke test", () => {
           tenantId,
           runId: created.runId,
           decision,
+          safeDecisionSummary:
+            decision === "APPROVE"
+              ? "Approved after reviewing the local demo evidence preview."
+              : "Rejected after reviewing the local demo evidence preview.",
         });
 
         expect(decided).toMatchObject({
