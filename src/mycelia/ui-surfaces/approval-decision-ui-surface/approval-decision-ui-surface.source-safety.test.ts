@@ -136,13 +136,13 @@ describe("approval decision source safety", () => {
         "--name-only",
         "--",
         "prisma/schema.prisma",
-        "prisma/migrations/000001_minimal_runtime_slice/migration.sql",
+        "legacy/sqlite-migrations/000001_minimal_runtime_slice/migration.sql",
       ],
       { encoding: "utf8" },
     );
 
     expect(packageStatus.trim()).toBe("");
-    expect(schemaDiff).not.toContain("prisma/migrations/000001_minimal_runtime_slice/migration.sql");
+    expect(schemaDiff).not.toContain("legacy/sqlite-migrations/000001_minimal_runtime_slice/migration.sql");
   });
 
   it("does not create unmanaged database files in the repository", () => {

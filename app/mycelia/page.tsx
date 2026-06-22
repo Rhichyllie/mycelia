@@ -346,7 +346,7 @@ export default async function MyceliaControlCenterPage() {
   return (
     <main aria-labelledby="control-center-title" style={styles.page}>
       <div style={styles.banner}>
-        Live local product environment -- SQLite persistence, controlled run workspace, demo tenant
+        Live local product environment -- PostgreSQL persistence, controlled run workspace, demo tenant
       </div>
       <section style={styles.hero}>
         <p style={styles.eyebrow}>Control Center</p>

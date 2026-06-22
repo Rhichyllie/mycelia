@@ -60,11 +60,11 @@ export const MinimalPersistenceActivationSchema = z
     name: z.literal(MINIMAL_PERSISTENCE_ACTIVATION_NAME),
     status: z.literal(MINIMAL_PERSISTENCE_ACTIVATION_STATUS),
     verdict: MinimalPersistenceActivationVerdictSchema,
-    datasource_provider: z.literal("sqlite"),
+    datasource_provider: z.literal("postgresql"),
     datasource_url_env: z.literal("DATABASE_URL"),
     schema_path: z.literal("prisma/schema.prisma"),
     migration_path: z.literal(
-      "prisma/migrations/000001_minimal_runtime_slice/migration.sql",
+      "prisma/migrations/000001_postgres_baseline/migration.sql",
     ),
     activated_records: z.array(MinimalPersistenceRecordSchema).length(6),
     intentionally_excluded_records: z.array(z.string().min(1).max(120)).min(1),
@@ -215,11 +215,11 @@ export const MINIMAL_PERSISTENCE_ACTIVATION = {
   name: MINIMAL_PERSISTENCE_ACTIVATION_NAME,
   status: MINIMAL_PERSISTENCE_ACTIVATION_STATUS,
   verdict: "ACTIVE_SCHEMA_CONTRACT",
-  datasource_provider: "sqlite",
+  datasource_provider: "postgresql",
   datasource_url_env: "DATABASE_URL",
   schema_path: "prisma/schema.prisma",
   migration_path:
-    "prisma/migrations/000001_minimal_runtime_slice/migration.sql",
+    "prisma/migrations/000001_postgres_baseline/migration.sql",
   activated_records: ACTIVATED_RECORDS,
   intentionally_excluded_records: [
     "User",
@@ -257,7 +257,7 @@ export const MINIMAL_PERSISTENCE_ACTIVATION = {
   ],
   next_phase_boundary: "3B Runtime Repository Layer",
   safe_summary:
-    "Phase 3A activates only the Prisma schema and migration contract for the six minimal governed runtime records; application persistence operations remain deferred.",
+    "The original minimal governed runtime records are now part of the PostgreSQL baseline, with tenant-scoped persistence active through the live repository layer.",
 } as const;
 
 export function getMinimalPersistenceActivation():

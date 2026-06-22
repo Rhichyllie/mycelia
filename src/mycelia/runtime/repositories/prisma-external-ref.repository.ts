@@ -11,6 +11,7 @@ export type PrismaExternalRefRepositoryClient = Pick<PrismaClient, "externalRef"
 
 export type CreateExternalRefInput = {
   readonly id: string;
+  readonly tenantId: string;
   readonly projectId: string;
   readonly nodeId?: string | null;
   readonly edgeId?: string | null;
@@ -34,6 +35,7 @@ export function createPrismaExternalRefRepository(
           await client.externalRef.create({
             data: {
               id: input.id,
+              tenantId: input.tenantId,
               projectId: input.projectId,
               nodeId: input.nodeId ?? null,
               edgeId: input.edgeId ?? null,
@@ -49,15 +51,19 @@ export function createPrismaExternalRefRepository(
       return records;
     },
     deleteForProject(input: {
+      readonly tenantId: string;
       readonly projectId: string;
     }): Promise<Prisma.BatchPayload> {
-      return client.externalRef.deleteMany({ where: { projectId: input.projectId } });
+      return client.externalRef.deleteMany({
+        where: { tenantId: input.tenantId, projectId: input.projectId },
+      });
     },
     listForProject(input: {
+      readonly tenantId: string;
       readonly projectId: string;
     }): Promise<PrismaExternalRef[]> {
       return client.externalRef.findMany({
-        where: { projectId: input.projectId },
+        where: { tenantId: input.tenantId, projectId: input.projectId },
         orderBy: { id: "asc" },
       });
     },

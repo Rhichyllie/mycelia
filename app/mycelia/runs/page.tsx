@@ -382,7 +382,7 @@ function renderRunList(state: RunWorkspaceState): ReactElement {
   if (state.status === "UNAVAILABLE") {
     return (
       <p style={styles.text}>
-        Local run data could not be loaded. Confirm the local SQLite database is migrated and seeded.
+        Local run data could not be loaded. Confirm the local PostgreSQL database is migrated and seeded.
       </p>
     );
   }
@@ -567,7 +567,7 @@ export default async function MyceliaRunsPage({
           <p style={styles.eyebrow}>Runs</p>
           <h2 style={styles.sectionTitle}>Recent governed work</h2>
           <p style={styles.text}>
-            Most recent runs are listed first. Each row is read from local SQLite.
+            Most recent runs are listed first. Each row is read from local PostgreSQL.
           </p>
           {renderRunList(workspace)}
         </section>

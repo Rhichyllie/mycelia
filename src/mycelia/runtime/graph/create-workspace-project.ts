@@ -31,6 +31,7 @@ export type CreateWorkspaceProjectResult =
 
 export type CreateWorkspaceProjectInput = {
   readonly client?: PrismaClient;
+  readonly tenantId: string;
   readonly userId: string;
   readonly workspace: {
     readonly slug: string;
@@ -67,6 +68,7 @@ export async function createWorkspaceProject(
     return await client.$transaction(async (tx) => {
       const repositories = createRepositories(tx);
       const user = await repositories.workspaces.findActiveUserById({
+        tenantId: input.tenantId,
         userId: input.userId,
       });
 
@@ -79,6 +81,7 @@ export async function createWorkspaceProject(
 
       await repositories.workspaces.create({
         id: workspaceId,
+        tenantId: input.tenantId,
         slug: input.workspace.slug,
         name: input.workspace.name,
         ownerIdentity: input.workspace.ownerIdentity ?? user.email,
@@ -86,6 +89,7 @@ export async function createWorkspaceProject(
 
       await repositories.projects.create({
         id: projectId,
+        tenantId: input.tenantId,
         workspaceId,
         slug: input.project.slug,
         name: input.project.name,
@@ -95,6 +99,7 @@ export async function createWorkspaceProject(
 
       await repositories.workspaces.createMembership({
         id: membershipId,
+        tenantId: input.tenantId,
         workspaceId,
         userId: user.id,
         role,

@@ -34,8 +34,8 @@ function tempDatabase() {
 function applyMigration(dbPath: string) {
   const migrationPath = join(
     process.cwd(),
-    "prisma",
-    "migrations",
+    "legacy",
+    "sqlite-migrations",
     "000001_minimal_runtime_slice",
     "migration.sql",
   );
@@ -364,7 +364,7 @@ describe("persisted governed flow harness", () => {
         "--name-only",
         "--",
         "prisma/schema.prisma",
-        "prisma/migrations/000001_minimal_runtime_slice/migration.sql",
+        "legacy/sqlite-migrations/000001_minimal_runtime_slice/migration.sql",
       ],
       { encoding: "utf8" },
     );
@@ -397,7 +397,7 @@ describe("persisted governed flow harness", () => {
     }
 
     expect(packageStatus.trim()).toBe("");
-    expect(schemaDiff).not.toContain("prisma/migrations/000001_minimal_runtime_slice/migration.sql");
+    expect(schemaDiff).not.toContain("legacy/sqlite-migrations/000001_minimal_runtime_slice/migration.sql");
     expect(databaseFiles.trim()).toBe("");
   });
 });

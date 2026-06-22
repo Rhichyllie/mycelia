@@ -1,12 +1,14 @@
 import { randomUUID } from "node:crypto";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { AppError } from "../../lib/app-error";
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "../db/postgres-test-database";
 
 import {
   findActiveAppUserById,
@@ -14,71 +16,23 @@ import {
   upsertAppUserByEmail,
 } from "./auth-user-store";
 
-const tempRoots: string[] = [];
+const testSchemas: string[] = [];
+const TENANT_ID = "tenant_auth_store_test";
 
 function repoPath(...segments: string[]): string {
   return join(process.cwd(), ...segments);
 }
 
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMigrationFile(client: PrismaClient, path: string) {
-  const migration = readFileSync(path, "utf8");
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-  const method = ["$execute", "RawUnsafe"].join("") as keyof PrismaClient;
-  const runStatement = client[method] as unknown as (
-    statement: string,
-  ) => Promise<unknown>;
-
-  for (const statement of statements) {
-    await runStatement.call(client, statement);
-  }
-}
-
-async function applyAuthFoundationMigrations(client: PrismaClient) {
-  await applyMigrationFile(
-    client,
-    repoPath(
-      "prisma",
-      "migrations",
-      "000001_minimal_runtime_slice",
-      "migration.sql",
-    ),
-  );
-  await applyMigrationFile(
-    client,
-    repoPath(
-      "prisma",
-      "migrations",
-      "000002_auth_foundation",
-      "migration.sql",
-    ),
-  );
-}
-
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-auth-"));
-  const dbPath = join(root, "auth.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_auth");
 
-  tempRoots.push(root);
-  await applyAuthFoundationMigrations(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 
@@ -102,20 +56,24 @@ describe("auth user store", () => {
     try {
       const created = await upsertAppUserByEmail({
         client,
+        tenantId: TENANT_ID,
         email: " Admin@Example.COM ",
         displayName: " Admin One ",
       });
       const renamed = await upsertAppUserByEmail({
         client,
+        tenantId: TENANT_ID,
         email: "admin@example.com",
         displayName: "Admin Two",
       });
       const preserved = await upsertAppUserByEmail({
         client,
+        tenantId: TENANT_ID,
         email: "ADMIN@example.com",
       });
 
       expect(created).toMatchObject({
+        tenantId: TENANT_ID,
         email: "admin@example.com",
         emailNormalized: "admin@example.com",
         displayName: "Admin One",
@@ -137,6 +95,7 @@ describe("auth user store", () => {
     try {
       const actor = await syncAuthenticatedActor({
         client,
+        tenantId: TENANT_ID,
         providerId: "credentials",
         providerType: "development_credentials",
         subject: "admin@mycelia.local",
@@ -149,6 +108,7 @@ describe("auth user store", () => {
       });
 
       expect(actor).toMatchObject({
+        tenantId: TENANT_ID,
         email: "admin@mycelia.local",
         displayName: "Development Admin",
         providerId: "credentials",
@@ -172,6 +132,7 @@ describe("auth user store", () => {
     try {
       const first = await syncAuthenticatedActor({
         client,
+        tenantId: TENANT_ID,
         providerId: "credentials",
         providerType: "development_credentials",
         subject: "stable-subject",
@@ -184,6 +145,7 @@ describe("auth user store", () => {
       });
       const second = await syncAuthenticatedActor({
         client,
+        tenantId: TENANT_ID,
         providerId: "credentials",
         providerType: "development_credentials",
         subject: "stable-subject",
@@ -219,6 +181,7 @@ describe("auth user store", () => {
     try {
       const actor = await syncAuthenticatedActor({
         client,
+        tenantId: TENANT_ID,
         providerId: "credentials",
         providerType: "development_credentials",
         subject: "disabled-subject",
@@ -234,6 +197,7 @@ describe("auth user store", () => {
       await expectAppErrorCode(
         syncAuthenticatedActor({
           client,
+          tenantId: TENANT_ID,
           providerId: "credentials",
           providerType: "development_credentials",
           subject: "disabled-subject",
@@ -254,6 +218,7 @@ describe("auth user store", () => {
     try {
       await syncAuthenticatedActor({
         client,
+        tenantId: TENANT_ID,
         providerId: "credentials",
         providerType: "development_credentials",
         subject: "subject-one",
@@ -265,6 +230,7 @@ describe("auth user store", () => {
       await expectAppErrorCode(
         syncAuthenticatedActor({
           client,
+          tenantId: TENANT_ID,
           providerId: "credentials",
           providerType: "development_credentials",
           subject: "subject-two",
@@ -286,6 +252,7 @@ describe("auth user store", () => {
     try {
       const user = await upsertAppUserByEmail({
         client,
+        tenantId: TENANT_ID,
         email: "active@example.com",
         displayName: "Active User",
       });

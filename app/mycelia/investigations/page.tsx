@@ -231,7 +231,7 @@ function renderEmptyState(): ReactElement {
       <h1 style={styles.title}>No governed run has been created yet</h1>
       <p style={styles.text}>
         Create a governed request from the controlled demo scenario first. The
-        investigation view only renders persisted SQLite history and lineage.
+        investigation view only renders persisted PostgreSQL history and lineage.
       </p>
       <p style={styles.text}>
         <a href="/mycelia/runs" style={styles.link}>
@@ -260,7 +260,7 @@ function renderRunSelector(
       <section aria-label="Recent governed runs" style={styles.selector}>
         <p style={styles.eyebrow}>Run selector</p>
         <p style={styles.text}>
-          Recent governed runs will appear here once local SQLite has persisted
+          Recent governed runs will appear here once local PostgreSQL has persisted
           activity.
         </p>
       </section>
@@ -314,7 +314,7 @@ function renderRunOverview(result: InvestigationTimelineReadyResult): ReactEleme
         History and lineage
       </h1>
       <p style={styles.text}>
-        This page reads the latest governed run directly from local SQLite and
+        This page reads the latest governed run directly from local PostgreSQL and
         assembles its state, policy check, readiness check, approval and evidence history.
       </p>
       <div style={styles.grid}>

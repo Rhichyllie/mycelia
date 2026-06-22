@@ -84,7 +84,7 @@ describe("product surface shell", () => {
 
     expect(model.safety_badges).toEqual(PRODUCT_SURFACE_SHELL_SAFETY_BADGES);
     expect(model.safety_badges).toEqual([
-      "Local SQLite",
+      "Local PostgreSQL",
       "Real persistence",
       "Governed runtime",
       "Local demo mode",
@@ -100,7 +100,7 @@ describe("product surface shell", () => {
   it("describes the live local persistence boundary accurately", () => {
     const model = getProductSurfaceShellModel();
 
-    expect(model.footer_note).toContain("executes and persists locally in SQLite");
+    expect(model.footer_note).toContain("executes and persists locally in PostgreSQL");
     expect(model.footer_note).toContain("Local demo sign-in is active");
     expect(model.footer_note).toContain("cloud deployment remains out of scope");
     expect(model.footer_note).not.toContain("do not execute runtime");

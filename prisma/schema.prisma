@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -124,8 +124,9 @@ model AuditRecord {
 
 model AppUser {
   id              String   @id @default(uuid())
+  tenantId        String
   email           String
-  emailNormalized String   @unique
+  emailNormalized String
   displayName     String?
   active          Boolean  @default(true)
   createdAt       DateTime @default(now())
@@ -134,6 +135,8 @@ model AppUser {
   authIdentities        AuthIdentity[]
   workspaceMemberships WorkspaceMembership[]
 
+  @@unique([tenantId, emailNormalized])
+  @@index([tenantId])
   @@index([emailNormalized])
   @@map("app_users")
 }
@@ -157,7 +160,8 @@ model AuthIdentity {
 }
 model Workspace {
   id            String   @id @default(uuid())
-  slug          String   @unique
+  tenantId      String
+  slug          String
   name          String
   ownerIdentity String?
   createdAt     DateTime @default(now())
@@ -166,11 +170,14 @@ model Workspace {
   memberships WorkspaceMembership[]
   projects    Project[]
 
+  @@unique([tenantId, slug])
+  @@index([tenantId])
   @@map("workspaces")
 }
 
 model WorkspaceMembership {
   id          String   @id @default(uuid())
+  tenantId    String
   workspaceId String
   userId      String
   role        String
@@ -180,7 +187,8 @@ model WorkspaceMembership {
   user      AppUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-  @@unique([workspaceId, userId])
+  @@unique([tenantId, workspaceId, userId])
+  @@index([tenantId])
   @@index([userId])
   @@index([workspaceId, role])
   @@map("workspace_memberships")
@@ -188,6 +196,7 @@ model WorkspaceMembership {
 
 model Project {
   id          String   @id @default(uuid())
+  tenantId    String
   workspaceId String
   slug        String
   name        String
@@ -201,13 +210,15 @@ model Project {
   edges        Edge[]
   externalRefs ExternalRef[]
 
-  @@unique([workspaceId, slug])
+  @@unique([tenantId, workspaceId, slug])
+  @@index([tenantId])
   @@index([workspaceId])
   @@map("projects")
 }
 
 model Node {
   id        String   @id @default(uuid())
+  tenantId  String
   projectId String
   kind      String
   label     String
@@ -222,12 +233,14 @@ model Node {
   externalRefs ExternalRef[]
   project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
+  @@index([tenantId])
   @@index([projectId])
   @@map("nodes")
 }
 
 model Edge {
   id           String   @id @default(uuid())
+  tenantId     String
   projectId    String
   sourceNodeId String
   targetNodeId String
@@ -242,6 +255,7 @@ model Edge {
   targetNode   Node          @relation("EdgeTarget", fields: [targetNodeId], references: [id], onDelete: Cascade)
   externalRefs ExternalRef[]
 
+  @@index([tenantId])
   @@index([projectId])
   @@index([sourceNodeId])
   @@index([targetNodeId])
@@ -250,6 +264,7 @@ model Edge {
 
 model ExternalRef {
   id         String   @id @default(uuid())
+  tenantId   String
   projectId  String
   nodeId     String?
   edgeId     String?
@@ -264,7 +279,8 @@ model ExternalRef {
   node    Node?   @relation(fields: [nodeId], references: [id], onDelete: Cascade)
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  @@unique([projectId, system, externalId, nodeId, edgeId])
+  @@unique([tenantId, projectId, system, externalId, nodeId, edgeId])
+  @@index([tenantId])
   @@index([projectId])
   @@index([nodeId])
   @@index([edgeId])

@@ -20,6 +20,7 @@ const credentialsSchema = z.object({
 });
 const emailClaimSchema = z.string().email();
 const userIdClaimSchema = z.string().uuid();
+const tenantIdClaimSchema = z.string().min(1);
 const authModeClaimSchema = z.enum(["development_credentials", "oidc"]);
 
 type OidcProfile = Profile & {
@@ -33,17 +34,20 @@ type OidcProfile = Profile & {
 type AuthModeClaim = z.infer<typeof authModeClaimSchema>;
 
 type UserWithAuthClaims = User & {
+  tenantId?: string;
   authProvider?: string;
   authMode?: AuthModeClaim;
 };
 
 type SessionUserWithAuthClaims = NonNullable<Session["user"]> & {
   id?: string;
+  tenantId?: string;
   authProvider?: string;
   authMode?: AuthModeClaim;
 };
 
 type JwtWithAuthClaims = JWT & {
+  tenantId?: unknown;
   authProvider?: unknown;
   authMode?: unknown;
   myceliaSessionInvalid?: true;
@@ -295,6 +299,7 @@ export function getAuthOptions(): NextAuthOptions {
 
         const mutableUser = user as UserWithAuthClaims;
         mutableUser.id = actor.userId;
+        mutableUser.tenantId = actor.tenantId;
         mutableUser.email = actor.email;
         mutableUser.name = actor.displayName ?? user.name;
         mutableUser.authProvider = actor.providerId;
@@ -308,11 +313,20 @@ export function getAuthOptions(): NextAuthOptions {
         if (user) {
           const claimedUser = user as UserWithAuthClaims;
           const userId = userIdClaimSchema.safeParse(claimedUser.id?.trim());
+          const tenantId = tenantIdClaimSchema.safeParse(
+            claimedUser.tenantId?.trim(),
+          );
           const email = normalizeEmailClaim(claimedUser.email);
           const authProvider = claimedUser.authProvider?.trim();
           const authMode = authModeClaimSchema.safeParse(claimedUser.authMode);
 
-          if (!userId.success || !email || !authProvider || !authMode.success) {
+          if (
+            !userId.success ||
+            !tenantId.success ||
+            !email ||
+            !authProvider ||
+            !authMode.success
+          ) {
             throw new AppError(
               "Fluxo de autenticacao produziu claims de JWT incompletas.",
               {
@@ -323,6 +337,7 @@ export function getAuthOptions(): NextAuthOptions {
           }
 
           mutableToken.sub = userId.data;
+          mutableToken.tenantId = tenantId.data;
           mutableToken.email = email;
           mutableToken.name = claimedUser.name;
           mutableToken.authProvider = authProvider;
@@ -338,6 +353,11 @@ export function getAuthOptions(): NextAuthOptions {
         const persistedEmail = normalizeEmailClaim(
           typeof token.email === "string" ? token.email : null,
         );
+        const persistedTenantId = tenantIdClaimSchema.safeParse(
+          typeof mutableToken.tenantId === "string"
+            ? mutableToken.tenantId.trim()
+            : undefined,
+        );
         const persistedAuthProvider =
           typeof mutableToken.authProvider === "string"
             ? mutableToken.authProvider.trim()
@@ -348,6 +368,7 @@ export function getAuthOptions(): NextAuthOptions {
 
         if (
           !persistedUserId.success ||
+          !persistedTenantId.success ||
           !persistedEmail ||
           !persistedAuthProvider ||
           !persistedAuthMode.success
@@ -372,17 +393,29 @@ export function getAuthOptions(): NextAuthOptions {
           const email = normalizeEmailClaim(
             typeof token.email === "string" ? token.email : null,
           );
+          const tenantId = tenantIdClaimSchema.safeParse(
+            typeof mutableToken.tenantId === "string"
+              ? mutableToken.tenantId.trim()
+              : undefined,
+          );
           const authProvider =
             typeof mutableToken.authProvider === "string"
               ? mutableToken.authProvider.trim()
               : "";
           const authMode = authModeClaimSchema.safeParse(mutableToken.authMode);
 
-          if (!userId.success || !email || !authProvider || !authMode.success) {
+          if (
+            !userId.success ||
+            !tenantId.success ||
+            !email ||
+            !authProvider ||
+            !authMode.success
+          ) {
             return {} as never;
           }
 
           mutableSessionUser.id = userId.data;
+          mutableSessionUser.tenantId = tenantId.data;
           mutableSessionUser.email = email;
           mutableSessionUser.name =
             typeof token.name === "string" ? token.name : session.user.name;

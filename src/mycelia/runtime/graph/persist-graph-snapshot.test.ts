@@ -1,79 +1,41 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
 import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { upsertAppUserByEmail } from "../auth/auth-user-store";
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "../db/postgres-test-database";
 import { createWorkspaceProject } from "./create-workspace-project";
 import type { GraphSnapshot } from "./canonical-graph";
 import { persistGraphSnapshot } from "./persist-graph-snapshot";
 
-const tempRoots: string[] = [];
-
-function repoPath(...segments: string[]): string {
-  return join(process.cwd(), ...segments);
-}
-
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMigrationFile(client: PrismaClient, path: string) {
-  const migration = readFileSync(path, "utf8");
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
-}
-
-async function applyEngineMigrations(client: PrismaClient) {
-  for (const migration of [
-    ["000001_minimal_runtime_slice"],
-    ["000002_auth_foundation"],
-    ["000003_workspace_graph_foundation"],
-  ]) {
-    await applyMigrationFile(
-      client,
-      repoPath("prisma", "migrations", migration[0], "migration.sql"),
-    );
-  }
-}
+const testSchemas: string[] = [];
+const TENANT_ID = "tenant_engine_persist_test";
 
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-engine-persist-"));
-  const dbPath = join(root, "engine-persist.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_engine_persist");
 
-  tempRoots.push(root);
-  await applyEngineMigrations(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 
 async function createProject(client: PrismaClient) {
   const user = await upsertAppUserByEmail({
     client,
+    tenantId: TENANT_ID,
     email: `graph-owner-${crypto.randomUUID()}@example.com`,
     displayName: "Graph Owner",
   });
   const result = await createWorkspaceProject({
     client,
+    tenantId: TENANT_ID,
     userId: user.id,
     workspace: {
       slug: `workspace-${crypto.randomUUID()}`,
@@ -175,11 +137,21 @@ describe("graph snapshot persistence", () => {
     try {
       const projectId = await createProject(client);
       const snapshot = graphSnapshot(projectId);
-      const result = await persistGraphSnapshot({ client, projectId, snapshot });
+      const result = await persistGraphSnapshot({
+        client,
+        tenantId: TENANT_ID,
+        projectId,
+        snapshot,
+      });
       const [nodes, edges, externalRefs] = await Promise.all([
-        client.node.findMany({ where: { projectId }, orderBy: { label: "asc" } }),
-        client.edge.findMany({ where: { projectId } }),
-        client.externalRef.findMany({ where: { projectId } }),
+        client.node.findMany({
+          where: { tenantId: TENANT_ID, projectId },
+          orderBy: { label: "asc" },
+        }),
+        client.edge.findMany({ where: { tenantId: TENANT_ID, projectId } }),
+        client.externalRef.findMany({
+          where: { tenantId: TENANT_ID, projectId },
+        }),
       ]);
 
       expect(result).toEqual({
@@ -215,17 +187,27 @@ describe("graph snapshot persistence", () => {
 
     try {
       const projectId = await createProject(client);
-      await persistGraphSnapshot({ client, projectId, snapshot: graphSnapshot(projectId) });
       await persistGraphSnapshot({
         client,
+        tenantId: TENANT_ID,
+        projectId,
+        snapshot: graphSnapshot(projectId),
+      });
+      await persistGraphSnapshot({
+        client,
+        tenantId: TENANT_ID,
         projectId,
         snapshot: replacementSnapshot(projectId),
       });
 
-      expect(await client.node.count({ where: { projectId } })).toBe(1);
-      expect(await client.edge.count({ where: { projectId } })).toBe(0);
-      expect(await client.externalRef.count({ where: { projectId } })).toBe(0);
-      await expect(client.node.findFirstOrThrow({ where: { projectId } })).resolves.toMatchObject({
+      expect(await client.node.count({ where: { tenantId: TENANT_ID, projectId } })).toBe(1);
+      expect(await client.edge.count({ where: { tenantId: TENANT_ID, projectId } })).toBe(0);
+      expect(await client.externalRef.count({ where: { tenantId: TENANT_ID, projectId } })).toBe(0);
+      await expect(
+        client.node.findFirstOrThrow({
+          where: { tenantId: TENANT_ID, projectId },
+        }),
+      ).resolves.toMatchObject({
         kind: "note",
         label: "Replacement",
         positionX: -10,
@@ -340,17 +322,32 @@ describe("graph snapshot persistence", () => {
       };
 
       await expect(
-        persistGraphSnapshot({ client, projectId, snapshot: duplicateNodeSnapshot }),
+        persistGraphSnapshot({
+          client,
+          tenantId: TENANT_ID,
+          projectId,
+          snapshot: duplicateNodeSnapshot,
+        }),
       ).rejects.toMatchObject({ code: "GRAPH_DUPLICATE_NODE_ID" });
       await expect(
-        persistGraphSnapshot({ client, projectId, snapshot: orphanEdgeSnapshot }),
+        persistGraphSnapshot({
+          client,
+          tenantId: TENANT_ID,
+          projectId,
+          snapshot: orphanEdgeSnapshot,
+        }),
       ).rejects.toMatchObject({ code: "GRAPH_ORPHAN_EDGE" });
       await expect(
-        persistGraphSnapshot({ client, projectId, snapshot: duplicateRelationSnapshot }),
+        persistGraphSnapshot({
+          client,
+          tenantId: TENANT_ID,
+          projectId,
+          snapshot: duplicateRelationSnapshot,
+        }),
       ).rejects.toMatchObject({ code: "GRAPH_DUPLICATE_EDGE_RELATION" });
-      expect(await client.node.count({ where: { projectId } })).toBe(0);
-      expect(await client.edge.count({ where: { projectId } })).toBe(0);
-      expect(await client.externalRef.count({ where: { projectId } })).toBe(0);
+      expect(await client.node.count({ where: { tenantId: TENANT_ID, projectId } })).toBe(0);
+      expect(await client.edge.count({ where: { tenantId: TENANT_ID, projectId } })).toBe(0);
+      expect(await client.externalRef.count({ where: { tenantId: TENANT_ID, projectId } })).toBe(0);
     } finally {
       await client.$disconnect();
     }

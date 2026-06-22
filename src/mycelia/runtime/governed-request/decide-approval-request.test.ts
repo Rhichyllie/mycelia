@@ -1,10 +1,10 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
 import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "../db/postgres-test-database";
 import { createGovernedRequest } from "./create-governed-request";
 import { decideApprovalRequest } from "./decide-approval-request";
 import { LIVE_DEMO_SCENARIO } from "../demo-scenario";
@@ -13,55 +13,18 @@ import { createPrismaAuditRepository } from "../repositories/prisma-audit.reposi
 import { createPrismaGovernedRunRepository } from "../repositories/prisma-governed-run.repository";
 import { createPrismaRuntimeStateRepository } from "../repositories/prisma-runtime-state.repository";
 
-const tempRoots: string[] = [];
-
-function repoPath(...segments: string[]): string {
-  return join(process.cwd(), ...segments);
-}
-
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMinimalMigration(client: PrismaClient) {
-  const migration = readFileSync(
-    repoPath(
-      "prisma",
-      "migrations",
-      "000001_minimal_runtime_slice",
-      "migration.sql",
-    ),
-    "utf8",
-  );
-
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
-}
+const testSchemas: string[] = [];
 
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-live3-"));
-  const dbPath = join(root, "live3.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_live3");
 
-  tempRoots.push(root);
-  await applyMinimalMigration(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 
@@ -104,7 +67,7 @@ async function countRunRecords(
 }
 
 describe("LIVE-3 approval decision write path", () => {
-  it("approves a WAITING_APPROVAL run through real SQLite", async () => {
+  it("approves a WAITING_APPROVAL run through real PostgreSQL", async () => {
     const { client } = await createTempClient();
     const tenantId = "tenant_live_3_approve";
 
@@ -184,7 +147,7 @@ describe("LIVE-3 approval decision write path", () => {
     }
   });
 
-  it("rejects a WAITING_APPROVAL run through real SQLite", async () => {
+  it("rejects a WAITING_APPROVAL run through real PostgreSQL", async () => {
     const { client } = await createTempClient();
     const tenantId = "tenant_live_3_reject";
 

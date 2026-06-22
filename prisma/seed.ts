@@ -2,7 +2,8 @@ import { getMyceliaDemoDatabaseConfig } from "../src/mycelia/runtime/db/demo-con
 import { LIVE_DEMO_SCENARIO } from "../src/mycelia/runtime/demo-scenario";
 import { seedDemoScenario } from "../src/mycelia/runtime/demo-seed-scenario";
 
-process.env.DATABASE_URL ??= "file:./dev.db";
+process.env.DATABASE_URL ??=
+  "postgresql://mycelia:mycelia_dev@localhost:5432/mycelia";
 
 async function main() {
   const { prisma } = await import("../src/mycelia/runtime/db/client");

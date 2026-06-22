@@ -58,8 +58,8 @@ function executeSql(dbPath: string, sql: string) {
 function applyMigration(dbPath: string) {
   const migrationPath = join(
     process.cwd(),
-    "prisma",
-    "migrations",
+    "legacy",
+    "sqlite-migrations",
     "000001_minimal_runtime_slice",
     "migration.sql",
   );

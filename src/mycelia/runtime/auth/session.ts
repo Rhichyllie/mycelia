@@ -21,17 +21,20 @@ type AuthenticatedSessionContext = {
 
 type SessionUserWithAuthClaims = NonNullable<Session["user"]> & {
   id?: string;
+  tenantId?: string;
   authProvider?: string;
   authMode?: "development_credentials" | "oidc";
 };
 
 const sessionUserIdSchema = z.string().uuid();
+const sessionTenantIdSchema = z.string().min(1);
 const sessionIdentitySchema = z.string().email();
 const recoverableSessionErrorCodes = new Set([
   "AUTH_JWT_CLAIMS_MISSING",
   "AUTH_SESSION_CLAIMS_MISSING",
   "AUTH_SESSION_IDENTITY_MISMATCH",
   "AUTH_SESSION_IDENTITY_MISSING",
+  "AUTH_SESSION_TENANT_MISMATCH",
   "AUTH_SESSION_USER_ID_MISSING",
   "AUTH_SESSION_USER_INVALID",
 ]);
@@ -79,12 +82,13 @@ async function resolveAuthenticatedActorFromSession(
   const userId = requireSessionUserId(session);
   const identity = requireSessionIdentity(session);
   const sessionUser = authSessionUser(session);
+  const tenantId = sessionUser?.tenantId?.trim();
   const authProvider = sessionUser?.authProvider?.trim();
   const authMode = sessionUser?.authMode;
 
-  if (!authProvider || !authMode) {
+  if (!tenantId || !sessionTenantIdSchema.safeParse(tenantId).success || !authProvider || !authMode) {
     throw buildSessionInvalidError(
-      "Sessao autenticada sem claims de provedor ou modo de auth.",
+      "Sessao autenticada sem claims de tenant, provedor ou modo de auth.",
       "AUTH_SESSION_CLAIMS_MISSING",
     );
   }
@@ -106,8 +110,17 @@ async function resolveAuthenticatedActorFromSession(
     );
   }
 
+  if (user.tenantId !== tenantId) {
+    throw buildSessionInvalidError(
+      "Sessao autenticada nao coincide com o tenant interno ativo.",
+      "AUTH_SESSION_TENANT_MISMATCH",
+      403,
+    );
+  }
+
   return {
     userId: user.id,
+    tenantId,
     email: user.email || identity,
     ...(user.displayName ? { displayName: user.displayName } : {}),
     providerId: authProvider,

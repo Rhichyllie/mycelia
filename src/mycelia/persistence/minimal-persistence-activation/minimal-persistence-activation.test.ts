@@ -30,6 +30,18 @@ const ENGINE_FOUNDATION_MODELS = [
   "ExternalRef",
 ] as const;
 
+const ACTIVE_BASELINE_TABLES = [
+  ...REQUIRED_MODELS,
+  "app_users",
+  "auth_identities",
+  "workspaces",
+  "workspace_memberships",
+  "projects",
+  "nodes",
+  "edges",
+  "external_refs",
+] as const;
+
 const RUN_LINKED_MODELS = REQUIRED_MODELS.filter(
   (model) => model !== "GovernedRun",
 );
@@ -63,11 +75,23 @@ function schemaText(): string {
   return readFileSync(repoPath("prisma", "schema.prisma"), "utf8");
 }
 
-function migrationText(): string {
+function postgresBaselineMigrationText(): string {
   return readFileSync(
     repoPath(
       "prisma",
       "migrations",
+      "000001_postgres_baseline",
+      "migration.sql",
+    ),
+    "utf8",
+  );
+}
+
+function archivedSqliteMigrationText(): string {
+  return readFileSync(
+    repoPath(
+      "legacy",
+      "sqlite-migrations",
       "000001_minimal_runtime_slice",
       "migration.sql",
     ),
@@ -119,6 +143,16 @@ describe("minimal persistence activation", () => {
         repoPath(
           "prisma",
           "migrations",
+          "000001_postgres_baseline",
+          "migration.sql",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(
+        repoPath(
+          "legacy",
+          "sqlite-migrations",
           "000001_minimal_runtime_slice",
           "migration.sql",
         ),
@@ -163,19 +197,22 @@ describe("minimal persistence activation", () => {
     }
   });
 
-  it("uses the expected sqlite DATABASE_URL datasource", () => {
+  it("uses the expected postgresql DATABASE_URL datasource", () => {
     const schema = schemaText();
 
-    expect(schema).toContain('provider = "sqlite"');
+    expect(schema).toContain('provider = "postgresql"');
     expect(schema).toContain('url      = env("DATABASE_URL")');
   });
 
-  it("migration creates exactly the six required tables", () => {
-    expect(migrationTables(migrationText())).toEqual(REQUIRED_MODELS);
+  it("active migration creates the required baseline tables", () => {
+    expect(migrationTables(postgresBaselineMigrationText())).toEqual(
+      ACTIVE_BASELINE_TABLES,
+    );
+    expect(migrationTables(archivedSqliteMigrationText())).toEqual(REQUIRED_MODELS);
   });
 
   it("migration does not create forbidden extra tables", () => {
-    const tables = migrationTables(migrationText());
+    const tables = migrationTables(postgresBaselineMigrationText());
 
     for (const table of FORBIDDEN_MODELS) {
       expect(tables).not.toContain(table);
@@ -183,7 +220,7 @@ describe("minimal persistence activation", () => {
   });
 
   it("migration includes tenant and governed run indexes where expected", () => {
-    const migration = migrationText();
+    const migration = postgresBaselineMigrationText();
 
     expect(migration).toContain(
       'CREATE UNIQUE INDEX "GovernedRun_tenantId_correlationId_key"',
@@ -202,10 +239,10 @@ describe("minimal persistence activation", () => {
     const activation = getMinimalPersistenceActivation();
     const text = JSON.stringify(activation).toLowerCase();
 
-    expect(activation.datasource_provider).toBe("sqlite");
+    expect(activation.datasource_provider).toBe("postgresql");
     expect(activation.schema_path).toBe("prisma/schema.prisma");
     expect(activation.migration_path).toBe(
-      "prisma/migrations/000001_minimal_runtime_slice/migration.sql",
+      "prisma/migrations/000001_postgres_baseline/migration.sql",
     );
     expect(activation.next_phase_boundary).toBe("3B Runtime Repository Layer");
     expect(text).toContain("no prismaclient import");

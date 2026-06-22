@@ -1,6 +1,7 @@
 import type { PrismaClient, Project, Workspace } from "@prisma/client";
 
 import { prisma } from "../db/client";
+import { getMyceliaDemoDatabaseConfig } from "../db/demo-config";
 import {
   DEMO_STUDIO_PROJECT_SLUG,
   DEMO_STUDIO_WORKSPACE_SLUG,
@@ -29,9 +30,11 @@ export async function loadStudioGraph(
   input: LoadStudioGraphInput = {},
 ): Promise<StudioGraphResult> {
   const client = input.client ?? prisma;
+  const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
   const workspaces = createPrismaWorkspaceRepository(client);
   const projects = createPrismaProjectRepository(client);
   const workspace = await workspaces.findBySlug({
+    tenantId,
     slug: DEMO_STUDIO_WORKSPACE_SLUG,
   });
 
@@ -40,6 +43,7 @@ export async function loadStudioGraph(
   }
 
   const project = await projects.findBySlug({
+    tenantId,
     workspaceId: workspace.id,
     slug: DEMO_STUDIO_PROJECT_SLUG,
   });
@@ -48,7 +52,11 @@ export async function loadStudioGraph(
     return { status: "EMPTY" };
   }
 
-  const snapshot = await loadGraphSnapshot({ client, projectId: project.id });
+  const snapshot = await loadGraphSnapshot({
+    client,
+    tenantId,
+    projectId: project.id,
+  });
 
   if (snapshot === null) {
     return { status: "EMPTY" };

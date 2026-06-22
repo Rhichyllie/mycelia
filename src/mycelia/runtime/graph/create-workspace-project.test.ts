@@ -1,75 +1,27 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
-import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { upsertAppUserByEmail } from "../auth/auth-user-store";
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "../db/postgres-test-database";
 import { createPrismaProjectRepository } from "../repositories/prisma-project.repository";
 import { createPrismaWorkspaceRepository } from "../repositories/prisma-workspace.repository";
 import { createWorkspaceProject } from "./create-workspace-project";
 
-const tempRoots: string[] = [];
-
-function repoPath(...segments: string[]): string {
-  return join(process.cwd(), ...segments);
-}
-
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMigrationFile(client: PrismaClient, path: string) {
-  const migration = readFileSync(path, "utf8");
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
-}
-
-async function applyEngineMigrations(client: PrismaClient) {
-  await applyMigrationFile(
-    client,
-    repoPath("prisma", "migrations", "000001_minimal_runtime_slice", "migration.sql"),
-  );
-  await applyMigrationFile(
-    client,
-    repoPath("prisma", "migrations", "000002_auth_foundation", "migration.sql"),
-  );
-  await applyMigrationFile(
-    client,
-    repoPath(
-      "prisma",
-      "migrations",
-      "000003_workspace_graph_foundation",
-      "migration.sql",
-    ),
-  );
-}
+const testSchemas: string[] = [];
+const TENANT_ID = "tenant_engine_workspace_test";
 
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-engine-workspace-"));
-  const dbPath = join(root, "engine-workspace.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_engine_workspace");
 
-  tempRoots.push(root);
-  await applyEngineMigrations(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 
@@ -80,11 +32,13 @@ describe("workspace project creation", () => {
     try {
       const user = await upsertAppUserByEmail({
         client,
+        tenantId: TENANT_ID,
         email: "owner@example.com",
         displayName: "Owner User",
       });
       const result = await createWorkspaceProject({
         client,
+        tenantId: TENANT_ID,
         userId: user.id,
         workspace: {
           slug: "ops-foundation",
@@ -106,9 +60,16 @@ describe("workspace project creation", () => {
 
       const workspaces = createPrismaWorkspaceRepository(client);
       const projects = createPrismaProjectRepository(client);
-      const workspace = await workspaces.findById({ id: result.workspaceId });
-      const project = await projects.findById({ id: result.projectId });
+      const workspace = await workspaces.findById({
+        tenantId: TENANT_ID,
+        id: result.workspaceId,
+      });
+      const project = await projects.findById({
+        tenantId: TENANT_ID,
+        id: result.projectId,
+      });
       const membership = await workspaces.findMembership({
+        tenantId: TENANT_ID,
         workspaceId: result.workspaceId,
         userId: user.id,
       });
@@ -140,11 +101,13 @@ describe("workspace project creation", () => {
     try {
       const user = await upsertAppUserByEmail({
         client,
+        tenantId: TENANT_ID,
         email: "duplicate-owner@example.com",
         displayName: "Duplicate Owner",
       });
       const input = {
         client,
+        tenantId: TENANT_ID,
         userId: user.id,
         workspace: {
           slug: "duplicate-workspace",
