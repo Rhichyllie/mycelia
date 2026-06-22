@@ -17,8 +17,12 @@ import {
   type DemoPersistedRunSummary,
 } from "@/mycelia/runtime/repositories/prisma-demo-read.repository";
 import { createPrismaGovernedRunRepository } from "@/mycelia/runtime/repositories/prisma-governed-run.repository";
+import { ConsequentialActionReveal } from "@/mycelia/runtime/ui/consequential-action-reveal";
 import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
-import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
+import {
+  parseLiveOutcomeSearchParams,
+  type LiveOutcome,
+} from "@/mycelia/runtime/ui/format-live-label";
 import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
 import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
 import { renderRiskPill } from "@/mycelia/runtime/ui/risk-pill";
@@ -480,6 +484,36 @@ function renderCaseFile(state: RunWorkspaceState): ReactElement {
   );
 }
 
+function renderRunCreationReveal(
+  outcome: LiveOutcome | null,
+  state: RunWorkspaceState,
+): ReactElement | null {
+  if (
+    outcome === null ||
+    outcome.status !== "RUN_CREATED" ||
+    state.selected === null
+  ) {
+    return null;
+  }
+
+  const { run, latestPolicy, latestAdmission } = state.selected;
+  const scenario =
+    findLiveDemoScenarioByResourceRef(run.resourceRef) ?? LIVE_DEMO_SCENARIO;
+
+  return (
+    <ConsequentialActionReveal
+      input={{
+        kind: "RUN_CREATED",
+        scenarioTitle: scenario.title,
+        policyReasonCode: latestPolicy?.reasonCode,
+        admissionReasonCode: latestAdmission?.reasonCode,
+        finalState: run.currentState,
+        riskLevel: latestPolicy?.riskLevel,
+      }}
+    />
+  );
+}
+
 export default async function MyceliaRunsPage({
   searchParams,
 }: {
@@ -498,6 +532,7 @@ export default async function MyceliaRunsPage({
         Live local product environment -- fixture data, controlled run workspace, no production auth
       </div>
       <LiveRouteNav currentStage="request" />
+      {renderRunCreationReveal(outcome, workspace)}
       <LiveOutcomeBanner outcome={outcome} />
       <section style={{ ...styles.panel, marginTop: MYCELIA_TOKENS.spacing[4] }}>
         <p style={styles.eyebrow}>New work</p>

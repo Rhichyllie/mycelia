@@ -58,4 +58,20 @@ describe("live outcome banner", () => {
     );
     expect(text).not.toContain("POLICY_ADMITTED_LOW_RISK");
   });
+
+  it("renders human-readable approval decision reasoning", () => {
+    const element = LiveOutcomeBanner({
+      outcome: {
+        status: "APPROVAL_DECIDED",
+        reasonCode: "APPROVAL_ACCEPTED",
+      },
+    });
+
+    expect(isValidElement(element)).toBe(true);
+
+    const text = collectText(element).join(" ");
+    expect(text).toContain("The approval decision was recorded.");
+    expect(text).toContain("The approval request was accepted and persisted.");
+    expect(text).not.toContain("APPROVAL_ACCEPTED");
+  });
 });

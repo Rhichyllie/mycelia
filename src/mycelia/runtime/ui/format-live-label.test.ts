@@ -35,6 +35,14 @@ describe("live label formatting", () => {
         reasonCode: "APPROVAL_RATIONALE_REQUIRED",
       }),
     ).toBe("Add a rationale before rejecting this approval request.");
+    expect(
+      formatLiveReasonLabel({
+        status: "RUN_CREATED",
+        reasonCode: "SENSITIVE_TRANSFER_HIGH_RISK",
+      }),
+    ).toBe(
+      "The policy check found this sensitive transfer fixture to be high risk.",
+    );
   });
 
   it("uses safe fallback text without exposing raw machine codes", () => {
@@ -43,6 +51,9 @@ describe("live label formatting", () => {
     );
     expect(formatLiveOutcomeTitle("RUN_CREATED")).toBe(
       "The governed request was created.",
+    );
+    expect(formatLiveOutcomeTitle("APPROVAL_DECIDED")).toBe(
+      "The approval decision was recorded.",
     );
     expect(
       formatLiveReasonLabel({
@@ -90,6 +101,15 @@ describe("live label formatting", () => {
     ).toEqual({
       status: "RUN_CREATED",
       reasonCode: "POLICY_ADMITTED_LOW_RISK",
+    });
+    expect(
+      parseLiveOutcomeSearchParams({
+        liveStatus: "APPROVAL_DECIDED",
+        liveReasonCode: "APPROVAL_ACCEPTED",
+      }),
+    ).toEqual({
+      status: "APPROVAL_DECIDED",
+      reasonCode: "APPROVAL_ACCEPTED",
     });
   });
 

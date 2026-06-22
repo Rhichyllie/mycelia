@@ -1,7 +1,8 @@
 export type LiveOutcomeStatus =
   | "FAILED_SAFE"
   | "DEMO_MODE_DISABLED"
-  | "RUN_CREATED";
+  | "RUN_CREATED"
+  | "APPROVAL_DECIDED";
 
 export type LiveOutcome = {
   readonly status: LiveOutcomeStatus;
@@ -22,6 +23,7 @@ const STATUS_LABELS = {
   FAILED_SAFE: "The demo action stopped safely before completing.",
   DEMO_MODE_DISABLED: "Demo reset is disabled in this environment.",
   RUN_CREATED: "The governed request was created.",
+  APPROVAL_DECIDED: "The approval decision was recorded.",
 } as const satisfies Record<LiveOutcomeStatus, string>;
 
 const REASON_LABELS = {
@@ -37,6 +39,12 @@ const REASON_LABELS = {
     "The approval decision failed before the atomic write path completed.",
   POLICY_REQUIRES_APPROVAL:
     "The policy check requires approval before this can proceed.",
+  INTERNAL_DATA_EXPORT_LOW_RISK:
+    "The policy check found this internal fixture to be low risk.",
+  VENDOR_CONTRACT_MEDIUM_RISK:
+    "The policy check found this vendor contract fixture to be medium risk.",
+  SENSITIVE_TRANSFER_HIGH_RISK:
+    "The policy check found this sensitive transfer fixture to be high risk.",
   POLICY_ADMITTED_LOW_RISK:
     "The policy check cleared the low-risk request without approval.",
   POLICY_DENIED_HIGH_RISK:
@@ -77,7 +85,8 @@ function parseLiveOutcomeStatus(value: string | undefined): LiveOutcomeStatus | 
   if (
     value === "FAILED_SAFE" ||
     value === "DEMO_MODE_DISABLED" ||
-    value === "RUN_CREATED"
+    value === "RUN_CREATED" ||
+    value === "APPROVAL_DECIDED"
   ) {
     return value;
   }

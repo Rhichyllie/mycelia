@@ -16,8 +16,12 @@ import {
   type DemoPersistedRunSummary,
 } from "@/mycelia/runtime/repositories/prisma-demo-read.repository";
 import { createPrismaGovernedRunRepository } from "@/mycelia/runtime/repositories/prisma-governed-run.repository";
+import { ConsequentialActionReveal } from "@/mycelia/runtime/ui/consequential-action-reveal";
 import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
-import { parseLiveOutcomeSearchParams } from "@/mycelia/runtime/ui/format-live-label";
+import {
+  parseLiveOutcomeSearchParams,
+  type LiveOutcome,
+} from "@/mycelia/runtime/ui/format-live-label";
 import { LiveOutcomeBanner } from "@/mycelia/runtime/ui/live-outcome-banner";
 import { LiveRouteNav } from "@/mycelia/runtime/ui/live-route-nav";
 import { approveGovernedRequest, rejectGovernedRequest } from "./actions";
@@ -602,6 +606,39 @@ function renderDecisionDetail(
   );
 }
 
+function renderApprovalDecisionReveal(
+  outcome: LiveOutcome | null,
+  state: ApprovalDecisionCenterState,
+): ReactElement | null {
+  if (
+    outcome === null ||
+    outcome.status !== "APPROVAL_DECIDED" ||
+    state.selected === null
+  ) {
+    return null;
+  }
+
+  const { approvalRequest, summary } = state.selected;
+
+  if (
+    approvalRequest.status !== "APPROVED" &&
+    approvalRequest.status !== "REJECTED"
+  ) {
+    return null;
+  }
+
+  return (
+    <ConsequentialActionReveal
+      input={{
+        kind: "APPROVAL_DECIDED",
+        decisionReasonCode: approvalRequest.decisionReasonCode,
+        finalState: summary.run.currentState,
+        decisionOutcome: approvalRequest.decisionOutcome,
+      }}
+    />
+  );
+}
+
 export default async function MyceliaApprovalDecisionPage({
   searchParams,
 }: {
@@ -620,6 +657,7 @@ export default async function MyceliaApprovalDecisionPage({
         Controlled demo environment -- fixture data, no production auth
       </div>
       <LiveRouteNav currentStage="approval" />
+      {renderApprovalDecisionReveal(outcome, state)}
       <LiveOutcomeBanner outcome={outcome} />
       <div style={styles.workspaceGrid}>
         <section style={styles.panel}>
