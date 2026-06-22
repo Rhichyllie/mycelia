@@ -8,6 +8,7 @@ import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import {
   decideApprovalRequest,
   type ApprovalDecisionOutcome,
+  type DecideApprovalRequestSuccess,
   type DecideApprovalRequestFailure,
   type DecideApprovalRequestResult,
 } from "@/mycelia/runtime/governed-request/decide-approval-request";
@@ -65,6 +66,18 @@ function approvalOutcomePath(
   const separator = path.includes("?") ? "&" : "?";
 
   return `${path}${separator}approvalId=${encodeURIComponent(approvalId)}`;
+}
+
+function approvalSuccessPath(result: DecideApprovalRequestSuccess): string {
+  return buildLiveOutcomeRedirectPath(
+    `/mycelia/approvals?approvalId=${encodeURIComponent(
+      result.approvalRequestId,
+    )}`,
+    {
+      status: "APPROVAL_DECIDED",
+      reasonCode: result.decisionReasonCode,
+    },
+  );
 }
 
 async function decideLatestWaitingApprovalRun(
@@ -146,7 +159,7 @@ export async function approveGovernedRequest(
   revalidatePath("/mycelia/approvals");
 
   if (formData instanceof FormData) {
-    return;
+    redirect(approvalSuccessPath(result));
   }
 
   return result;
@@ -177,7 +190,7 @@ export async function rejectGovernedRequest(
   revalidatePath("/mycelia/approvals");
 
   if (formData instanceof FormData) {
-    return;
+    redirect(approvalSuccessPath(result));
   }
 
   return result;

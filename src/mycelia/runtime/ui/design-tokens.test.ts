@@ -18,6 +18,7 @@ const tokenizedSurfaceFiles = [
   ["src", "mycelia", "runtime", "ui", "risk-pill.tsx"],
   ["src", "mycelia", "runtime", "ui", "live-route-nav.tsx"],
   ["src", "mycelia", "runtime", "ui", "live-outcome-banner.tsx"],
+  ["src", "mycelia", "runtime", "ui", "consequential-action-reveal.tsx"],
   ["app", "mycelia", "page.tsx"],
   ["app", "mycelia", "runs", "page.tsx"],
   ["app", "mycelia", "approvals", "page.tsx"],
@@ -36,6 +37,19 @@ describe("MYCELIA design token foundation", () => {
     expect(MYCELIA_TOKENS.spacing[4]).toBeTypeOf("string");
     expect(MYCELIA_TOKENS.radius.panel).toBeTypeOf("string");
     expect(MYCELIA_TOKENS.type.heading1).toBeTypeOf("string");
+    expect(MYCELIA_TOKENS.motion.duration.instant).toBe("0ms");
+    expect(MYCELIA_TOKENS.motion.duration.fast).toBe("100ms");
+    expect(MYCELIA_TOKENS.motion.duration.base).toBe("200ms");
+    expect(MYCELIA_TOKENS.motion.duration.slow).toBe("300ms");
+    expect(MYCELIA_TOKENS.motion.easing.standard).toBe(
+      "cubic-bezier(0.2, 0, 0, 1)",
+    );
+    expect(MYCELIA_TOKENS.motion.easing.enter).toBe(
+      "cubic-bezier(0, 0, 0.2, 1)",
+    );
+    expect(MYCELIA_TOKENS.motion.easing.exit).toBe(
+      "cubic-bezier(0.4, 0, 1, 1)",
+    );
   });
 
   it("keeps hardcoded color values out of primary component code", () => {
@@ -48,6 +62,23 @@ describe("MYCELIA design token foundation", () => {
     for (const file of tokenizedSurfaceFiles) {
       expect(source(...file), file.join("/")).toContain("MYCELIA_TOKENS");
     }
+  });
+
+  it("keeps consequential motion finite and tokenized", () => {
+    const revealSource = source(
+      "src",
+      "mycelia",
+      "runtime",
+      "ui",
+      "consequential-action-reveal.tsx",
+    );
+
+    expect(revealSource).toContain("MYCELIA_TOKENS.motion.duration.base");
+    expect(revealSource).toContain("MYCELIA_TOKENS.motion.duration.slow");
+    expect(revealSource).toContain("MYCELIA_TOKENS.motion.easing.enter");
+    expect(revealSource).toContain("prefers-reduced-motion");
+    expect(revealSource).not.toMatch(/animationIterationCount|infinite|@keyframes/i);
+    expect(revealSource).not.toMatch(/bounce|elastic|spring/i);
   });
 
   it("keeps the run workspace wired to persisted runs and timeline detail", () => {

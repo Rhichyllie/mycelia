@@ -42,7 +42,7 @@ const styles = {
 } satisfies Record<string, CSSProperties>;
 
 function bannerStyle(outcome: LiveOutcome): CSSProperties {
-  if (outcome.status === "RUN_CREATED") {
+  if (outcome.status === "RUN_CREATED" || outcome.status === "APPROVAL_DECIDED") {
     return { ...styles.banner, ...styles.successBanner };
   }
 

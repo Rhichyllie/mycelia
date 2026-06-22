@@ -100,6 +100,19 @@ export const MYCELIA_TOKENS = {
     pageWidth: "min(1180px, calc(100% - 40px))",
     pagePadding: "34px 0 48px",
   },
+  motion: {
+    duration: {
+      instant: "0ms",
+      fast: "100ms",
+      base: "200ms",
+      slow: "300ms",
+    },
+    easing: {
+      standard: "cubic-bezier(0.2, 0, 0, 1)",
+      enter: "cubic-bezier(0, 0, 0.2, 1)",
+      exit: "cubic-bezier(0.4, 0, 1, 1)",
+    },
+  },
   border: {
     subtle: "1px solid #343A36",
     strong: "1px solid #8C948D",
