@@ -4,54 +4,53 @@ import type { CSSProperties, FormEvent } from "react";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 
-import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
+import { myceliaVar } from "@/mycelia/runtime/ui/design-tokens";
 
 const INVALID_LOGIN_MESSAGE = "Invalid email or password. Try again.";
 
 const styles = {
   form: {
     display: "grid",
-    gap: MYCELIA_TOKENS.spacing[5],
+    gap: myceliaVar("spacing.5"),
   },
   field: {
     display: "grid",
-    gap: MYCELIA_TOKENS.spacing[2],
+    gap: myceliaVar("spacing.2"),
   },
   label: {
-    color: MYCELIA_TOKENS.color.text.secondary,
-    fontSize: MYCELIA_TOKENS.type.bodySmall,
+    color: myceliaVar("color.text.secondary"),
+    font: myceliaVar("type.bodySmall"),
     fontWeight: 800,
   },
   input: {
     width: "100%",
     boxSizing: "border-box",
-    border: MYCELIA_TOKENS.border.subtle,
-    borderRadius: MYCELIA_TOKENS.radius.md,
-    background: MYCELIA_TOKENS.color.bg.sunken,
-    color: MYCELIA_TOKENS.color.text.primary,
-    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
+    border: myceliaVar("border.subtle"),
+    borderRadius: myceliaVar("radius.md"),
+    background: myceliaVar("color.bg.sunken"),
+    color: myceliaVar("color.text.primary"),
+    padding: `${myceliaVar("spacing.3")} ${myceliaVar("spacing.4")}`,
     font: "inherit",
-    outline: MYCELIA_TOKENS.border.focus,
+    outline: myceliaVar("border.focus"),
     outlineOffset: "2px",
   },
   button: {
-    border: MYCELIA_TOKENS.border.subtle,
-    borderRadius: MYCELIA_TOKENS.radius.md,
-    background: MYCELIA_TOKENS.color.state.success,
-    color: MYCELIA_TOKENS.color.text.inverse,
-    padding: `${MYCELIA_TOKENS.spacing[3]} ${MYCELIA_TOKENS.spacing[4]}`,
+    border: myceliaVar("border.subtle"),
+    borderRadius: myceliaVar("radius.md"),
+    background: myceliaVar("color.state.success"),
+    color: myceliaVar("color.text.inverse"),
+    padding: `${myceliaVar("spacing.3")} ${myceliaVar("spacing.4")}`,
     font: "inherit",
     fontWeight: 900,
     cursor: "pointer",
   },
   error: {
-    border: `1px solid ${MYCELIA_TOKENS.color.state.danger}`,
-    borderRadius: MYCELIA_TOKENS.radius.md,
-    background: MYCELIA_TOKENS.color.intent.dangerBg,
-    color: MYCELIA_TOKENS.color.text.primary,
-    padding: MYCELIA_TOKENS.spacing[3],
-    fontSize: MYCELIA_TOKENS.type.bodySmall,
-    lineHeight: 1.5,
+    border: `1px solid ${myceliaVar("color.state.danger")}`,
+    borderRadius: myceliaVar("radius.md"),
+    background: myceliaVar("color.intent.dangerBg"),
+    color: myceliaVar("color.text.primary"),
+    padding: myceliaVar("spacing.3"),
+    font: myceliaVar("type.bodySmall"),
   },
 } satisfies Record<string, CSSProperties>;
 

@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 
 import { getAuthOptions } from "../../runtime/auth/options";
 import { MYCELIA_TOKENS } from "../../runtime/ui/design-tokens";
+import { ThemeToggleButton } from "../../runtime/ui/theme-toggle-button";
 import { ProductSurfaceSignOutButton } from "./product-surface-sign-out-button";
 
 export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
@@ -102,6 +103,13 @@ const styles = {
     display: "grid",
     gap: MYCELIA_TOKENS.spacing[3],
     justifyItems: "end",
+  },
+  utilityRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: MYCELIA_TOKENS.spacing[2],
   },
   brand: {
     margin: 0,
@@ -271,7 +279,10 @@ export async function ProductSurfaceShell({
             <nav aria-label="MYCELIA product surfaces" style={styles.nav}>
               {renderNavItems(model.nav_items)}
             </nav>
-            <ProductSurfaceSessionIndicator user={sessionUser} />
+            <div style={styles.utilityRow}>
+              <ThemeToggleButton />
+              <ProductSurfaceSessionIndicator user={sessionUser} />
+            </div>
           </div>
         </div>
       </header>

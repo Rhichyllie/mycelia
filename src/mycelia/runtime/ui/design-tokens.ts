@@ -1,63 +1,67 @@
+function tokenVar(path: string): string {
+  return `var(--mycelia-${path.replace(/\./g, "-")})`;
+}
+
 export const MYCELIA_TOKENS = {
   color: {
     bg: {
-      canvas: "#121512",
-      surface: "#181C19",
-      panel: "#232724",
-      sunken: "#0A0C0B",
+      canvas: tokenVar("color.bg.canvas"),
+      surface: tokenVar("color.bg.surface"),
+      panel: tokenVar("color.bg.panel"),
+      sunken: tokenVar("color.bg.sunken"),
     },
     text: {
-      primary: "#F2F0E9",
-      secondary: "#C9CFC9",
-      tertiary: "#8C948D",
-      disabled: "#5C6660",
-      inverse: "#0A0C0B",
+      primary: tokenVar("color.text.primary"),
+      secondary: tokenVar("color.text.secondary"),
+      tertiary: tokenVar("color.text.tertiary"),
+      disabled: tokenVar("color.text.disabled"),
+      inverse: tokenVar("color.text.inverse"),
     },
     border: {
-      subtle: "#343A36",
-      strong: "#8C948D",
-      focus: "#C9CFC9",
+      subtle: tokenVar("color.border.subtle"),
+      strong: tokenVar("color.border.strong"),
+      focus: tokenVar("color.border.focus"),
     },
     brand: {
-      sage: "#8FA396",
-      moss: "#566B5C",
-      ivory: "#F2F0E9",
-      silver: "#C9CFC9",
+      sage: tokenVar("color.brand.sage"),
+      moss: tokenVar("color.brand.moss"),
+      ivory: tokenVar("color.brand.ivory"),
+      silver: tokenVar("color.brand.silver"),
     },
     state: {
-      success: "#7DA889",
-      warning: "#D9A857",
-      danger: "#C2594F",
-      info: "#6E97AE",
+      success: tokenVar("color.state.success"),
+      warning: tokenVar("color.state.warning"),
+      danger: tokenVar("color.state.danger"),
+      info: tokenVar("color.state.info"),
     },
     policy: {
-      approved: "#7DA889",
-      denied: "#C2594F",
-      requiresApproval: "#D9A857",
-      boundary: "#6E97AE",
+      approved: tokenVar("color.policy.approved"),
+      denied: tokenVar("color.policy.denied"),
+      requiresApproval: tokenVar("color.policy.requiresApproval"),
+      boundary: tokenVar("color.policy.boundary"),
     },
     runtime: {
-      active: "#7DA889",
-      suspended: "#D9A857",
-      failed: "#C2594F",
-      degraded: "#B98A4E",
-      stale: "#5C6660",
-      quarantined: "#7C5C8F",
+      active: tokenVar("color.runtime.active"),
+      suspended: tokenVar("color.runtime.suspended"),
+      failed: tokenVar("color.runtime.failed"),
+      degraded: tokenVar("color.runtime.degraded"),
+      stale: tokenVar("color.runtime.stale"),
+      quarantined: tokenVar("color.runtime.quarantined"),
     },
     evidence: {
-      sealed: "#566B5C",
-      draft: "#8C948D",
+      sealed: tokenVar("color.evidence.sealed"),
+      draft: tokenVar("color.evidence.draft"),
     },
     tenant: {
-      boundary: "#A9B6AE",
+      boundary: tokenVar("color.tenant.boundary"),
     },
     intent: {
-      successBg: "rgba(125, 168, 137, 0.12)",
-      warningBg: "rgba(217, 168, 87, 0.12)",
-      dangerBg: "rgba(194, 89, 79, 0.12)",
-      infoBg: "rgba(110, 151, 174, 0.12)",
-      neutralBg: "rgba(201, 207, 201, 0.08)",
-      accentBg: "rgba(143, 163, 150, 0.14)",
+      successBg: tokenVar("color.intent.successBg"),
+      warningBg: tokenVar("color.intent.warningBg"),
+      dangerBg: tokenVar("color.intent.dangerBg"),
+      infoBg: tokenVar("color.intent.infoBg"),
+      neutralBg: tokenVar("color.intent.neutralBg"),
+      accentBg: tokenVar("color.intent.accentBg"),
     },
   },
   spacing: {
@@ -77,28 +81,26 @@ export const MYCELIA_TOKENS = {
     none: "0",
     sm: "4px",
     md: "8px",
-    panel: "12px",
-    lg: "16px",
-    full: "9999px",
+    panel: "10px",
+    lg: "14px",
+    full: "999px",
   },
   type: {
-    family:
-      "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
-    mono:
-      "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace",
-    display: "clamp(2rem, 3vw, 3.5rem)",
-    heading1: "clamp(1.75rem, 2.7vw, 2.5rem)",
-    heading2: "clamp(1.35rem, 2vw, 1.75rem)",
-    heading3: "1rem",
-    body: "0.94rem",
-    bodySmall: "0.84rem",
-    label: "0.72rem",
-    badge: "0.7rem",
-    data: "0.9rem",
+    family: tokenVar("type.family"),
+    mono: tokenVar("type.mono"),
+    display: tokenVar("type.display"),
+    heading1: tokenVar("type.heading1"),
+    heading2: tokenVar("type.heading2"),
+    heading3: tokenVar("type.heading3"),
+    body: tokenVar("type.body"),
+    bodySmall: tokenVar("type.bodySmall"),
+    label: tokenVar("type.label"),
+    badge: tokenVar("type.badge"),
+    data: tokenVar("type.data"),
   },
   layout: {
-    pageWidth: "min(1180px, calc(100% - 40px))",
-    pagePadding: "34px 0 48px",
+    pageWidth: tokenVar("layout.pageWidth"),
+    pagePadding: tokenVar("layout.pagePadding"),
   },
   motion: {
     duration: {
@@ -114,10 +116,26 @@ export const MYCELIA_TOKENS = {
     },
   },
   border: {
-    subtle: "1px solid #343A36",
-    strong: "1px solid #8C948D",
-    focus: "2px solid #C9CFC9",
+    subtle: tokenVar("border.subtle"),
+    strong: tokenVar("border.strong"),
+    focus: tokenVar("border.focus"),
   },
 } as const;
 
+type TokenLeaf = string;
+type TokenKey = string | number;
+
+type DotPath<T> = {
+  [K in keyof T & TokenKey]: T[K] extends TokenLeaf
+    ? `${K}`
+    : T[K] extends Record<TokenKey, unknown>
+      ? `${K}.${DotPath<T[K]>}`
+      : never;
+}[keyof T & TokenKey];
+
 export type MyceliaDesignTokens = typeof MYCELIA_TOKENS;
+export type FlatMyceliaTokenPaths = DotPath<MyceliaDesignTokens>;
+
+export function myceliaVar(path: FlatMyceliaTokenPaths): string {
+  return tokenVar(path);
+}

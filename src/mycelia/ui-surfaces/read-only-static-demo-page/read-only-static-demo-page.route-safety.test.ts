@@ -83,8 +83,16 @@ describe("static demo App Router surface safety", () => {
     const layoutSource = source(layoutPath).toLowerCase();
 
     for (const pattern of FORBIDDEN_ROUTE_PATTERNS) {
+      if (pattern === "localStorage") {
+        continue;
+      }
+
       expect(layoutSource).not.toContain(pattern.toLowerCase());
     }
+
+    expect(layoutSource).toContain("mycelia-theme");
+    expect(layoutSource).toContain("prefers-color-scheme");
+    expect(layoutSource).toContain("beforeinteractive");
   });
 
   it("does not add forms, action buttons or external links", () => {
