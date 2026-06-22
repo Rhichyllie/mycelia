@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import { requireAuthenticatedSession } from "@/mycelia/runtime/auth/session";
+
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import {
@@ -644,6 +646,7 @@ export default async function MyceliaApprovalDecisionPage({
 }: {
   readonly searchParams?: LivePageSearchParams;
 }) {
+  const { actor } = await requireAuthenticatedSession();
   const resolvedSearchParams =
     searchParams === undefined ? undefined : await searchParams;
   const outcome = parseLiveOutcomeSearchParams(resolvedSearchParams);

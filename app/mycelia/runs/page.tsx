@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import { requireAuthenticatedSession } from "@/mycelia/runtime/auth/session";
+
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import {
@@ -276,9 +278,9 @@ function stateTone(state: string): CSSProperties {
 
 async function loadRunWorkspaceState(
   selectedRunId: string | undefined,
+  tenantId: string,
 ): Promise<RunWorkspaceState> {
   try {
-    const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
     const runRepository = createPrismaGovernedRunRepository(prisma);
     const readRepository = createPrismaDemoReadRepository(prisma);
     const recentRuns = await runRepository.listRecent({
@@ -519,12 +521,14 @@ export default async function MyceliaRunsPage({
 }: {
   readonly searchParams?: LivePageSearchParams;
 }) {
+  const { actor } = await requireAuthenticatedSession();
+
   const resolvedSearchParams =
     searchParams === undefined ? undefined : await searchParams;
   const outcome = parseLiveOutcomeSearchParams(resolvedSearchParams);
   const selectedRunId = firstParam(resolvedSearchParams?.runId);
   const demoMode = getMyceliaDemoDatabaseConfig().demoMode;
-  const workspace = await loadRunWorkspaceState(selectedRunId);
+  const workspace = await loadRunWorkspaceState(selectedRunId, actor.tenantId);
 
   return (
     <main aria-labelledby="runs-title" style={styles.page}>
