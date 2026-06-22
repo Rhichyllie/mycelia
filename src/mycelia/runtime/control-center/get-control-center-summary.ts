@@ -52,7 +52,7 @@ export async function getControlCenterSummary(
     runs.countByState({ tenantId, state: "COMPLETED" }),
     approvals.countPendingForTenant({ tenantId }),
     audits.countForTenant({ tenantId }),
-    client.workspace.count(),
+    client.workspace.count({ where: { tenantId } }),
   ]);
 
   return {

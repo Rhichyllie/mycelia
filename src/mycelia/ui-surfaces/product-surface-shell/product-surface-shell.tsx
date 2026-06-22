@@ -35,7 +35,7 @@ export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
 ] as const;
 
 export const PRODUCT_SURFACE_SHELL_SAFETY_BADGES = [
-  "Local SQLite",
+  "Local PostgreSQL",
   "Real persistence",
   "Governed runtime",
   "Local demo mode",
@@ -75,7 +75,7 @@ export function getProductSurfaceShellModel(): ProductSurfaceShellModel {
     nav_items: PRODUCT_SURFACE_SHELL_NAV_ITEMS,
     safety_badges: PRODUCT_SURFACE_SHELL_SAFETY_BADGES,
     footer_note:
-      "The governed-run demo lifecycle executes and persists locally in SQLite. Local demo sign-in is active, and cloud deployment remains out of scope.",
+      "The governed-run demo lifecycle executes and persists locally in PostgreSQL. Local demo sign-in is active, and cloud deployment remains out of scope.",
   };
 }
 

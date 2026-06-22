@@ -7,6 +7,7 @@ export type PrismaNodeRepositoryClient = Pick<PrismaClient, "node">;
 
 export type CreateNodeInput = {
   readonly id: string;
+  readonly tenantId: string;
   readonly projectId: string;
   readonly kind: DbNodeKind;
   readonly label: string;
@@ -27,6 +28,7 @@ export function createPrismaNodeRepository(
           await client.node.create({
             data: {
               id: input.id,
+              tenantId: input.tenantId,
               projectId: input.projectId,
               kind: input.kind,
               label: input.label,
@@ -40,12 +42,20 @@ export function createPrismaNodeRepository(
 
       return records;
     },
-    deleteForProject(input: { readonly projectId: string }): Promise<Prisma.BatchPayload> {
-      return client.node.deleteMany({ where: { projectId: input.projectId } });
+    deleteForProject(input: {
+      readonly tenantId: string;
+      readonly projectId: string;
+    }): Promise<Prisma.BatchPayload> {
+      return client.node.deleteMany({
+        where: { tenantId: input.tenantId, projectId: input.projectId },
+      });
     },
-    listForProject(input: { readonly projectId: string }): Promise<PrismaNode[]> {
+    listForProject(input: {
+      readonly tenantId: string;
+      readonly projectId: string;
+    }): Promise<PrismaNode[]> {
       return client.node.findMany({
-        where: { projectId: input.projectId },
+        where: { tenantId: input.tenantId, projectId: input.projectId },
         orderBy: { id: "asc" },
       });
     },

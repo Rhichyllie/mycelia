@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import { requireAuthenticatedSession } from "@/mycelia/runtime/auth/session";
+
 import { prisma } from "@/mycelia/runtime/db/client";
 import { getMyceliaDemoDatabaseConfig } from "@/mycelia/runtime/db/demo-config";
 import {
@@ -415,7 +417,7 @@ function renderQueue(state: ApprovalDecisionCenterState, now: Date): ReactElemen
   if (state.status === "UNAVAILABLE") {
     return (
       <p style={styles.text}>
-        Local approval data could not be loaded. Confirm the local SQLite
+        Local approval data could not be loaded. Confirm the local PostgreSQL
         database is migrated and seeded.
       </p>
     );
@@ -644,6 +646,7 @@ export default async function MyceliaApprovalDecisionPage({
 }: {
   readonly searchParams?: LivePageSearchParams;
 }) {
+  const { actor } = await requireAuthenticatedSession();
   const resolvedSearchParams =
     searchParams === undefined ? undefined : await searchParams;
   const outcome = parseLiveOutcomeSearchParams(resolvedSearchParams);
@@ -665,7 +668,7 @@ export default async function MyceliaApprovalDecisionPage({
           <h1 style={styles.title}>Pending decisions</h1>
           <p style={styles.text}>
             Most recent pending approval requests appear first. Each row is read
-            from local SQLite.
+            from local PostgreSQL.
           </p>
           {renderQueue(state, now)}
         </section>

@@ -1,60 +1,23 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
 import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "../db/postgres-test-database";
 import { LIVE_DEMO_SCENARIO } from "../demo-scenario";
 import { loadInvestigationTimeline } from "../investigation/load-investigation-timeline";
 import { createPrismaApprovalRequestRepository } from "../repositories/prisma-approval-request.repository";
 import { createGovernedRequest } from "./create-governed-request";
 import { decideApprovalRequest } from "./decide-approval-request";
 
-const tempRoots: string[] = [];
-
-function repoPath(...segments: string[]): string {
-  return join(process.cwd(), ...segments);
-}
-
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMinimalMigration(client: PrismaClient) {
-  const migration = readFileSync(
-    repoPath(
-      "prisma",
-      "migrations",
-      "000001_minimal_runtime_slice",
-      "migration.sql",
-    ),
-    "utf8",
-  );
-
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
-}
+const testSchemas: string[] = [];
 
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-live9-"));
-  const dbPath = join(root, "live9.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_live9");
 
-  tempRoots.push(root);
-  await applyMinimalMigration(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
 async function createPendingApproval(client: PrismaClient, tenantId: string) {
@@ -81,9 +44,9 @@ async function createPendingApproval(client: PrismaClient, tenantId: string) {
   return { created, approvalRequest };
 }
 
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 

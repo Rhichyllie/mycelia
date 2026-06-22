@@ -562,13 +562,13 @@ describe("runtime repository layer", () => {
         "--name-only",
         "--",
         "prisma/schema.prisma",
-        "prisma/migrations/000001_minimal_runtime_slice/migration.sql",
+        "legacy/sqlite-migrations/000001_minimal_runtime_slice/migration.sql",
       ],
       { encoding: "utf8" },
     );
 
     expect(status.trim()).toBe("");
-    expect(schemaStatus).not.toContain("prisma/migrations/000001_minimal_runtime_slice/migration.sql");
+    expect(schemaStatus).not.toContain("legacy/sqlite-migrations/000001_minimal_runtime_slice/migration.sql");
   });
 });
 

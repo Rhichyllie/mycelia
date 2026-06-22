@@ -7,6 +7,7 @@ export type PrismaEdgeRepositoryClient = Pick<PrismaClient, "edge">;
 
 export type CreateEdgeInput = {
   readonly id: string;
+  readonly tenantId: string;
   readonly projectId: string;
   readonly sourceNodeId: string;
   readonly targetNodeId: string;
@@ -27,6 +28,7 @@ export function createPrismaEdgeRepository(
           await client.edge.create({
             data: {
               id: input.id,
+              tenantId: input.tenantId,
               projectId: input.projectId,
               sourceNodeId: input.sourceNodeId,
               targetNodeId: input.targetNodeId,
@@ -40,12 +42,20 @@ export function createPrismaEdgeRepository(
 
       return records;
     },
-    deleteForProject(input: { readonly projectId: string }): Promise<Prisma.BatchPayload> {
-      return client.edge.deleteMany({ where: { projectId: input.projectId } });
+    deleteForProject(input: {
+      readonly tenantId: string;
+      readonly projectId: string;
+    }): Promise<Prisma.BatchPayload> {
+      return client.edge.deleteMany({
+        where: { tenantId: input.tenantId, projectId: input.projectId },
+      });
     },
-    listForProject(input: { readonly projectId: string }): Promise<PrismaEdge[]> {
+    listForProject(input: {
+      readonly tenantId: string;
+      readonly projectId: string;
+    }): Promise<PrismaEdge[]> {
       return client.edge.findMany({
-        where: { projectId: input.projectId },
+        where: { tenantId: input.tenantId, projectId: input.projectId },
         orderBy: { id: "asc" },
       });
     },

@@ -1,10 +1,10 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
 import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "./db/postgres-test-database";
 import { resetDemoDatabase } from "./demo-reset";
 import {
   DEMO_SEED_GOVERNED_RUN_ID,
@@ -19,55 +19,20 @@ import {
 import { loadInvestigationTimeline } from "./investigation/load-investigation-timeline";
 import { createPrismaApprovalRequestRepository } from "./repositories/prisma-approval-request.repository";
 
-const tempRoots: string[] = [];
-
-function repoPath(...segments: string[]): string {
-  return join(process.cwd(), ...segments);
-}
-
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMigrationFile(client: PrismaClient, path: string) {
-  const migration = readFileSync(path, "utf8");
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
-}
-
-async function applyDemoLoopMigrations(client: PrismaClient) {
-  for (const migration of [
-    "000001_minimal_runtime_slice",
-    "000002_auth_foundation",
-    "000003_workspace_graph_foundation",
-  ]) {
-    await applyMigrationFile(
-      client,
-      repoPath("prisma", "migrations", migration, "migration.sql"),
-    );
-  }
-}
+const testSchemas: string[] = [];
 
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-live6-loop-"));
-  const dbPath = join(root, "live6-loop.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_live6_loop");
 
-  tempRoots.push(root);
-  await applyDemoLoopMigrations(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
+
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
+  }
+});
 
 function expectedFinalState(decision: ApprovalDecisionOutcome) {
   return decision === "APPROVE" ? "APPROVED" : "REJECTED";
@@ -104,12 +69,6 @@ async function expectSeedBaseline(client: PrismaClient, tenantId: string) {
   expect(audits).toBe(2);
   expect(approvals).toBe(0);
 }
-
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
-  }
-});
 
 describe("LIVE-6 commercial demo loop smoke test", () => {
   it("runs seed, create, decide, investigate and reset for approve and reject", async () => {

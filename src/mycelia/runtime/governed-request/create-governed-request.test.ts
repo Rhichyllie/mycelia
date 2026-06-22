@@ -1,10 +1,12 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "../db/postgres-test-database";
 import { createGovernedRequest } from "./create-governed-request";
 import {
   LIVE_DEMO_HIGH_RISK_SCENARIO,
@@ -18,60 +20,27 @@ import { createPrismaGovernedRunRepository } from "../repositories/prisma-govern
 import { createPrismaPolicyRepository } from "../repositories/prisma-policy.repository";
 import { createPrismaRuntimeStateRepository } from "../repositories/prisma-runtime-state.repository";
 
-const tempRoots: string[] = [];
+const testSchemas: string[] = [];
 
 function repoPath(...segments: string[]): string {
   return join(process.cwd(), ...segments);
 }
 
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMinimalMigration(client: PrismaClient) {
-  const migration = readFileSync(
-    repoPath(
-      "prisma",
-      "migrations",
-      "000001_minimal_runtime_slice",
-      "migration.sql",
-    ),
-    "utf8",
-  );
-
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
-}
-
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-live2-"));
-  const dbPath = join(root, "live2.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_live2");
 
-  tempRoots.push(root);
-  await applyMinimalMigration(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 
 describe("LIVE-2 governed request creation write path", () => {
-  it("persists a medium-risk governed request through real SQLite", async () => {
+  it("persists a medium-risk governed request through real PostgreSQL", async () => {
     const { client } = await createTempClient();
     const tenantId = "tenant_live_2";
 

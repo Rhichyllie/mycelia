@@ -26,6 +26,7 @@ import {
 
 export type LoadGraphSnapshotInput = {
   readonly client?: PrismaClient;
+  readonly tenantId: string;
   readonly projectId: string;
   readonly viewport?: ViewportState;
 };
@@ -121,7 +122,10 @@ export async function loadGraphSnapshot(
 ): Promise<GraphSnapshot | null> {
   const client = input.client ?? prisma;
   const projects = createPrismaProjectRepository(client);
-  const project = await projects.findById({ id: input.projectId });
+  const project = await projects.findById({
+    tenantId: input.tenantId,
+    id: input.projectId,
+  });
 
   if (project === null) {
     return null;
@@ -129,12 +133,15 @@ export async function loadGraphSnapshot(
 
   const [nodeRecords, edgeRecords, externalRefRecords] = await Promise.all([
     createPrismaNodeRepository(client).listForProject({
+      tenantId: input.tenantId,
       projectId: input.projectId,
     }),
     createPrismaEdgeRepository(client).listForProject({
+      tenantId: input.tenantId,
       projectId: input.projectId,
     }),
     createPrismaExternalRefRepository(client).listForProject({
+      tenantId: input.tenantId,
       projectId: input.projectId,
     }),
   ]);

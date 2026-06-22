@@ -11,6 +11,7 @@ export type PrismaWorkspaceRepositoryClient = Pick<
 
 export type CreateWorkspaceInput = {
   readonly id: string;
+  readonly tenantId: string;
   readonly slug: string;
   readonly name: string;
   readonly ownerIdentity?: string | null;
@@ -18,6 +19,7 @@ export type CreateWorkspaceInput = {
 
 export type CreateWorkspaceMembershipInput = {
   readonly id: string;
+  readonly tenantId: string;
   readonly workspaceId: string;
   readonly userId: string;
   readonly role: WorkspaceRole;
@@ -27,9 +29,13 @@ export function createPrismaWorkspaceRepository(
   client: PrismaWorkspaceRepositoryClient = prisma,
 ) {
   return {
-    findActiveUserById(input: { readonly userId: string }): Promise<AppUser | null> {
+    findActiveUserById(input: {
+      readonly tenantId: string;
+      readonly userId: string;
+    }): Promise<AppUser | null> {
       return client.appUser.findFirst({
         where: {
+          tenantId: input.tenantId,
           id: input.userId,
           active: true,
         },
@@ -39,17 +45,33 @@ export function createPrismaWorkspaceRepository(
       return client.workspace.create({
         data: {
           id: input.id,
+          tenantId: input.tenantId,
           slug: input.slug,
           name: input.name,
           ownerIdentity: input.ownerIdentity ?? null,
         },
       });
     },
-    findById(input: { readonly id: string }): Promise<Workspace | null> {
-      return client.workspace.findUnique({ where: { id: input.id } });
+    findById(input: {
+      readonly tenantId: string;
+      readonly id: string;
+    }): Promise<Workspace | null> {
+      return client.workspace.findFirst({
+        where: { tenantId: input.tenantId, id: input.id },
+      });
     },
-    findBySlug(input: { readonly slug: string }): Promise<Workspace | null> {
-      return client.workspace.findUnique({ where: { slug: input.slug } });
+    findBySlug(input: {
+      readonly tenantId: string;
+      readonly slug: string;
+    }): Promise<Workspace | null> {
+      return client.workspace.findUnique({
+        where: {
+          tenantId_slug: {
+            tenantId: input.tenantId,
+            slug: input.slug,
+          },
+        },
+      });
     },
     createMembership(
       input: CreateWorkspaceMembershipInput,
@@ -57,6 +79,7 @@ export function createPrismaWorkspaceRepository(
       return client.workspaceMembership.create({
         data: {
           id: input.id,
+          tenantId: input.tenantId,
           workspaceId: input.workspaceId,
           userId: input.userId,
           role: input.role,
@@ -64,12 +87,14 @@ export function createPrismaWorkspaceRepository(
       });
     },
     findMembership(input: {
+      readonly tenantId: string;
       readonly workspaceId: string;
       readonly userId: string;
     }): Promise<WorkspaceMembership | null> {
       return client.workspaceMembership.findUnique({
         where: {
-          workspaceId_userId: {
+          tenantId_workspaceId_userId: {
+            tenantId: input.tenantId,
             workspaceId: input.workspaceId,
             userId: input.userId,
           },

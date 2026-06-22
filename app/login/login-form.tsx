@@ -19,8 +19,10 @@ const styles = {
   },
   label: {
     color: myceliaVar("color.text.secondary"),
-    font: myceliaVar("type.bodySmall"),
+    fontFamily: myceliaVar("type.family"),
+    fontSize: "0.84rem",
     fontWeight: 800,
+    lineHeight: 1.2,
   },
   input: {
     width: "100%",
@@ -30,7 +32,10 @@ const styles = {
     background: myceliaVar("color.bg.sunken"),
     color: myceliaVar("color.text.primary"),
     padding: `${myceliaVar("spacing.3")} ${myceliaVar("spacing.4")}`,
-    font: "inherit",
+    fontFamily: myceliaVar("type.family"),
+    fontSize: "0.94rem",
+    fontWeight: 400,
+    lineHeight: 1.55,
     outline: myceliaVar("border.focus"),
     outlineOffset: "2px",
   },
@@ -40,8 +45,10 @@ const styles = {
     background: myceliaVar("color.state.success"),
     color: myceliaVar("color.text.inverse"),
     padding: `${myceliaVar("spacing.3")} ${myceliaVar("spacing.4")}`,
-    font: "inherit",
-    fontWeight: 900,
+    fontFamily: myceliaVar("type.family"),
+    fontSize: "1rem",
+    fontWeight: 700,
+    lineHeight: 1.5,
     cursor: "pointer",
   },
   error: {
@@ -50,7 +57,10 @@ const styles = {
     background: myceliaVar("color.intent.dangerBg"),
     color: myceliaVar("color.text.primary"),
     padding: myceliaVar("spacing.3"),
-    font: myceliaVar("type.bodySmall"),
+    fontFamily: myceliaVar("type.family"),
+    fontSize: "0.84rem",
+    fontWeight: 400,
+    lineHeight: 1.5,
   },
 } satisfies Record<string, CSSProperties>;
 

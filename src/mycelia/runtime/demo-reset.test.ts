@@ -1,10 +1,10 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
 import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "./db/postgres-test-database";
 import { resetDemoDatabase } from "./demo-reset";
 import {
   DEMO_AUTH_ADMIN_DISPLAY_NAME,
@@ -18,59 +18,18 @@ import { loadInvestigationTimeline } from "./investigation/load-investigation-ti
 import { createPrismaApprovalRequestRepository } from "./repositories/prisma-approval-request.repository";
 import { createPrismaDemoReadRepository } from "./repositories/prisma-demo-read.repository";
 
-const tempRoots: string[] = [];
-
-function repoPath(...segments: string[]): string {
-  return join(process.cwd(), ...segments);
-}
-
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMigrationFile(client: PrismaClient, path: string) {
-  const migration = readFileSync(path, "utf8");
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
-}
-
-async function applyMigrations(client: PrismaClient) {
-  for (const migration of [
-    "000001_minimal_runtime_slice",
-    "000002_auth_foundation",
-    "000003_workspace_graph_foundation",
-  ]) {
-    await applyMigrationFile(
-      client,
-      repoPath("prisma", "migrations", migration, "migration.sql"),
-    );
-  }
-}
+const testSchemas: string[] = [];
 
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-live5-"));
-  const dbPath = join(root, "live5.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_live5");
 
-  tempRoots.push(root);
-  await applyMigrations(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 

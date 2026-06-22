@@ -72,6 +72,7 @@ const APPLICATION_SOURCE_PATTERNS = [
 
 const LIVE_1_DATABASE_SOURCE_ALLOWLIST = new Set([
   repoPath("src", "mycelia", "runtime", "db", "client.ts"),
+  repoPath("src", "mycelia", "runtime", "db", "postgres-test-database.ts"),
   repoPath(
     "src",
     "mycelia",

@@ -1,67 +1,27 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
-import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "../db/postgres-test-database";
 import { resetDemoDatabase } from "../demo-reset";
 import { seedDemoScenario } from "../demo-seed-scenario";
+import { getMyceliaDemoDatabaseConfig } from "../db/demo-config";
 import { loadStudioGraph } from "./load-studio-graph";
 
-const tempRoots: string[] = [];
-
-function repoPath(...segments: string[]): string {
-  return join(process.cwd(), ...segments);
-}
-
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMigrationFile(client: PrismaClient, path: string) {
-  const migration = readFileSync(path, "utf8");
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
-}
-
-async function applyMigrations(client: PrismaClient) {
-  for (const migration of [
-    "000001_minimal_runtime_slice",
-    "000002_auth_foundation",
-    "000003_workspace_graph_foundation",
-  ]) {
-    await applyMigrationFile(
-      client,
-      repoPath("prisma", "migrations", migration, "migration.sql"),
-    );
-  }
-}
+const testSchemas: string[] = [];
+const TENANT_ID = getMyceliaDemoDatabaseConfig().tenantId;
 
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-studio-"));
-  const dbPath = join(root, "studio.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_studio");
 
-  tempRoots.push(root);
-  await applyMigrations(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 
@@ -76,11 +36,11 @@ describe("Studio graph read model", () => {
     }
   });
 
-  it("loads the seeded workspace project graph through real SQLite", async () => {
+  it("loads the seeded workspace project graph through real PostgreSQL", async () => {
     const { client } = await createTempClient();
 
     try {
-      await seedDemoScenario({ client, tenantId: "tenant_studio_seed" });
+      await seedDemoScenario({ client, tenantId: TENANT_ID });
       const result = await loadStudioGraph({ client });
 
       expect(result.status).toBe("READY");
@@ -112,17 +72,17 @@ describe("Studio graph read model", () => {
 
   it("reset restores the seeded workspace graph", async () => {
     const { client } = await createTempClient();
-    const tenantId = "tenant_studio_reset";
 
     try {
-      await seedDemoScenario({ client, tenantId });
+      await seedDemoScenario({ client, tenantId: TENANT_ID });
       await client.workspace.create({
         data: {
+          tenantId: TENANT_ID,
           slug: "temporary-workspace",
           name: "Temporary Workspace",
         },
       });
-      const reset = await resetDemoDatabase({ client, tenantId });
+      const reset = await resetDemoDatabase({ client, tenantId: TENANT_ID });
       const result = await loadStudioGraph({ client });
 
       expect(reset.ok).toBe(true);

@@ -1,81 +1,43 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
 import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { upsertAppUserByEmail } from "../auth/auth-user-store";
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "../db/postgres-test-database";
 import type { GraphSnapshot } from "./canonical-graph";
 import { createWorkspaceProject } from "./create-workspace-project";
 import { validateGraphSnapshotInvariants } from "./graph-invariants";
 import { loadGraphSnapshot } from "./load-graph-snapshot";
 import { persistGraphSnapshot } from "./persist-graph-snapshot";
 
-const tempRoots: string[] = [];
-
-function repoPath(...segments: string[]): string {
-  return join(process.cwd(), ...segments);
-}
-
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
-}
-
-async function applyMigrationFile(client: PrismaClient, path: string) {
-  const migration = readFileSync(path, "utf8");
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
-}
-
-async function applyEngineMigrations(client: PrismaClient) {
-  for (const migration of [
-    "000001_minimal_runtime_slice",
-    "000002_auth_foundation",
-    "000003_workspace_graph_foundation",
-  ]) {
-    await applyMigrationFile(
-      client,
-      repoPath("prisma", "migrations", migration, "migration.sql"),
-    );
-  }
-}
+const testSchemas: string[] = [];
+const TENANT_ID = "tenant_engine_load_test";
 
 async function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-engine-load-"));
-  const dbPath = join(root, "engine-load.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
+  const testDatabase = await createPostgresTestClient("mycelia_engine_load");
 
-  tempRoots.push(root);
-  await applyEngineMigrations(client);
-
-  return { client, dbPath };
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 
 async function createProject(client: PrismaClient) {
   const user = await upsertAppUserByEmail({
     client,
+    tenantId: TENANT_ID,
     email: `load-owner-${crypto.randomUUID()}@example.com`,
     displayName: "Load Owner",
   });
   const result = await createWorkspaceProject({
     client,
+    tenantId: TENANT_ID,
     userId: user.id,
     workspace: {
       slug: `load-workspace-${crypto.randomUUID()}`,
@@ -158,7 +120,11 @@ describe("graph snapshot loading", () => {
 
     try {
       await expect(
-        loadGraphSnapshot({ client, projectId: crypto.randomUUID() }),
+        loadGraphSnapshot({
+          client,
+          tenantId: TENANT_ID,
+          projectId: crypto.randomUUID(),
+        }),
       ).resolves.toBeNull();
     } finally {
       await client.$disconnect();
@@ -171,9 +137,15 @@ describe("graph snapshot loading", () => {
     try {
       const projectId = await createProject(client);
       const snapshot = graphSnapshot(projectId);
-      await persistGraphSnapshot({ client, projectId, snapshot });
+      await persistGraphSnapshot({
+        client,
+        tenantId: TENANT_ID,
+        projectId,
+        snapshot,
+      });
       const loaded = await loadGraphSnapshot({
         client,
+        tenantId: TENANT_ID,
         projectId,
         viewport: snapshot.viewport,
       });
@@ -181,7 +153,7 @@ describe("graph snapshot loading", () => {
       expect(loaded).not.toBeNull();
 
       if (loaded === null) {
-        throw new Error("Expected graph snapshot to load from SQLite.");
+        throw new Error("Expected graph snapshot to load from PostgreSQL.");
       }
 
       expect(validateGraphSnapshotInvariants(loaded)).toEqual(loaded);

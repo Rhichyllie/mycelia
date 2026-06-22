@@ -29,6 +29,7 @@ export type PersistGraphSnapshotResult = {
 
 export type PersistGraphSnapshotInput = {
   readonly client?: PrismaClient;
+  readonly tenantId: string;
   readonly projectId: string;
   readonly snapshot: GraphSnapshot;
 };
@@ -68,37 +69,47 @@ function assertProjectScopedSnapshot(input: {
   }
 }
 
-function toNodeCreateInput(node: Node) {
+function toNodeCreateInput(input: {
+  readonly tenantId: string;
+  readonly node: Node;
+}) {
   return {
-    id: node.id,
-    projectId: node.projectId,
-    kind: toDbNodeKind(node.kind),
-    label: node.label,
-    positionX: node.position.x,
-    positionY: node.position.y,
-    data: stringifyJsonRecord(node.data),
+    id: input.node.id,
+    tenantId: input.tenantId,
+    projectId: input.node.projectId,
+    kind: toDbNodeKind(input.node.kind),
+    label: input.node.label,
+    positionX: input.node.position.x,
+    positionY: input.node.position.y,
+    data: stringifyJsonRecord(input.node.data),
   };
 }
 
-function toEdgeCreateInput(edge: Edge) {
+function toEdgeCreateInput(input: {
+  readonly tenantId: string;
+  readonly edge: Edge;
+}) {
   return {
-    id: edge.id,
-    projectId: edge.projectId,
-    sourceNodeId: edge.sourceNodeId,
-    targetNodeId: edge.targetNodeId,
-    kind: toDbEdgeKind(edge.kind),
-    label: edge.label ?? null,
-    data: stringifyJsonRecord(edge.data),
+    id: input.edge.id,
+    tenantId: input.tenantId,
+    projectId: input.edge.projectId,
+    sourceNodeId: input.edge.sourceNodeId,
+    targetNodeId: input.edge.targetNodeId,
+    kind: toDbEdgeKind(input.edge.kind),
+    label: input.edge.label ?? null,
+    data: stringifyJsonRecord(input.edge.data),
   };
 }
 
 function toNodeExternalRefCreateInput(input: {
+  readonly tenantId: string;
   readonly projectId: string;
   readonly nodeId: string;
   readonly ref: ExternalRef;
 }) {
   return {
     id: input.ref.id,
+    tenantId: input.tenantId,
     projectId: input.projectId,
     nodeId: input.nodeId,
     edgeId: null,
@@ -110,12 +121,14 @@ function toNodeExternalRefCreateInput(input: {
 }
 
 function toEdgeExternalRefCreateInput(input: {
+  readonly tenantId: string;
   readonly projectId: string;
   readonly edgeId: string;
   readonly ref: ExternalRef;
 }) {
   return {
     id: input.ref.id,
+    tenantId: input.tenantId,
     projectId: input.projectId,
     nodeId: null,
     edgeId: input.edgeId,
@@ -139,12 +152,17 @@ export async function persistGraphSnapshot(
   });
 
   const client = input.client ?? prisma;
-  const nodeInputs = snapshot.nodes.map(toNodeCreateInput);
-  const edgeInputs = snapshot.edges.map(toEdgeCreateInput);
+  const nodeInputs = snapshot.nodes.map((node) =>
+    toNodeCreateInput({ tenantId: input.tenantId, node }),
+  );
+  const edgeInputs = snapshot.edges.map((edge) =>
+    toEdgeCreateInput({ tenantId: input.tenantId, edge }),
+  );
   const externalRefInputs = [
     ...snapshot.nodes.flatMap((node) =>
       node.externalRefs.map((ref) =>
         toNodeExternalRefCreateInput({
+          tenantId: input.tenantId,
           projectId: input.projectId,
           nodeId: node.id,
           ref,
@@ -154,6 +172,7 @@ export async function persistGraphSnapshot(
     ...snapshot.edges.flatMap((edge) =>
       edge.externalRefs.map((ref) =>
         toEdgeExternalRefCreateInput({
+          tenantId: input.tenantId,
           projectId: input.projectId,
           edgeId: edge.id,
           ref,
@@ -164,7 +183,10 @@ export async function persistGraphSnapshot(
 
   return await client.$transaction(async (tx) => {
     const repositories = createRepositories(tx);
-    const project = await repositories.projects.findById({ id: input.projectId });
+    const project = await repositories.projects.findById({
+      tenantId: input.tenantId,
+      id: input.projectId,
+    });
 
     if (project === null) {
       throw new AppError("Graph project does not exist.", {
@@ -173,9 +195,18 @@ export async function persistGraphSnapshot(
       });
     }
 
-    await repositories.externalRefs.deleteForProject({ projectId: input.projectId });
-    await repositories.edges.deleteForProject({ projectId: input.projectId });
-    await repositories.nodes.deleteForProject({ projectId: input.projectId });
+    await repositories.externalRefs.deleteForProject({
+      tenantId: input.tenantId,
+      projectId: input.projectId,
+    });
+    await repositories.edges.deleteForProject({
+      tenantId: input.tenantId,
+      projectId: input.projectId,
+    });
+    await repositories.nodes.deleteForProject({
+      tenantId: input.tenantId,
+      projectId: input.projectId,
+    });
 
     await repositories.nodes.createMany(nodeInputs);
     await repositories.edges.createMany(edgeInputs);

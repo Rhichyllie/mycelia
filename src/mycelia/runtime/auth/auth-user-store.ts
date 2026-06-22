@@ -5,11 +5,13 @@ import { z } from "zod";
 
 import { AppError } from "../../lib/app-error";
 import { prisma } from "../db/client";
+import { getMyceliaDemoDatabaseConfig } from "../db/demo-config";
 
 import type { SupportedAuthRuntimeMode } from "./auth-runtime";
 
 const AppUserSchema = z.object({
   id: z.string().uuid(),
+  tenantId: z.string().min(1),
   email: z.string().email(),
   emailNormalized: z.string().email(),
   displayName: z.string().max(120).nullable(),
@@ -22,6 +24,7 @@ export type AppUserRecord = z.infer<typeof AppUserSchema>;
 
 export type AuthenticatedActor = {
   userId: string;
+  tenantId: string;
   email: string;
   displayName?: string;
   providerId: string;
@@ -48,6 +51,7 @@ function toAuthenticatedActor(input: {
 }): AuthenticatedActor {
   return {
     userId: input.user.id,
+    tenantId: input.user.tenantId,
     email: input.user.email,
     ...(input.user.displayName ? { displayName: input.user.displayName } : {}),
     providerId: input.providerId,
@@ -68,6 +72,7 @@ async function findUserByIdTx(
 
 async function upsertUserByEmailTx(input: {
   tx: Prisma.TransactionClient;
+  tenantId: string;
   email: string;
   displayName?: string | null;
 }) {
@@ -79,9 +84,15 @@ async function upsertUserByEmailTx(input: {
   };
 
   const user = await input.tx.appUser.upsert({
-    where: { emailNormalized: normalizedEmail },
+    where: {
+      tenantId_emailNormalized: {
+        tenantId: input.tenantId,
+        emailNormalized: normalizedEmail,
+      },
+    },
     update: updateData,
     create: {
+      tenantId: input.tenantId,
       email: normalizedEmail,
       emailNormalized: normalizedEmail,
       displayName,
@@ -94,6 +105,7 @@ async function upsertUserByEmailTx(input: {
 
 async function updateExistingUserTx(input: {
   tx: Prisma.TransactionClient;
+  tenantId: string;
   userId: string;
   email: string;
   displayName?: string | null;
@@ -102,6 +114,7 @@ async function updateExistingUserTx(input: {
   const displayName = normalizeDisplayName(input.displayName);
   const conflictingUser = await input.tx.appUser.findFirst({
     where: {
+      tenantId: input.tenantId,
       emailNormalized: normalizedEmail,
       id: { not: input.userId },
     },
@@ -155,6 +168,7 @@ export async function findActiveAppUserById(
 }
 
 export async function upsertAppUserByEmail(input: {
+  tenantId?: string;
   email: string;
   displayName?: string | null;
   client?: AuthUserStoreClient;
@@ -167,10 +181,12 @@ export async function upsertAppUserByEmail(input: {
   }
 
   const client = input.client ?? prisma;
+  const tenantId = input.tenantId ?? getMyceliaDemoDatabaseConfig().tenantId;
 
   return client.$transaction((tx) =>
     upsertUserByEmailTx({
       tx,
+      tenantId,
       email: input.email,
       displayName: input.displayName,
     }),
@@ -178,6 +194,7 @@ export async function upsertAppUserByEmail(input: {
 }
 
 export async function syncAuthenticatedActor(input: {
+  tenantId?: string;
   providerId: string;
   providerType: AuthProviderType;
   subject: string;
@@ -190,6 +207,7 @@ export async function syncAuthenticatedActor(input: {
   const subject = input.subject.trim();
   const providerId = input.providerId.trim();
   const client = input.client ?? prisma;
+  const tenantId = input.tenantId ?? getMyceliaDemoDatabaseConfig().tenantId;
 
   if (!email) {
     throw new AppError(
@@ -228,6 +246,16 @@ export async function syncAuthenticatedActor(input: {
     });
 
     if (existingIdentity !== null) {
+      if (existingIdentity.user.tenantId !== tenantId) {
+        throw new AppError(
+          "A identidade externa autenticada conflita com outro tenant.",
+          {
+            code: "AUTH_IDENTITY_CONFLICT",
+            status: 409,
+          },
+        );
+      }
+
       if (!existingIdentity.user.active) {
         throw new AppError("O usuario autenticado esta desativado no MYCELIA.", {
           code: "AUTH_USER_DISABLED",
@@ -237,6 +265,7 @@ export async function syncAuthenticatedActor(input: {
 
       const updatedUser = await updateExistingUserTx({
         tx,
+        tenantId,
         userId: existingIdentity.userId,
         email,
         displayName: input.displayName,
@@ -262,6 +291,7 @@ export async function syncAuthenticatedActor(input: {
         providerId,
         subject: { not: subject },
         user: {
+          tenantId,
           emailNormalized: email,
         },
       },
@@ -280,6 +310,7 @@ export async function syncAuthenticatedActor(input: {
 
     const user = await upsertUserByEmailTx({
       tx,
+      tenantId,
       email,
       displayName: input.displayName,
     });

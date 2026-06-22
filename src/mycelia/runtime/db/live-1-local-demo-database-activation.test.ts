@@ -1,23 +1,21 @@
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { PrismaClient } from "@prisma/client";
 import { afterEach, describe, expect, it } from "vitest";
 
+import {
+  createPostgresTestClient,
+  dropPostgresTestSchema,
+} from "./postgres-test-database";
 import { getMyceliaDemoDatabaseConfig } from "./demo-config";
 import { createPrismaAuditRepository } from "../repositories/prisma-audit.repository";
 import { createPrismaGovernedRunRepository } from "../repositories/prisma-governed-run.repository";
 
-const tempRoots: string[] = [];
+const testSchemas: string[] = [];
 
 function repoPath(...segments: string[]): string {
   return join(process.cwd(), ...segments);
-}
-
-function sqliteUrl(dbPath: string): string {
-  return `file:${dbPath.replace(/\\/g, "/")}`;
 }
 
 function packageJson() {
@@ -28,44 +26,16 @@ function packageJson() {
   };
 }
 
-async function applyMinimalMigration(client: PrismaClient) {
-  const migration = readFileSync(
-    repoPath(
-      "prisma",
-      "migrations",
-      "000001_minimal_runtime_slice",
-      "migration.sql",
-    ),
-    "utf8",
-  );
+async function createTempClient() {
+  const testDatabase = await createPostgresTestClient("mycelia_live1");
 
-  const statements = migration
-    .split(/;\s*(?:\r?\n|$)/)
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
-
-  for (const statement of statements) {
-    await client.$executeRawUnsafe(statement);
-  }
+  testSchemas.push(testDatabase.schema);
+  return { client: testDatabase.client, schema: testDatabase.schema };
 }
 
-function createTempClient() {
-  const root = mkdtempSync(join(tmpdir(), "mycelia-live1-"));
-  const dbPath = join(root, "live1.sqlite");
-  const client = new PrismaClient({
-    datasources: {
-      db: { url: sqliteUrl(dbPath) },
-    },
-  });
-
-  tempRoots.push(root);
-
-  return { client, dbPath };
-}
-
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    rmSync(root, { recursive: true, force: true });
+afterEach(async () => {
+  for (const schema of testSchemas.splice(0)) {
+    await dropPostgresTestSchema(schema);
   }
 });
 
@@ -80,6 +50,11 @@ describe("LIVE-1 local demo database activation", () => {
       "prisma migrate reset --force --skip-seed && pnpm db:seed",
     );
     expect(scripts?.["db:studio"]).toBe("prisma studio");
+    expect(scripts?.["docker:up"]).toBe("docker compose up -d");
+    expect(scripts?.["docker:down"]).toBe("docker compose down");
+    expect(scripts?.["docker:reset"]).toBe(
+      "docker compose down -v && docker compose up -d",
+    );
     expect(scripts?.dev).toBe("next dev");
     expect(scripts?.build).toBe("next build");
     expect(scripts?.start).toBe("next start");
@@ -89,7 +64,13 @@ describe("LIVE-1 local demo database activation", () => {
   it("documents safe local demo environment defaults", () => {
     const envExample = readFileSync(repoPath(".env.example"), "utf8");
 
-    expect(envExample).toContain('DATABASE_URL="file:./dev.db"');
+    expect(envExample).toContain(
+      'DATABASE_URL="postgresql://mycelia:mycelia_dev@localhost:5432/mycelia"',
+    );
+    expect(envExample).toContain(
+      'TEST_DATABASE_URL="postgresql://mycelia:mycelia_dev@localhost:5432/mycelia_test"',
+    );
+    expect(envExample).toContain('MYCELIA_POSTGRES_PORT="5432"');
     expect(envExample).toContain('DEMO_TENANT="DEMO_TENANT"');
     expect(envExample).toContain('DEMO_APPROVER="DEMO_APPROVER"');
     expect(envExample).toContain('DEMO_MODE="true"');
@@ -100,7 +81,7 @@ describe("LIVE-1 local demo database activation", () => {
     });
   });
 
-  it("keeps generated SQLite database files ignored", () => {
+  it("keeps generated local file database artifacts ignored", () => {
     for (const file of [
       "prisma/dev.db",
       "prisma/dev.db-journal",
@@ -123,12 +104,10 @@ describe("LIVE-1 local demo database activation", () => {
     expect(lockStatus.trim()).toBe("");
   });
 
-  it("creates and reads back a governed run through real SQLite", async () => {
-    const { client } = createTempClient();
+  it("creates and reads back a governed run through real PostgreSQL", async () => {
+    const { client } = await createTempClient();
 
     try {
-      await applyMinimalMigration(client);
-
       const tenantId = "tenant_live_1";
       const governedRunId = "run_live_1_roundtrip";
       const runs = createPrismaGovernedRunRepository(client);
@@ -163,11 +142,11 @@ describe("LIVE-1 local demo database activation", () => {
         id: "audit_live_1_roundtrip",
         tenantId,
         governedRunId,
-        moment: "LOCAL_SQLITE_ROUNDTRIP",
+        moment: "LOCAL_POSTGRES_ROUNDTRIP",
         requirement: "LIVE_1_TEST",
         recordKindHint: "GOVERNED_RUN",
-        reasonCode: "LIVE_1_SQLITE_ROUNDTRIP",
-        safeSummary: "Real SQLite persistence was verified.",
+        reasonCode: "LIVE_1_POSTGRES_ROUNDTRIP",
+        safeSummary: "Real PostgreSQL persistence was verified.",
         subjectRef: governedRunId,
         actorRef: "demo://actor/test",
       });
@@ -178,7 +157,7 @@ describe("LIVE-1 local demo database activation", () => {
       expect(auditRecords[0]).toMatchObject({
         tenantId,
         governedRunId,
-        reasonCode: "LIVE_1_SQLITE_ROUNDTRIP",
+        reasonCode: "LIVE_1_POSTGRES_ROUNDTRIP",
       });
     } finally {
       await client.$disconnect();

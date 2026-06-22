@@ -5,5 +5,6 @@ export default defineConfig({
     include: ["src/mycelia/**/*.test.ts"],
     exclude: ["legacy/**", "node_modules/**", ".next/**"],
     environment: "node",
+    testTimeout: 30_000,
   },
 });

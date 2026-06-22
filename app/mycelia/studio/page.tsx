@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import { requireAuthenticatedSession } from "@/mycelia/runtime/auth/session";
+
 import {
   loadStudioGraph,
   type StudioGraphResult,
@@ -161,6 +163,7 @@ function renderReadyState(
 }
 
 export default async function MyceliaStudioPage() {
+  const { actor } = await requireAuthenticatedSession();
   const result = await loadStudioGraph();
 
   return (

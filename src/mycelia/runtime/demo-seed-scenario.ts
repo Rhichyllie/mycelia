@@ -161,9 +161,17 @@ function demoStudioGraphSnapshot(projectId: string): GraphSnapshot {
   };
 }
 
-async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void> {
+async function seedDemoStudioGraph(
+  client: DemoSeedScenarioClient,
+  tenantId: string,
+): Promise<void> {
   await client.appUser.upsert({
-    where: { emailNormalized: DEMO_STUDIO_USER_EMAIL },
+    where: {
+      tenantId_emailNormalized: {
+        tenantId,
+        emailNormalized: DEMO_STUDIO_USER_EMAIL,
+      },
+    },
     update: {
       email: DEMO_STUDIO_USER_EMAIL,
       displayName: "Demo Studio Owner",
@@ -171,6 +179,7 @@ async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void
     },
     create: {
       id: DEMO_STUDIO_USER_ID,
+      tenantId,
       email: DEMO_STUDIO_USER_EMAIL,
       emailNormalized: DEMO_STUDIO_USER_EMAIL,
       displayName: "Demo Studio Owner",
@@ -181,6 +190,7 @@ async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void
   const workspaces = createPrismaWorkspaceRepository(client);
   const projects = createPrismaProjectRepository(client);
   const existingWorkspace = await workspaces.findBySlug({
+    tenantId,
     slug: DEMO_STUDIO_WORKSPACE_SLUG,
   });
   let projectId: string | null = null;
@@ -188,6 +198,7 @@ async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void
   if (existingWorkspace === null) {
     const created = await createWorkspaceProject({
       client,
+      tenantId,
       userId: DEMO_STUDIO_USER_ID,
       workspace: {
         slug: DEMO_STUDIO_WORKSPACE_SLUG,
@@ -209,6 +220,7 @@ async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void
     projectId = created.projectId;
   } else {
     const existingProject = await projects.findBySlug({
+      tenantId,
       workspaceId: existingWorkspace.id,
       slug: DEMO_STUDIO_PROJECT_SLUG,
     });
@@ -216,6 +228,7 @@ async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void
     if (existingProject === null) {
       const createdProject = await projects.create({
         id: crypto.randomUUID(),
+        tenantId,
         workspaceId: existingWorkspace.id,
         slug: DEMO_STUDIO_PROJECT_SLUG,
         name: "Governed Run Lifecycle",
@@ -234,6 +247,7 @@ async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void
 
   await persistGraphSnapshot({
     client,
+    tenantId,
     projectId,
     snapshot: demoStudioGraphSnapshot(projectId),
   });
@@ -241,12 +255,14 @@ async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void
 
 async function seedDevelopmentAuthUser(
   client: DemoSeedScenarioClient,
+  tenantId: string,
 ): Promise<void> {
   const env = getServerEnv();
   const email = env.DEV_LOGIN_EMAIL.trim().toLowerCase();
 
   await syncAuthenticatedActor({
     client,
+    tenantId,
     providerId: "credentials",
     providerType: "development_credentials",
     subject: email,
@@ -449,8 +465,8 @@ export async function seedDemoScenario(
     },
   });
 
-  await seedDemoStudioGraph(input.client);
-  await seedDevelopmentAuthUser(input.client);
+  await seedDemoStudioGraph(input.client, tenantId);
+  await seedDevelopmentAuthUser(input.client, tenantId);
 
   return {
     tenantId,

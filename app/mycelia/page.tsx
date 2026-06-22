@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactElement } from "react";
 
+import { requireAuthenticatedSession } from "@/mycelia/runtime/auth/session";
+
 import {
   getControlCenterSummary,
   type ControlCenterSummary,
@@ -225,8 +227,7 @@ function hasActivity(summary: ControlCenterSummary): boolean {
   );
 }
 
-async function loadControlCenterCommandView(): Promise<ControlCenterCommandView> {
-  const tenantId = getMyceliaDemoDatabaseConfig().tenantId;
+async function loadControlCenterCommandView(tenantId: string): Promise<ControlCenterCommandView> {
   const runs = createPrismaGovernedRunRepository(prisma);
   const approvals = createPrismaApprovalRequestRepository(prisma);
   const read = createPrismaDemoReadRepository(prisma);
@@ -338,15 +339,16 @@ function renderPendingApprovals(
 }
 
 export default async function MyceliaControlCenterPage() {
+  const { actor } = await requireAuthenticatedSession();
   const [summary, commandView] = await Promise.all([
-    getControlCenterSummary(),
-    loadControlCenterCommandView(),
+    getControlCenterSummary({ tenantId: actor.tenantId }),
+    loadControlCenterCommandView(actor.tenantId),
   ]);
 
   return (
     <main aria-labelledby="control-center-title" style={styles.page}>
       <div style={styles.banner}>
-        Live local product environment -- SQLite persistence, controlled run workspace, demo tenant
+        Live local product environment -- PostgreSQL persistence, controlled run workspace, demo tenant
       </div>
       <section style={styles.hero}>
         <p style={styles.eyebrow}>Control Center</p>

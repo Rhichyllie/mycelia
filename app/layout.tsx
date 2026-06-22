@@ -8,7 +8,7 @@ import "@/mycelia/runtime/ui/mycelia-theme.css";
 export const metadata: Metadata = {
   title: "MYCELIA",
   description:
-    "Governed operational intelligence with a local SQLite-backed governed-run demo loop.",
+    "Governed operational intelligence with a local PostgreSQL-backed governed-run demo loop.",
 };
 
 export const MYCELIA_THEME_INIT_SCRIPT = `

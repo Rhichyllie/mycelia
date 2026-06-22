@@ -44,9 +44,11 @@ export async function resetDemoDatabase(
       await tx.policyDecisionRecord.deleteMany({ where: { tenantId } });
       await tx.runtimeStateSnapshot.deleteMany({ where: { tenantId } });
       await tx.governedRun.deleteMany({ where: { tenantId } });
-      await tx.workspace.deleteMany({ where: { slug: DEMO_STUDIO_WORKSPACE_SLUG } });
+      await tx.workspace.deleteMany({
+        where: { tenantId, slug: DEMO_STUDIO_WORKSPACE_SLUG },
+      });
       await tx.appUser.deleteMany({
-        where: { emailNormalized: DEMO_STUDIO_USER_EMAIL },
+        where: { tenantId, emailNormalized: DEMO_STUDIO_USER_EMAIL },
       });
     });
 

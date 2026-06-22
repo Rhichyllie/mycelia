@@ -15,7 +15,7 @@ describe("MYCELIA theme CSS variables", () => {
   it("defines dark and light selectors with canonical surface values", () => {
     const css = themeCss();
 
-    expect(css).toContain(':root,\n[data-theme="dark"]');
+    expect(css).toMatch(/:root,\s*\[data-theme="dark"\]/);
     expect(css).toContain('[data-theme="light"]');
     expect(css).toContain("--mycelia-color-bg-canvas: #0A0C0B;");
     expect(css).toContain("--mycelia-color-bg-surface: #111512;");
