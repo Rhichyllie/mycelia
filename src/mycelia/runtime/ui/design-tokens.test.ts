@@ -19,6 +19,8 @@ const tokenizedSurfaceFiles = [
   ["src", "mycelia", "runtime", "ui", "live-route-nav.tsx"],
   ["src", "mycelia", "runtime", "ui", "live-outcome-banner.tsx"],
   ["src", "mycelia", "runtime", "ui", "consequential-action-reveal.tsx"],
+  ["src", "mycelia", "ui-surfaces", "product-surface-shell", "product-surface-sign-out-button.tsx"],
+  ["app", "login", "login-form.tsx"],
   ["app", "mycelia", "page.tsx"],
   ["app", "mycelia", "runs", "page.tsx"],
   ["app", "mycelia", "approvals", "page.tsx"],

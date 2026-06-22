@@ -1,6 +1,10 @@
 import type { CSSProperties, ReactElement, ReactNode } from "react";
+import type { Session } from "next-auth";
+import { getServerSession } from "next-auth";
 
+import { getAuthOptions } from "../../runtime/auth/options";
 import { MYCELIA_TOKENS } from "../../runtime/ui/design-tokens";
+import { ProductSurfaceSignOutButton } from "./product-surface-sign-out-button";
 
 export const PRODUCT_SURFACE_SHELL_NAV_ITEMS = [
   {
@@ -34,7 +38,7 @@ export const PRODUCT_SURFACE_SHELL_SAFETY_BADGES = [
   "Real persistence",
   "Governed runtime",
   "Local demo mode",
-  "No production auth",
+  "Local sign-in",
   "No cloud deployment",
 ] as const;
 
@@ -57,6 +61,11 @@ export type ProductSurfaceShellModel = {
   readonly footer_note: string;
 };
 
+export type ProductSurfaceSessionUser = {
+  readonly name?: string | null;
+  readonly email?: string | null;
+};
+
 export function getProductSurfaceShellModel(): ProductSurfaceShellModel {
   return {
     brand: "MYCELIA",
@@ -65,7 +74,7 @@ export function getProductSurfaceShellModel(): ProductSurfaceShellModel {
     nav_items: PRODUCT_SURFACE_SHELL_NAV_ITEMS,
     safety_badges: PRODUCT_SURFACE_SHELL_SAFETY_BADGES,
     footer_note:
-      "The governed-run demo lifecycle executes and persists locally in SQLite. These routes remain pre-production: no production auth gate or cloud deployment is active.",
+      "The governed-run demo lifecycle executes and persists locally in SQLite. Local demo sign-in is active, and cloud deployment remains out of scope.",
   };
 }
 
@@ -88,6 +97,11 @@ const styles = {
     gridTemplateColumns: "minmax(220px, 1fr) auto",
     gap: MYCELIA_TOKENS.spacing[5],
     alignItems: "center",
+  },
+  headerActions: {
+    display: "grid",
+    gap: MYCELIA_TOKENS.spacing[3],
+    justifyItems: "end",
   },
   brand: {
     margin: 0,
@@ -116,6 +130,29 @@ const styles = {
     padding: "8px 10px",
     fontSize: "0.86rem",
     fontWeight: 700,
+    textDecoration: "none",
+  },
+  session: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: MYCELIA_TOKENS.spacing[2],
+    color: MYCELIA_TOKENS.color.text.secondary,
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
+  },
+  sessionName: {
+    color: MYCELIA_TOKENS.color.text.primary,
+    fontWeight: 800,
+  },
+  loginLink: {
+    border: MYCELIA_TOKENS.border.subtle,
+    borderRadius: MYCELIA_TOKENS.radius.md,
+    background: MYCELIA_TOKENS.color.intent.accentBg,
+    color: MYCELIA_TOKENS.color.text.primary,
+    padding: "7px 9px",
+    fontSize: MYCELIA_TOKENS.type.bodySmall,
+    fontWeight: 800,
     textDecoration: "none",
   },
   safetyBar: {
@@ -174,12 +211,53 @@ function renderSafetyBadges(badges: readonly string[]): ReactElement[] {
   ));
 }
 
-export function ProductSurfaceShell({
+function sessionDisplayName(user: ProductSurfaceSessionUser): string {
+  return user.name?.trim() || user.email?.trim() || "Authenticated user";
+}
+
+function sessionUserFromSession(
+  session: Session | null,
+): ProductSurfaceSessionUser | null {
+  const name = session?.user?.name?.trim() ?? null;
+  const email = session?.user?.email?.trim() ?? null;
+
+  return name || email ? { name, email } : null;
+}
+
+export function ProductSurfaceSessionIndicator({
+  user,
+}: {
+  readonly user: ProductSurfaceSessionUser | null;
+}): ReactElement {
+  if (user === null) {
+    return (
+      <div style={styles.session}>
+        <a href="/login" style={styles.loginLink}>
+          Sign in
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div aria-label="Signed-in user" style={styles.session}>
+      <span>
+        Signed in as{" "}
+        <strong style={styles.sessionName}>{sessionDisplayName(user)}</strong>
+      </span>
+      <ProductSurfaceSignOutButton />
+    </div>
+  );
+}
+
+export async function ProductSurfaceShell({
   children,
 }: {
   readonly children: ReactNode;
-}): ReactElement {
+}): Promise<ReactElement> {
   const model = getProductSurfaceShellModel();
+  const session = await getServerSession(getAuthOptions());
+  const sessionUser = sessionUserFromSession(session);
 
   return (
     <div style={styles.shell}>
@@ -189,9 +267,12 @@ export function ProductSurfaceShell({
             <p style={styles.brand}>{model.brand}</p>
             <p style={styles.positioning}>{model.positioning}</p>
           </div>
-          <nav aria-label="MYCELIA product surfaces" style={styles.nav}>
-            {renderNavItems(model.nav_items)}
-          </nav>
+          <div style={styles.headerActions}>
+            <nav aria-label="MYCELIA product surfaces" style={styles.nav}>
+              {renderNavItems(model.nav_items)}
+            </nav>
+            <ProductSurfaceSessionIndicator user={sessionUser} />
+          </div>
         </div>
       </header>
 

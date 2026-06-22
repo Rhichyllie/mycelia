@@ -1,11 +1,13 @@
 import { execFileSync } from "node:child_process";
 
 import { createElement, isValidElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import {
   PRODUCT_SURFACE_SHELL_NAV_ITEMS,
   PRODUCT_SURFACE_SHELL_SAFETY_BADGES,
+  ProductSurfaceSessionIndicator,
   ProductSurfaceShell,
   getProductSurfaceShellModel,
 } from ".";
@@ -86,7 +88,7 @@ describe("product surface shell", () => {
       "Real persistence",
       "Governed runtime",
       "Local demo mode",
-      "No production auth",
+      "Local sign-in",
       "No cloud deployment",
     ]);
     expect(model.safety_badges).not.toContain("Static");
@@ -99,9 +101,34 @@ describe("product surface shell", () => {
     const model = getProductSurfaceShellModel();
 
     expect(model.footer_note).toContain("executes and persists locally in SQLite");
-    expect(model.footer_note).toContain("pre-production");
+    expect(model.footer_note).toContain("Local demo sign-in is active");
+    expect(model.footer_note).toContain("cloud deployment remains out of scope");
     expect(model.footer_note).not.toContain("do not execute runtime");
     expect(model.footer_note).not.toContain("mutate persisted data");
+  });
+
+  it("renders the signed-in user and sign-out affordance when a session user is present", () => {
+    const html = renderToStaticMarkup(
+      createElement(ProductSurfaceSessionIndicator, {
+        user: {
+          name: "MYCELIA Demo Admin",
+          email: "admin@mycelia.local",
+        },
+      }),
+    );
+
+    expect(html).toContain("Signed in as");
+    expect(html).toContain("MYCELIA Demo Admin");
+    expect(html).toContain("Sign out");
+  });
+
+  it("renders a login link when no session user is present", () => {
+    const html = renderToStaticMarkup(
+      createElement(ProductSurfaceSessionIndicator, { user: null }),
+    );
+
+    expect(html).toContain("/login");
+    expect(html).toContain("Sign in");
   });
 
   it("creates a React element without mounting", () => {

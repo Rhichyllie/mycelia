@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { resetDemoDatabase } from "./demo-reset";
 import {
+  DEMO_AUTH_ADMIN_DISPLAY_NAME,
   DEMO_SEED_GOVERNED_RUN_ID,
   seedDemoScenario,
 } from "./demo-seed-scenario";
@@ -201,6 +202,21 @@ describe("LIVE-5 demo seed correction and reset", () => {
         nodes: 5,
         edges: 4,
       });
+      await expect(client.authIdentity.findFirst({
+        where: {
+          providerId: "credentials",
+          subject: "admin@mycelia.local",
+        },
+        include: { user: true },
+      })).resolves.toMatchObject({
+        providerType: "development_credentials",
+        emailAtLogin: "admin@mycelia.local",
+        user: {
+          emailNormalized: "admin@mycelia.local",
+          displayName: DEMO_AUTH_ADMIN_DISPLAY_NAME,
+          active: true,
+        },
+      });
     } finally {
       await client.$disconnect();
     }
@@ -265,6 +281,12 @@ describe("LIVE-5 demo seed correction and reset", () => {
         nodes: 5,
         edges: 4,
       });
+      expect(await client.authIdentity.count({
+        where: {
+          providerId: "credentials",
+          subject: "admin@mycelia.local",
+        },
+      })).toBe(1);
     } finally {
       await client.$disconnect();
     }
