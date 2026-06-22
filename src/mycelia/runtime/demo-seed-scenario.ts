@@ -1,6 +1,8 @@
 import type { PrismaClient } from "@prisma/client";
 
 import { admitGovernedRequest } from "./admission";
+import { syncAuthenticatedActor } from "./auth/auth-user-store";
+import { getServerEnv } from "./auth/env";
 import { classifyGovernedRequest } from "./classify";
 import { getMyceliaDemoDatabaseConfig } from "./db/demo-config";
 import { LIVE_DEMO_SCENARIO } from "./demo-scenario";
@@ -31,6 +33,7 @@ export const DEMO_STUDIO_USER_ID =
 export const DEMO_STUDIO_USER_EMAIL = "demo-studio-owner@example.com";
 export const DEMO_STUDIO_WORKSPACE_SLUG = "acme-enterprise";
 export const DEMO_STUDIO_PROJECT_SLUG = "governed-run-lifecycle";
+export const DEMO_AUTH_ADMIN_DISPLAY_NAME = "MYCELIA Development Admin";
 
 const DEMO_STUDIO_NODE_IDS = {
   request: "22222222-2222-4222-8222-222222222221",
@@ -236,6 +239,23 @@ async function seedDemoStudioGraph(client: DemoSeedScenarioClient): Promise<void
   });
 }
 
+async function seedDevelopmentAuthUser(
+  client: DemoSeedScenarioClient,
+): Promise<void> {
+  const env = getServerEnv();
+  const email = env.DEV_LOGIN_EMAIL.trim().toLowerCase();
+
+  await syncAuthenticatedActor({
+    client,
+    providerId: "credentials",
+    providerType: "development_credentials",
+    subject: email,
+    email,
+    displayName: DEMO_AUTH_ADMIN_DISPLAY_NAME,
+    authMode: "development_credentials",
+  });
+}
+
 export async function seedDemoScenario(
   input: SeedDemoScenarioInput,
 ): Promise<SeedDemoScenarioResult> {
@@ -430,6 +450,7 @@ export async function seedDemoScenario(
   });
 
   await seedDemoStudioGraph(input.client);
+  await seedDevelopmentAuthUser(input.client);
 
   return {
     tenantId,
