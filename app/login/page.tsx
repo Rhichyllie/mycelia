@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 
-import { MYCELIA_TOKENS } from "@/mycelia/runtime/ui/design-tokens";
+import { myceliaVar } from "@/mycelia/runtime/ui/design-tokens";
+import "@/mycelia/runtime/ui/mycelia-theme.css";
 
 import { LoginForm } from "./login-form";
 
@@ -11,36 +12,34 @@ type LoginSearchParams = Promise<{
 
 const styles = {
   page: {
-    width: MYCELIA_TOKENS.layout.pageWidth,
+    width: myceliaVar("layout.pageWidth"),
     margin: "0 auto",
-    padding: MYCELIA_TOKENS.layout.pagePadding,
+    padding: myceliaVar("layout.pagePadding"),
   },
   panel: {
     maxWidth: "460px",
-    border: MYCELIA_TOKENS.border.subtle,
-    borderRadius: MYCELIA_TOKENS.radius.panel,
-    background: MYCELIA_TOKENS.color.bg.surface,
-    padding: MYCELIA_TOKENS.spacing[8],
+    border: myceliaVar("border.subtle"),
+    borderRadius: myceliaVar("radius.panel"),
+    background: myceliaVar("color.bg.surface"),
+    padding: myceliaVar("spacing.8"),
   },
   eyebrow: {
     margin: 0,
-    color: MYCELIA_TOKENS.color.brand.sage,
-    fontSize: MYCELIA_TOKENS.type.label,
+    color: myceliaVar("color.brand.sage"),
+    font: myceliaVar("type.label"),
     fontWeight: 900,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
   },
   title: {
-    margin: `${MYCELIA_TOKENS.spacing[3]} 0 ${MYCELIA_TOKENS.spacing[2]}`,
-    color: MYCELIA_TOKENS.color.text.primary,
-    fontSize: MYCELIA_TOKENS.type.heading1,
-    lineHeight: 1.05,
+    margin: `${myceliaVar("spacing.3")} 0 ${myceliaVar("spacing.2")}`,
+    color: myceliaVar("color.text.primary"),
+    font: myceliaVar("type.heading1"),
   },
   copy: {
-    margin: `0 0 ${MYCELIA_TOKENS.spacing[6]}`,
-    color: MYCELIA_TOKENS.color.text.secondary,
-    fontSize: MYCELIA_TOKENS.type.body,
-    lineHeight: 1.6,
+    margin: `0 0 ${myceliaVar("spacing.6")}`,
+    color: myceliaVar("color.text.secondary"),
+    font: myceliaVar("type.body"),
   },
 } satisfies Record<string, CSSProperties>;
 

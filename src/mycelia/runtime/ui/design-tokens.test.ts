@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { MYCELIA_TOKENS } from "./design-tokens";
+import { MYCELIA_TOKENS, myceliaVar } from "./design-tokens";
 
 function repoPath(...segments: string[]): string {
   return join(process.cwd(), ...segments);
@@ -19,7 +19,9 @@ const tokenizedSurfaceFiles = [
   ["src", "mycelia", "runtime", "ui", "live-route-nav.tsx"],
   ["src", "mycelia", "runtime", "ui", "live-outcome-banner.tsx"],
   ["src", "mycelia", "runtime", "ui", "consequential-action-reveal.tsx"],
+  ["src", "mycelia", "runtime", "ui", "theme-toggle-button.tsx"],
   ["src", "mycelia", "ui-surfaces", "product-surface-shell", "product-surface-sign-out-button.tsx"],
+  ["app", "login", "page.tsx"],
   ["app", "login", "login-form.tsx"],
   ["app", "mycelia", "page.tsx"],
   ["app", "mycelia", "runs", "page.tsx"],
@@ -28,6 +30,23 @@ const tokenizedSurfaceFiles = [
   ["app", "mycelia", "studio", "page.tsx"],
   ["app", "mycelia", "about", "page.tsx"],
 ] as const;
+
+function themeCss(): string {
+  return source("src", "mycelia", "runtime", "ui", "mycelia-theme.css");
+}
+
+function cssBlock(pattern: RegExp): string {
+  const match = themeCss().match(pattern);
+  expect(match).not.toBeNull();
+  return match?.[1] ?? "";
+}
+
+function cssToken(block: string, tokenName: string): string {
+  const escapedTokenName = tokenName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = block.match(new RegExp(`${escapedTokenName}:\\s*([^;]+);`));
+  expect(match).not.toBeNull();
+  return match?.[1].trim() ?? "";
+}
 
 describe("MYCELIA design token foundation", () => {
   it("defines the MVP dark identity token groups", () => {
@@ -62,8 +81,43 @@ describe("MYCELIA design token foundation", () => {
 
   it("makes every primary surface consume the shared token source", () => {
     for (const file of tokenizedSurfaceFiles) {
-      expect(source(...file), file.join("/")).toContain("MYCELIA_TOKENS");
+      expect(source(...file), file.join("/")).toMatch(
+        /MYCELIA_TOKENS|myceliaVar/,
+      );
     }
+  });
+
+  it("returns CSS custom property references from token paths", () => {
+    expect(myceliaVar("color.bg.canvas")).toBe(
+      "var(--mycelia-color-bg-canvas)",
+    );
+    expect(myceliaVar("color.policy.requiresApproval")).toBe(
+      "var(--mycelia-color-policy-requiresApproval)",
+    );
+    expect(myceliaVar("spacing.8")).toBe("var(--mycelia-spacing-8)");
+    expect(myceliaVar("border.focus")).toBe("var(--mycelia-border-focus)");
+  });
+
+  it("defines distinct dark and light theme values for the primary surfaces", () => {
+    const darkBlock = cssBlock(/:root,\s*\[data-theme="dark"\]\s*{([\s\S]*?)\n}/);
+    const lightBlock = cssBlock(/\[data-theme="light"\]\s*{([\s\S]*?)\n}/);
+
+    expect(cssToken(darkBlock, "--mycelia-color-bg-canvas")).toBe("#0A0C0B");
+    expect(cssToken(darkBlock, "--mycelia-color-bg-surface")).toBe("#111512");
+    expect(cssToken(darkBlock, "--mycelia-color-bg-panel")).toBe("#171C19");
+    expect(cssToken(lightBlock, "--mycelia-color-bg-canvas")).toBe("#FAFAF7");
+    expect(cssToken(lightBlock, "--mycelia-color-bg-surface")).toBe("#EDEEE8");
+    expect(cssToken(lightBlock, "--mycelia-color-bg-panel")).toBe("#F2F0E9");
+    expect(cssToken(lightBlock, "--mycelia-color-brand-sage")).toBe("#566B5C");
+    expect(cssToken(lightBlock, "--mycelia-color-bg-canvas")).not.toBe(
+      cssToken(darkBlock, "--mycelia-color-bg-canvas"),
+    );
+    expect(cssToken(lightBlock, "--mycelia-color-bg-surface")).not.toBe(
+      cssToken(darkBlock, "--mycelia-color-bg-surface"),
+    );
+    expect(cssToken(lightBlock, "--mycelia-color-bg-panel")).not.toBe(
+      cssToken(darkBlock, "--mycelia-color-bg-panel"),
+    );
   });
 
   it("keeps consequential motion finite and tokenized", () => {
